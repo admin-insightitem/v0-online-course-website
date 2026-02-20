@@ -1,6 +1,5 @@
 import { Header } from "@/components/header"
 import { HeroSection } from "@/components/hero-section"
-import { WebinarSection } from "@/components/webinar-section"
 import { CoursesSection } from "@/components/courses-section"
 import { TestimonialsSection } from "@/components/testimonials-section"
 import { InstructorsSection } from "@/components/instructors-section"
@@ -15,9 +14,7 @@ export default function HomePage() {
       <Header />
       {/* 1. 히어로 - 딥 네이비 */}
       <HeroSection />
-      {/* 2. 무료 웨비나 - 화이트 */}
-      <WebinarSection />
-      {/* 3. 인기 강의 - 연한 그레이 */}
+      {/* 2. 인기 강의 - 연한 그레이 */}
       <CoursesSection />
       {/* 4. 수강생 성과 후기 - 화이트 */}
       <TestimonialsSection />
