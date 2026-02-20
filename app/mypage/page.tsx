@@ -14,14 +14,14 @@ import {
   CreditCard,
   Settings,
   LogOut,
-  Star,
-  Clock,
-  CheckCircle,
+  Copy,
+  MessageCircle,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
-import { Progress } from "@/components/ui/progress"
 import { courses } from "@/lib/courses"
 
 const sideMenu = [
@@ -40,102 +40,140 @@ const sideMenu = [
 const inProgressCourses = [
   {
     ...courses[0],
-    progress: 45,
-    lastAccessed: "2026.02.18",
-    currentLesson: "고급 프롬프트 테크닉 10가지",
+    scheduledDate: "3월 5일 (수) PM 7시30분",
+    headlineTop: "ChatGPT 실전 활용",
+    headlineBottom: "AI로 돈벌기",
+    dDay: 9,
+    hasPassword: false,
   },
   {
     ...courses[1],
-    progress: 22,
-    lastAccessed: "2026.02.15",
-    currentLesson: "유튜브 알고리즘 작동 원리",
+    scheduledDate: "2월 28일 (금) PM 8시",
+    headlineTop: "유튜브 알고리즘",
+    headlineBottom: "수익화 전략",
+    dDay: 5,
+    hasPassword: false,
   },
 ]
 
 const completedCourses = [
   {
     ...courses[2],
-    progress: 100,
-    completedDate: "2026.01.30",
-    certificate: true,
+    scheduledDate: "1월 20일 (월) PM 7시",
+    headlineTop: "퍼포먼스 마케팅",
+    headlineBottom: "ROI 극대화",
+    dDay: 0,
+    hasPassword: false,
   },
   {
     ...courses[4],
-    progress: 100,
-    completedDate: "2025.12.15",
-    certificate: true,
+    scheduledDate: "12월 15일 (일) PM 2시",
+    headlineTop: "스마트스토어",
+    headlineBottom: "매출 5천만원",
+    dDay: 0,
+    hasPassword: false,
   },
 ]
 
 type TabType = "in-progress" | "completed" | "all"
 
-function CourseCard({
-  course,
-  status,
-}: {
-  course: (typeof inProgressCourses)[0] | (typeof completedCourses)[0]
-  status: "in-progress" | "completed"
-}) {
+interface MyCourse {
+  id: string
+  title: string
+  instructor: string
+  image: string
+  category: string
+  scheduledDate: string
+  headlineTop: string
+  headlineBottom: string
+  dDay: number
+  hasPassword: boolean
+}
+
+function CourseCard({ course, status }: { course: MyCourse; status: "in-progress" | "completed" }) {
+  const isCompleted = status === "completed"
+
   return (
-    <Link
-      href={`/courses/${course.id}`}
-      className="flex gap-4 rounded-lg border border-border bg-card p-4 transition-shadow hover:shadow-md sm:gap-5"
-    >
-      <div className="relative h-24 w-36 shrink-0 overflow-hidden rounded-md sm:h-28 sm:w-44">
+    <div className="flex flex-col overflow-hidden rounded-lg border border-border bg-card">
+      {/* Thumbnail with overlay */}
+      <Link href={`/courses/${course.id}`} className="group relative block aspect-[16/10] w-full overflow-hidden">
         <Image
           src={course.image}
           alt={course.title}
           fill
-          className="object-cover"
+          className="object-cover transition-transform duration-300 group-hover:scale-105"
         />
-        {status === "completed" && (
-          <div className="absolute inset-0 flex items-center justify-center bg-primary/70">
-            <CheckCircle className="h-8 w-8 text-primary-foreground" />
+        {/* Dark overlay with text */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/30" />
+
+        {/* Badge */}
+        <span className="absolute right-3 top-3 rounded bg-accent px-2 py-0.5 text-[11px] font-bold text-accent-foreground">
+          {isCompleted ? "종료" : "수강중"}
+        </span>
+
+        {/* Overlay text */}
+        <div className="absolute bottom-0 left-0 right-0 p-4">
+          <p className="text-xs text-white/70">{course.scheduledDate}</p>
+          <p className="mt-1 text-lg font-extrabold leading-tight text-white">{course.headlineTop}</p>
+          <p className="text-lg font-extrabold leading-tight text-white">{course.headlineBottom}</p>
+          <div className="mt-2 flex items-center gap-1.5">
+            <span className="rounded bg-white/20 px-1.5 py-0.5 text-[11px] font-medium text-white">
+              {course.instructor}
+            </span>
           </div>
-        )}
-      </div>
-      <div className="flex min-w-0 flex-1 flex-col justify-between">
-        <div>
-          <span className="text-xs font-medium text-accent">{course.category}</span>
-          <h3 className="mt-0.5 line-clamp-2 text-sm font-semibold leading-snug text-foreground sm:text-base">
-            {course.title}
-          </h3>
-          <p className="mt-1 text-xs text-muted-foreground">{course.instructor}</p>
         </div>
-        <div className="mt-2">
-          {status === "in-progress" ? (
-            <div>
-              <div className="flex items-center justify-between text-xs text-muted-foreground">
-                <span className="flex items-center gap-1">
-                  <Clock className="h-3 w-3" />
-                  {"currentLesson" in course && course.currentLesson}
-                </span>
-                <span className="font-medium text-foreground">
-                  {course.progress}%
-                </span>
-              </div>
-              <Progress value={course.progress} className="mt-1.5 h-1.5" />
-              <p className="mt-1 text-[11px] text-muted-foreground">
-                {"lastAccessed" in course && `최근 수강: ${course.lastAccessed}`}
-              </p>
-            </div>
+      </Link>
+
+      {/* Card body */}
+      <div className="flex flex-col gap-3 p-4">
+        {/* Title */}
+        <Link href={`/courses/${course.id}`} className="hover:underline">
+          <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-foreground">{course.title}</h3>
+        </Link>
+
+        {/* Instructor / Category */}
+        <p className="text-xs text-muted-foreground">
+          {course.instructor} | {course.category}
+        </p>
+
+        {/* D-day & Password */}
+        <div className="flex items-center gap-4 text-xs">
+          {!isCompleted ? (
+            <>
+              <span className="text-muted-foreground">
+                {"강의날까지 "}
+                <strong className="text-foreground">D-{course.dDay}</strong>
+              </span>
+              <span className="text-muted-foreground">
+                {"비밀번호 "}
+                <strong className="text-foreground">{course.hasPassword ? "있음" : "없음"}</strong>
+              </span>
+            </>
           ) : (
-            <div className="flex items-center gap-3">
-              {"completedDate" in course && (
-                <span className="text-xs text-muted-foreground">
-                  완료일: {course.completedDate}
-                </span>
-              )}
-              {"certificate" in course && course.certificate && (
-                <span className="rounded bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
-                  수료증 발급
-                </span>
-              )}
-            </div>
+            <span className="text-muted-foreground">강의 종료</span>
           )}
         </div>
+
+        {/* Action buttons */}
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="flex-1 gap-1.5 text-xs"
+          >
+            <Copy className="h-3.5 w-3.5" />
+            비밀번호 복사
+          </Button>
+          <Button
+            size="sm"
+            className="flex-1 gap-1.5 bg-accent text-accent-foreground text-xs hover:bg-accent/90"
+          >
+            <MessageCircle className="h-3.5 w-3.5" />
+            채팅방 입장
+          </Button>
+        </div>
       </div>
-    </Link>
+    </div>
   )
 }
 
@@ -150,12 +188,12 @@ export default function MyPage() {
 
   const displayCourses =
     activeTab === "in-progress"
-      ? inProgressCourses.map((c) => ({ course: c, status: "in-progress" as const }))
+      ? inProgressCourses.map((c) => ({ course: c as MyCourse, status: "in-progress" as const }))
       : activeTab === "completed"
-        ? completedCourses.map((c) => ({ course: c, status: "completed" as const }))
+        ? completedCourses.map((c) => ({ course: c as MyCourse, status: "completed" as const }))
         : [
-            ...inProgressCourses.map((c) => ({ course: c, status: "in-progress" as const })),
-            ...completedCourses.map((c) => ({ course: c, status: "completed" as const })),
+            ...inProgressCourses.map((c) => ({ course: c as MyCourse, status: "in-progress" as const })),
+            ...completedCourses.map((c) => ({ course: c as MyCourse, status: "completed" as const })),
           ]
 
   return (
@@ -205,19 +243,20 @@ export default function MyPage() {
       <section className="flex-1 px-4 py-8 lg:py-10">
         <div className="mx-auto flex max-w-7xl gap-8 lg:gap-12">
           {/* Sidebar */}
-          <aside className="hidden w-48 shrink-0 lg:block">
-            <nav className="flex flex-col gap-0.5">
+          <aside className="hidden w-44 shrink-0 lg:block">
+            <nav className="flex flex-col">
               {sideMenu.map((item) => (
                 <Link
                   key={item.label}
                   href={item.href}
-                  className={`flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                  className={`flex items-center gap-2.5 border-l-2 px-4 py-2.5 text-sm font-medium transition-colors ${
                     item.active
-                      ? "bg-primary/5 text-primary"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      ? "border-accent bg-transparent text-foreground"
+                      : "border-transparent text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  <item.icon className="h-4 w-4" />
+                  {item.active && <item.icon className="h-4 w-4 text-accent" />}
+                  {!item.active && <item.icon className="h-4 w-4" />}
                   {item.label}
                 </Link>
               ))}
@@ -226,25 +265,19 @@ export default function MyPage() {
 
           {/* Content */}
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-1.5 text-lg font-bold text-foreground">
-              <BookOpen className="h-5 w-5 text-accent" />
-              내 강의실
-            </div>
-
             {/* Tabs */}
-            <div className="mt-5 flex border-b border-border">
+            <div className="flex border-b border-border">
               {tabs.map((tab) => (
                 <button
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key)}
-                  className={`relative px-4 pb-3 text-sm font-medium transition-colors sm:px-6 ${
+                  className={`relative flex-1 pb-3 text-center text-sm font-medium transition-colors sm:flex-none sm:px-8 ${
                     activeTab === tab.key
                       ? "text-accent"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   {tab.label}
-                  <span className="ml-1 text-xs">({tab.count})</span>
                   {activeTab === tab.key && (
                     <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent" />
                   )}
@@ -252,17 +285,32 @@ export default function MyPage() {
               ))}
             </div>
 
-            {/* Course List */}
-            <div className="mt-6 flex flex-col gap-4">
+            {/* Course Grid */}
+            <div className="mt-6">
               {displayCourses.length > 0 ? (
-                displayCourses.map(({ course, status }) => (
-                  <CourseCard key={course.id} course={course} status={status} />
-                ))
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                  {displayCourses.map(({ course, status }) => (
+                    <CourseCard key={course.id} course={course} status={status} />
+                  ))}
+                </div>
               ) : (
-                <div className="flex min-h-[200px] items-center justify-center rounded-lg bg-muted/50">
+                <div className="flex min-h-[240px] items-center justify-center rounded-lg bg-muted/30">
                   <p className="text-sm text-muted-foreground">강의가 없습니다.</p>
                 </div>
               )}
+            </div>
+
+            {/* Pagination */}
+            <div className="mt-8 flex items-center justify-center gap-1">
+              <button className="flex h-8 w-8 items-center justify-center rounded border border-border text-muted-foreground transition-colors hover:bg-muted">
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+              <button className="flex h-8 w-8 items-center justify-center rounded border border-foreground bg-card text-sm font-semibold text-foreground">
+                1
+              </button>
+              <button className="flex h-8 w-8 items-center justify-center rounded border border-border text-muted-foreground transition-colors hover:bg-muted">
+                <ChevronRight className="h-4 w-4" />
+              </button>
             </div>
           </div>
         </div>
