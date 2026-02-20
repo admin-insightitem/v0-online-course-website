@@ -1,4 +1,4 @@
-import { Calendar, Clock, Users, ArrowRight } from "lucide-react"
+import { Calendar, Clock, Users } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 const webinars = [
@@ -8,19 +8,17 @@ const webinars = [
     speakerTitle: "AI 자동화 전문가",
     date: "3월 5일 (목)",
     time: "20:00 - 21:30",
-    spots: 150,
+    totalSpots: 150,
     spotsLeft: 23,
-    tag: "LIVE",
   },
   {
     title: "유튜브 알고리즘의 비밀: 조회수 10배 올리기",
     speaker: "박서연",
-    speakerTitle: "유튜브 크리에이터",
+    speakerTitle: "구독자 120만 크리에이터",
     date: "3월 8일 (일)",
     time: "19:00 - 20:30",
-    spots: 200,
+    totalSpots: 200,
     spotsLeft: 67,
-    tag: "무료",
   },
   {
     title: "스마트스토어 월매출 1,000만원 로드맵",
@@ -28,79 +26,71 @@ const webinars = [
     speakerTitle: "커머스 전문가",
     date: "3월 12일 (목)",
     time: "20:00 - 21:00",
-    spots: 100,
+    totalSpots: 100,
     spotsLeft: 12,
-    tag: "마감임박",
   },
 ]
 
 export function WebinarSection() {
   return (
-    <section id="webinar" className="py-24 lg:py-32">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="mb-12 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
-          <div>
-            <p className="mb-4 text-sm font-semibold tracking-[0.15em] text-accent">
-              LIVE WEBINAR
-            </p>
-            <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl text-balance">
-              무료 라이브 웨비나
-            </h2>
-            <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-              전문가와 실시간으로 질의응답하며 인사이트를 얻으세요
-            </p>
-          </div>
-          <Button variant="outline" className="border-border text-base text-foreground hover:bg-card">
-            전체 일정 보기
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
-        </div>
+    <section id="webinar" className="bg-white py-20 md:py-24">
+      <div className="mx-auto max-w-6xl px-6">
+        <p className="mb-3 text-[13px] font-bold uppercase tracking-[0.25em] text-mint font-[family-name:var(--font-heading)]">
+          Free Webinar
+        </p>
+        <h2 className="text-[26px] font-extrabold text-foreground md:text-[32px]">
+          먼저 무료로 경험해보세요
+        </h2>
+        <p className="mt-3 text-[16px] leading-[1.8] text-muted-foreground">
+          부담 없이 참여하고, 전문가의 실전 노하우를 직접 확인하세요.
+        </p>
 
-        <div className="flex flex-col gap-5">
-          {webinars.map((w) => (
-            <div
-              key={w.title}
-              className="group flex flex-col items-start gap-5 rounded-lg border border-border bg-card p-6 transition-all duration-300 hover:shadow-md md:flex-row md:items-center md:p-8"
-            >
-              <div className="flex-1">
-                <div className="mb-2 flex items-center gap-3">
-                  <span className={`rounded-sm px-3 py-1 text-xs font-bold ${
-                    w.tag === "LIVE" ? "bg-foreground text-background" :
-                    w.tag === "무료" ? "bg-accent text-accent-foreground" :
-                    "bg-accent/10 text-accent"
-                  }`}>
-                    {w.tag}
-                  </span>
-                  <h3 className="text-lg font-bold text-foreground">
+        <div className="mt-10 flex flex-col gap-4">
+          {webinars.map((w) => {
+            const urgent = w.spotsLeft <= 20
+            return (
+              <div
+                key={w.title}
+                className="flex flex-col gap-5 rounded-xl border border-border bg-white p-6 shadow-sm transition-shadow hover:shadow-md md:flex-row md:items-center md:p-7"
+              >
+                <div className="flex-1">
+                  <h3 className="text-[18px] font-bold leading-snug text-foreground">
                     {w.title}
                   </h3>
+                  <p className="mt-1.5 text-[15px] text-muted-foreground">
+                    {w.speaker} &middot; {w.speakerTitle}
+                  </p>
                 </div>
-                <p className="text-[15px] text-muted-foreground">
-                  {w.speaker} <span className="text-sm">| {w.speakerTitle}</span>
-                </p>
-              </div>
 
-              <div className="flex flex-wrap items-center gap-5 text-[15px] text-muted-foreground md:gap-6">
-                <span className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4 text-accent" />
-                  {w.date}
-                </span>
-                <span className="flex items-center gap-2">
-                  <Clock className="h-4 w-4 text-accent" />
-                  {w.time}
-                </span>
-                <span className="flex items-center gap-2">
-                  <Users className="h-4 w-4 text-accent" />
-                  <span className="font-bold text-foreground">{w.spotsLeft}</span>
-                  /{w.spots}석
-                </span>
+                <div className="flex flex-wrap items-center gap-4 text-[14px] text-muted-foreground md:gap-5">
+                  <span className="flex items-center gap-1.5">
+                    <Calendar className="h-4 w-4 text-navy-light" />
+                    {w.date}
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <Clock className="h-4 w-4 text-navy-light" />
+                    {w.time}
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <Users className="h-4 w-4 text-navy-light" />
+                    <span className={`font-bold ${urgent ? "text-orange" : "text-foreground"}`}>
+                      {w.spotsLeft}
+                    </span>
+                    /{w.totalSpots}석
+                    {urgent && (
+                      <span className="ml-1 rounded bg-orange/10 px-1.5 py-0.5 text-[12px] font-bold text-orange">
+                        마감임박
+                      </span>
+                    )}
+                  </span>
 
-                <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
-                  신청하기
-                </Button>
+                  <Button className="h-10 rounded-lg bg-mint px-5 text-[14px] font-semibold text-white hover:bg-mint-dark md:ml-2">
+                    무료 신청
+                  </Button>
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
     </section>

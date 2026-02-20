@@ -1,151 +1,81 @@
-"use client"
-
-import { useState } from "react"
 import Image from "next/image"
-import { Star, Clock, Users, ArrowRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
-
-const tabs = ["전체", "AI / 자동화", "유튜브", "마케팅", "디자인", "커머스", "SNS"]
+import { ArrowRight } from "lucide-react"
 
 const courses = [
   {
     title: "ChatGPT & AI 자동화로 월 1,000만원 수익 만들기",
     instructor: "김도현",
-    credential: "전 네이버 AI 연구원",
     image: "/images/course-ai.jpg",
     category: "AI / 자동화",
-    rating: 4.9,
-    reviews: 1247,
-    students: 8340,
-    duration: "12시간 30분",
     price: "149,000",
     originalPrice: "299,000",
     badge: "BEST",
+    description: "AI 도구 활용부터 자동화 시스템 구축까지 실전 노하우",
   },
   {
     title: "유튜브 수익화 완벽 가이드: 0에서 월 500만원까지",
     instructor: "박서연",
-    credential: "구독자 120만 크리에이터",
     image: "/images/course-youtube.jpg",
     category: "유튜브",
-    rating: 4.8,
-    reviews: 983,
-    students: 6210,
-    duration: "15시간 45분",
     price: "129,000",
     originalPrice: "259,000",
     badge: "NEW",
+    description: "채널 기획부터 수익화까지 단계별 로드맵 제공",
   },
   {
     title: "퍼포먼스 마케팅 마스터클래스: ROI 500% 달성 전략",
     instructor: "이준혁",
-    credential: "전 카카오 마케팅 리드",
     image: "/images/course-marketing.jpg",
     category: "마케팅",
-    rating: 4.9,
-    reviews: 756,
-    students: 4530,
-    duration: "10시간 20분",
     price: "169,000",
     originalPrice: "339,000",
-    badge: "HOT",
-  },
-  {
-    title: "프리미어 프로 & 포토샵: 1인 크리에이터 완성 패키지",
-    instructor: "최예진",
-    credential: "10년차 디자인 디렉터",
-    image: "/images/course-design.jpg",
-    category: "디자인",
-    rating: 4.7,
-    reviews: 621,
-    students: 3870,
-    duration: "18시간 10분",
-    price: "139,000",
-    originalPrice: "279,000",
-    badge: null,
+    badge: "BEST",
+    description: "광고 세팅부터 데이터 분석까지 실무 중심 강의",
   },
   {
     title: "스마트스토어 + 쿠팡: 월매출 5,000만원 실전 로드맵",
     instructor: "정민수",
-    credential: "연매출 10억 셀러",
     image: "/images/course-commerce.jpg",
     category: "커머스",
-    rating: 4.8,
-    reviews: 892,
-    students: 5120,
-    duration: "14시간 50분",
     price: "159,000",
     originalPrice: "319,000",
-    badge: "BEST",
-  },
-  {
-    title: "인스타그램 & 틱톡: SNS 수익화 완전 정복",
-    instructor: "한수빈",
-    credential: "팔로워 80만 인플루언서",
-    image: "/images/course-sns.jpg",
-    category: "SNS",
-    rating: 4.6,
-    reviews: 534,
-    students: 2980,
-    duration: "9시간 40분",
-    price: "119,000",
-    originalPrice: "239,000",
-    badge: "NEW",
+    badge: null,
+    description: "상품 소싱부터 광고 운영까지 온라인 셀러 완성",
   },
 ]
 
 export function CoursesSection() {
-  const [activeTab, setActiveTab] = useState("전체")
-
-  const filtered =
-    activeTab === "전체"
-      ? courses
-      : courses.filter((c) => c.category === activeTab)
-
   return (
-    <section id="courses" className="bg-secondary py-24 lg:py-32">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="mb-12 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
+    <section id="courses" className="bg-gray-bg py-20 md:py-24">
+      <div className="mx-auto max-w-6xl px-6">
+        <p className="mb-3 text-[13px] font-bold uppercase tracking-[0.25em] text-mint font-[family-name:var(--font-heading)]">
+          Premium Courses
+        </p>
+        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="mb-4 text-sm font-semibold tracking-[0.15em] text-accent">
-              PREMIUM COURSES
-            </p>
-            <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl text-balance">
-              전문가가 검증한 프리미엄 강의
+            <h2 className="text-[26px] font-extrabold text-foreground md:text-[32px]">
+              지금 가장 인기있는 강의
             </h2>
-            <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-              실전 경험과 노하우를 갖춘 전문가들의 체계적인 커리큘럼
+            <p className="mt-3 text-[16px] leading-[1.8] text-muted-foreground">
+              수강생들이 가장 많이 선택한 검증된 강의를 만나보세요.
             </p>
           </div>
-          <Button variant="outline" className="border-border text-base text-foreground hover:bg-card">
-            전체 보기
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
+          <a
+            href="#"
+            className="inline-flex items-center gap-1.5 text-[15px] font-semibold text-navy-light hover:underline"
+          >
+            전체 강의 보기
+            <ArrowRight className="h-4 w-4" />
+          </a>
         </div>
 
-        <div className="mb-10 flex gap-2 overflow-x-auto scrollbar-hide pb-2">
-          {tabs.map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`flex-shrink-0 rounded-sm px-5 py-2.5 text-[15px] font-medium transition-all ${
-                activeTab === tab
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-card text-muted-foreground hover:text-foreground border border-border"
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
-
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((course) => (
+        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {courses.map((course) => (
             <article
               key={course.title}
-              className="group cursor-pointer overflow-hidden rounded-lg border border-border bg-card transition-all duration-300 hover:shadow-lg"
+              className="group cursor-pointer overflow-hidden rounded-xl border border-border bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
             >
-              <div className="relative aspect-video overflow-hidden">
+              <div className="relative aspect-[16/10] overflow-hidden">
                 <Image
                   src={course.image}
                   alt={course.title}
@@ -153,54 +83,31 @@ export function CoursesSection() {
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 {course.badge && (
-                  <span className={`absolute top-3 left-3 rounded-sm px-2.5 py-1 text-xs font-bold ${
-                    course.badge === "BEST" ? "bg-foreground text-background" :
-                    course.badge === "NEW" ? "bg-accent text-accent-foreground" :
-                    "bg-foreground text-background"
-                  }`}>
+                  <span
+                    className={`absolute top-3 left-3 rounded-md px-2.5 py-1 text-[11px] font-bold shadow-sm ${
+                      course.badge === "BEST"
+                        ? "bg-navy text-white"
+                        : "bg-mint text-white"
+                    }`}
+                  >
                     {course.badge}
                   </span>
                 )}
               </div>
 
-              <div className="p-6">
-                <p className="mb-1 text-sm font-semibold text-accent">{course.category}</p>
-                <h3 className="mb-3 line-clamp-2 text-lg font-bold leading-snug text-foreground">
+              <div className="p-5">
+                <span className="text-[12px] font-semibold text-navy-light">{course.category}</span>
+                <h3 className="mt-1.5 line-clamp-2 text-[15px] font-bold leading-[1.5] text-foreground">
                   {course.title}
                 </h3>
+                <p className="mt-1 text-[13px] text-muted-foreground">{course.instructor}</p>
 
-                <div className="mb-4">
-                  <p className="text-[15px] font-medium text-foreground">{course.instructor}</p>
-                  <p className="text-sm text-muted-foreground">{course.credential}</p>
-                </div>
-
-                <div className="mb-5 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                  <span className="flex items-center gap-1">
-                    <Star className="h-4 w-4 fill-accent text-accent" />
-                    <span className="font-semibold text-foreground">{course.rating}</span>
-                    ({course.reviews.toLocaleString()})
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Users className="h-4 w-4" />
-                    {course.students.toLocaleString()}명
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Clock className="h-4 w-4" />
-                    {course.duration}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-3 border-t border-border pt-5">
-                  <span className="text-xl font-bold text-foreground">
+                <div className="mt-4 flex items-baseline gap-2 border-t border-border pt-4">
+                  <span className="text-[18px] font-extrabold text-foreground">
                     {"\u20A9"}{course.price}
                   </span>
-                  <span className="text-base text-muted-foreground line-through">
+                  <span className="text-[13px] text-muted-foreground line-through">
                     {"\u20A9"}{course.originalPrice}
-                  </span>
-                  <span className="ml-auto rounded-sm bg-accent/10 px-2 py-0.5 text-sm font-bold text-accent">
-                    {Math.round(
-                      (1 - parseInt(course.price.replace(/,/g, "")) / parseInt(course.originalPrice.replace(/,/g, ""))) * 100
-                    )}% OFF
                   </span>
                 </div>
               </div>

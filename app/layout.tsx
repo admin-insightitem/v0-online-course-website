@@ -1,23 +1,17 @@
 import type { Metadata, Viewport } from 'next'
-import { Noto_Sans_KR, Playfair_Display } from 'next/font/google'
+import { Plus_Jakarta_Sans } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
-const notoSansKR = Noto_Sans_KR({
+const jakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
-  variable: '--font-noto',
-  weight: ['300', '400', '500', '600', '700', '800'],
-})
-
-const playfairDisplay = Playfair_Display({
-  subsets: ['latin'],
-  variable: '--font-playfair',
+  variable: '--font-jakarta',
   weight: ['400', '500', '600', '700', '800'],
 })
 
 export const metadata: Metadata = {
-  title: 'TitanClass - No.1 온라인 수익화 플랫폼',
-  description: '당신의 인생을 바꾸는 프리미엄 온라인 강의 플랫폼. AI, 유튜브, 마케팅, 디자인, 커머스 분야 전문가의 실전 강의를 만나보세요.',
+  title: 'TitanClass - AI 시대, 당신의 새로운 시작',
+  description: '40대 이상 직장인과 자영업자를 위한 프리미엄 AI 기술 교육 플랫폼. 각 분야 최고 전문가의 실전 강의로 새로운 수익을 만들어보세요.',
   icons: {
     icon: [
       { url: '/icon-light-32x32.png', media: '(prefers-color-scheme: light)' },
@@ -29,7 +23,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#f5f0ea',
+  themeColor: '#0F2140',
 }
 
 export default function RootLayout({
@@ -39,7 +33,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className={`${notoSansKR.variable} ${playfairDisplay.variable} font-sans antialiased`}>
+      <head>
+        <link
+          rel="stylesheet"
+          as="style"
+          crossOrigin="anonymous"
+          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
+        />
+      </head>
+      <body className={`${jakartaSans.variable} font-sans antialiased`}>
         {children}
         <Analytics />
       </body>
