@@ -41,12 +41,16 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
-          <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
-            로그인
-          </Button>
-          <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
-            무료 시작하기
-          </Button>
+          <Link href="/login">
+            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+              로그인
+            </Button>
+          </Link>
+          <Link href="/login">
+            <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
+              무료 시작하기
+            </Button>
+          </Link>
         </div>
 
         <button
@@ -72,12 +76,16 @@ export function Header() {
               </Link>
             ))}
             <div className="mt-4 flex flex-col gap-2 border-t border-border/50 pt-4">
-              <Button variant="ghost" size="sm" className="justify-start text-muted-foreground">
-                로그인
-              </Button>
-              <Button size="sm" className="bg-primary text-primary-foreground">
-                무료 시작하기
-              </Button>
+              <Link href="/login" onClick={() => setMobileOpen(false)}>
+                <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground">
+                  로그인
+                </Button>
+              </Link>
+              <Link href="/login" onClick={() => setMobileOpen(false)}>
+                <Button size="sm" className="w-full bg-primary text-primary-foreground">
+                  무료 시작하기
+                </Button>
+              </Link>
             </div>
           </nav>
         </div>
