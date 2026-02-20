@@ -2,18 +2,21 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Menu, X, ChevronDown } from "lucide-react"
+import { Menu, X, ShoppingCart, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 const navItems = [
-  { label: "전체 클래스", href: "#courses" },
-  { label: "카테고리", href: "#categories" },
-  { label: "강사진", href: "#instructors" },
-  { label: "후기", href: "#testimonials" },
-  { label: "웨비나", href: "#webinar" },
+  { label: "전체 클래스", href: "/#courses" },
+  { label: "카테고리", href: "/#categories" },
+  { label: "강사진", href: "/#instructors" },
+  { label: "후기", href: "/#testimonials" },
 ]
 
-export function Header() {
+interface HeaderProps {
+  variant?: "default" | "logged-in"
+}
+
+export function Header({ variant = "default" }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
@@ -40,18 +43,38 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-3 lg:flex">
-          <Link href="/login">
-            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
-              로그인
-            </Button>
-          </Link>
-          <Link href="/login">
-            <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
-              무료 시작하기
-            </Button>
-          </Link>
-        </div>
+        {variant === "logged-in" ? (
+          <div className="hidden items-center gap-2 lg:flex">
+            <Link href="/cart">
+              <Button variant="ghost" size="icon" className="relative text-muted-foreground hover:text-foreground">
+                <ShoppingCart className="h-5 w-5" />
+                <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-accent-foreground">
+                  2
+                </span>
+                <span className="sr-only">장바구니</span>
+              </Button>
+            </Link>
+            <Link href="/mypage">
+              <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground hover:text-foreground">
+                <User className="h-4 w-4" />
+                마이페이지
+              </Button>
+            </Link>
+          </div>
+        ) : (
+          <div className="hidden items-center gap-3 lg:flex">
+            <Link href="/login">
+              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+                로그인
+              </Button>
+            </Link>
+            <Link href="/login">
+              <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                무료 시작하기
+              </Button>
+            </Link>
+          </div>
+        )}
 
         <button
           className="flex h-10 w-10 items-center justify-center rounded-lg text-foreground lg:hidden"
@@ -76,16 +99,35 @@ export function Header() {
               </Link>
             ))}
             <div className="mt-4 flex flex-col gap-2 border-t border-border/50 pt-4">
-              <Link href="/login" onClick={() => setMobileOpen(false)}>
-                <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground">
-                  로그인
-                </Button>
-              </Link>
-              <Link href="/login" onClick={() => setMobileOpen(false)}>
-                <Button size="sm" className="w-full bg-primary text-primary-foreground">
-                  무료 시작하기
-                </Button>
-              </Link>
+              {variant === "logged-in" ? (
+                <>
+                  <Link href="/cart" onClick={() => setMobileOpen(false)}>
+                    <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground">
+                      <ShoppingCart className="h-4 w-4" />
+                      장바구니
+                    </Button>
+                  </Link>
+                  <Link href="/mypage" onClick={() => setMobileOpen(false)}>
+                    <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground">
+                      <User className="h-4 w-4" />
+                      마이페이지
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link href="/login" onClick={() => setMobileOpen(false)}>
+                    <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground">
+                      로그인
+                    </Button>
+                  </Link>
+                  <Link href="/login" onClick={() => setMobileOpen(false)}>
+                    <Button size="sm" className="w-full bg-primary text-primary-foreground">
+                      무료 시작하기
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
           </nav>
         </div>

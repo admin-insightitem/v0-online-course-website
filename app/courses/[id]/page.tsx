@@ -30,7 +30,7 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ i
 
   return (
     <>
-      <Header />
+      <Header variant="logged-in" />
       <main>
         <CourseDetailHero course={course} />
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
