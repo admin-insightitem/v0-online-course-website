@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Noto_Sans_KR, Space_Grotesk } from 'next/font/google'
+import { Noto_Sans_KR, Playfair_Display } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
@@ -9,10 +9,10 @@ const notoSansKR = Noto_Sans_KR({
   weight: ['300', '400', '500', '600', '700', '800'],
 })
 
-const spaceGrotesk = Space_Grotesk({
+const playfairDisplay = Playfair_Display({
   subsets: ['latin'],
-  variable: '--font-space',
-  weight: ['400', '500', '600', '700'],
+  variable: '--font-playfair',
+  weight: ['400', '500', '600', '700', '800'],
 })
 
 export const metadata: Metadata = {
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#1a1a2e',
+  themeColor: '#f5f0ea',
 }
 
 export default function RootLayout({
@@ -39,7 +39,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className={`${notoSansKR.variable} ${spaceGrotesk.variable} font-sans antialiased`}>
+      <body className={`${notoSansKR.variable} ${playfairDisplay.variable} font-sans antialiased`}>
         {children}
         <Analytics />
       </body>

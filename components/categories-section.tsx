@@ -1,39 +1,44 @@
 import { Brain, Youtube, Megaphone, Palette, ShoppingCart, Smartphone } from "lucide-react"
 
 const categories = [
-  { icon: Brain, label: "AI / 자동화", count: 42, color: "from-blue-500/20 to-cyan-500/20 hover:from-blue-500/30 hover:to-cyan-500/30" },
-  { icon: Youtube, label: "유튜브", count: 38, color: "from-red-500/20 to-rose-500/20 hover:from-red-500/30 hover:to-rose-500/30" },
-  { icon: Megaphone, label: "마케팅", count: 35, color: "from-amber-500/20 to-orange-500/20 hover:from-amber-500/30 hover:to-orange-500/30" },
-  { icon: Palette, label: "디자인 / 영상", count: 28, color: "from-purple-500/20 to-pink-500/20 hover:from-purple-500/30 hover:to-pink-500/30" },
-  { icon: ShoppingCart, label: "커머스", count: 32, color: "from-emerald-500/20 to-teal-500/20 hover:from-emerald-500/30 hover:to-teal-500/30" },
-  { icon: Smartphone, label: "SNS 수익화", count: 25, color: "from-pink-500/20 to-rose-500/20 hover:from-pink-500/30 hover:to-rose-500/30" },
+  { icon: Brain, label: "AI / 자동화", count: 42, description: "최신 AI 기술 활용 수익화" },
+  { icon: Youtube, label: "유튜브", count: 38, description: "채널 성장 및 수익화 전략" },
+  { icon: Megaphone, label: "마케팅", count: 35, description: "검증된 퍼포먼스 마케팅" },
+  { icon: Palette, label: "디자인 / 영상", count: 28, description: "크리에이티브 실무 역량" },
+  { icon: ShoppingCart, label: "커머스", count: 32, description: "온라인 쇼핑몰 운영 전략" },
+  { icon: Smartphone, label: "SNS 수익화", count: 25, description: "소셜미디어 마케팅 전략" },
 ]
 
 export function CategoriesSection() {
   return (
-    <section id="categories" className="py-20 lg:py-28">
-      <div className="mx-auto max-w-7xl px-4 lg:px-8">
-        <div className="mb-12 text-center">
-          <span className="mb-3 inline-block text-sm font-semibold text-primary">CATEGORIES</span>
-          <h2 className="text-3xl font-bold text-foreground md:text-4xl text-balance">
-            관심 분야를 선택하세요
+    <section id="categories" className="py-24 lg:py-32">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mb-16 text-center">
+          <p className="mb-4 text-sm font-semibold tracking-[0.15em] text-accent">
+            CATEGORIES
+          </p>
+          <h2 className="font-serif text-3xl font-bold text-foreground md:text-4xl text-balance">
+            체계적으로 분류된 전문 교육 과정
           </h2>
-          <p className="mt-3 text-muted-foreground">
-            6개 핵심 카테고리에서 200개 이상의 프리미엄 강의를 만나보세요
+          <p className="mx-auto mt-4 max-w-lg text-base leading-relaxed text-muted-foreground">
+            6개 핵심 분야에서 200개 이상의 프리미엄 강의를 만나보세요
           </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {categories.map((cat) => (
             <button
               key={cat.label}
-              className={`group flex flex-col items-center gap-3 rounded-2xl border border-border/50 bg-gradient-to-br ${cat.color} p-6 transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5`}
+              className="group flex items-start gap-5 rounded-lg border border-border bg-card p-6 text-left transition-all duration-300 hover:border-accent/40 hover:shadow-md"
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-background/50">
-                <cat.icon className="h-6 w-6 text-foreground transition-colors group-hover:text-primary" />
+              <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-lg bg-secondary">
+                <cat.icon className="h-6 w-6 text-foreground transition-colors group-hover:text-accent" />
               </div>
-              <span className="text-sm font-semibold text-foreground">{cat.label}</span>
-              <span className="text-xs text-muted-foreground">{cat.count}개 강의</span>
+              <div>
+                <h3 className="text-lg font-bold text-foreground">{cat.label}</h3>
+                <p className="mt-1 text-sm text-muted-foreground">{cat.description}</p>
+                <p className="mt-2 text-sm font-semibold text-accent">{cat.count}개 강의</p>
+              </div>
             </button>
           ))}
         </div>

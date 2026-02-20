@@ -1,6 +1,7 @@
 import { Header } from "@/components/header"
 import { HeroSection } from "@/components/hero-section"
 import { Ticker } from "@/components/ticker"
+import { TrustBanner } from "@/components/trust-banner"
 import { CategoriesSection } from "@/components/categories-section"
 import { CoursesSection } from "@/components/courses-section"
 import { InstructorsSection } from "@/components/instructors-section"
@@ -15,6 +16,7 @@ export default function HomePage() {
       <Header />
       <HeroSection />
       <Ticker />
+      <TrustBanner />
       <CategoriesSection />
       <CoursesSection />
       <InstructorsSection />
