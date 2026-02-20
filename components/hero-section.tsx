@@ -10,7 +10,7 @@ const stats = [
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-[90vh] overflow-hidden pt-16">
+    <section className="relative min-h-[90vh] overflow-hidden">
       <div className="absolute inset-0">
         <Image
           src="/images/hero-bg.jpg"
