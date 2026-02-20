@@ -1,69 +1,72 @@
-import { ArrowRight, Users, Award, BookOpen } from "lucide-react"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
+import { Play, ArrowRight, Users, BookOpen, Award } from "lucide-react"
 
 const stats = [
-  { icon: Users, value: "50,000+", label: "누적 수강생" },
-  { icon: Award, value: "98%", label: "수강 만족도" },
+  { icon: Users, value: "50,000+", label: "수강생" },
   { icon: BookOpen, value: "200+", label: "프리미엄 강의" },
+  { icon: Award, value: "98%", label: "만족도" },
 ]
 
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-[#0A1628] via-[#0F2140] to-[#1E4D8E] pt-[72px]">
-      {/* Subtle dot grid pattern */}
-      <div
-        className="absolute inset-0 opacity-[0.035]"
-        style={{
-          backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
-          backgroundSize: "48px 48px",
-        }}
-      />
+    <section className="relative min-h-[90vh] overflow-hidden pt-16">
+      <div className="absolute inset-0">
+        <Image
+          src="/images/hero-bg.jpg"
+          alt=""
+          fill
+          className="object-cover opacity-30"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/80 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-background/40" />
+      </div>
 
-      <div className="relative mx-auto max-w-6xl px-6 py-20 md:py-28 lg:py-36">
-        <p className="mb-6 text-[13px] font-bold uppercase tracking-[0.25em] text-mint font-[family-name:var(--font-heading)]">
-          Premium AI Education Platform
-        </p>
+      <div className="relative mx-auto flex max-w-7xl flex-col items-center px-4 pt-20 pb-16 text-center lg:px-8 lg:pt-32">
+        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5">
+          <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+          <span className="text-xs font-medium text-primary">
+            신규 클래스 매주 업데이트
+          </span>
+        </div>
 
-        <h1 className="max-w-[640px] text-[28px] font-extrabold leading-[1.4] text-white sm:text-[36px] md:text-[44px] md:leading-[1.35] lg:text-[52px]">
+        <h1 className="max-w-4xl text-4xl font-extrabold leading-tight tracking-tight text-foreground md:text-5xl lg:text-7xl">
           <span className="text-balance">
-            AI 시대,{" "}
-            <br className="hidden sm:block" />
-            당신의 새로운 시작을{" "}
-            <br className="hidden sm:block" />
-            함께합니다
+            당신의 수익을{" "}
+            <span className="text-primary">10배</span>
+            {" "}만드는 온라인 클래스
           </span>
         </h1>
 
-        <p className="mt-6 max-w-md text-[16px] leading-[1.8] text-white/55 md:text-[18px]">
-          나이는 숫자일 뿐, 실행이 인생을 바꿉니다.
-          <br />
-          각 분야 최고의 전문가와 함께 새로운 기회를 만드세요.
+        <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
+          AI, 유튜브, 마케팅, 디자인, 커머스 분야 최고 전문가들의 실전 노하우를
+          지금 바로 시작하세요. 이미 50,000명이 선택한 프리미엄 온라인 강의.
         </p>
 
-        <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
-          <Button className="h-[52px] rounded-xl bg-mint px-8 text-[16px] font-semibold text-white shadow-lg shadow-mint/25 hover:bg-mint-dark md:h-14 md:text-[17px]">
-            무료 강의 보기
-            <ArrowRight className="ml-2 h-5 w-5" />
+        <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
+          <Button size="lg" className="bg-primary px-8 text-primary-foreground hover:bg-primary/90">
+            지금 시작하기
+            <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
           <Button
             variant="outline"
-            className="h-[52px] rounded-xl border-white/20 bg-transparent px-8 text-[16px] font-medium text-white hover:bg-white/10 hover:text-white md:h-14 md:text-[17px]"
+            size="lg"
+            className="border-border bg-transparent text-foreground hover:bg-secondary"
           >
-            강의 둘러보기
+            <Play className="mr-2 h-4 w-4" />
+            소개 영상 보기
           </Button>
         </div>
 
-        {/* Trust stats */}
-        <div className="mt-20 grid grid-cols-3 gap-6 border-t border-white/10 pt-10 md:max-w-lg md:gap-14">
+        <div className="mt-16 grid w-full max-w-xl grid-cols-3 gap-6 md:mt-20">
           {stats.map((stat) => (
-            <div key={stat.label} className="text-center md:text-left">
-              <stat.icon className="mx-auto mb-2.5 h-5 w-5 text-mint/80 md:mx-0" />
-              <p className="text-[24px] font-extrabold text-white md:text-[32px]">
+            <div key={stat.label} className="flex flex-col items-center gap-2">
+              <stat.icon className="h-5 w-5 text-primary" />
+              <span className="text-2xl font-bold text-foreground md:text-3xl">
                 {stat.value}
-              </p>
-              <p className="mt-1 text-[13px] text-white/45 md:text-[14px]">
-                {stat.label}
-              </p>
+              </span>
+              <span className="text-xs text-muted-foreground md:text-sm">{stat.label}</span>
             </div>
           ))}
         </div>

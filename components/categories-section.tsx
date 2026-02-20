@@ -1,42 +1,39 @@
 import { Brain, Youtube, Megaphone, Palette, ShoppingCart, Smartphone } from "lucide-react"
 
 const categories = [
-  { icon: Brain, label: "AI / 자동화", count: 42, description: "최신 AI 기술 활용 수익화" },
-  { icon: Youtube, label: "유튜브", count: 38, description: "채널 성장 및 수익화 전략" },
-  { icon: Megaphone, label: "마케팅", count: 35, description: "검증된 퍼포먼스 마케팅" },
-  { icon: Palette, label: "디자인 / 영상", count: 28, description: "크리에이티브 실무 역량" },
-  { icon: ShoppingCart, label: "커머스", count: 32, description: "온라인 쇼핑몰 운영 전략" },
-  { icon: Smartphone, label: "SNS 수익화", count: 25, description: "소셜미디어 마케팅 전략" },
+  { icon: Brain, label: "AI / 자동화", count: 42, color: "from-blue-500/20 to-cyan-500/20 hover:from-blue-500/30 hover:to-cyan-500/30" },
+  { icon: Youtube, label: "유튜브", count: 38, color: "from-red-500/20 to-rose-500/20 hover:from-red-500/30 hover:to-rose-500/30" },
+  { icon: Megaphone, label: "마케팅", count: 35, color: "from-amber-500/20 to-orange-500/20 hover:from-amber-500/30 hover:to-orange-500/30" },
+  { icon: Palette, label: "디자인 / 영상", count: 28, color: "from-purple-500/20 to-pink-500/20 hover:from-purple-500/30 hover:to-pink-500/30" },
+  { icon: ShoppingCart, label: "커머스", count: 32, color: "from-emerald-500/20 to-teal-500/20 hover:from-emerald-500/30 hover:to-teal-500/30" },
+  { icon: Smartphone, label: "SNS 수익화", count: 25, color: "from-pink-500/20 to-rose-500/20 hover:from-pink-500/30 hover:to-rose-500/30" },
 ]
 
 export function CategoriesSection() {
   return (
-    <section className="bg-gray-bg py-20 md:py-24">
-      <div className="mx-auto max-w-6xl px-6">
-        <p className="mb-3 text-[13px] font-bold uppercase tracking-[0.25em] text-mint font-[family-name:var(--font-heading)]">
-          Curriculum
-        </p>
-        <h2 className="text-[26px] font-extrabold text-foreground md:text-[32px]">
-          6개 핵심 분야의 체계적 교육 과정
-        </h2>
-        <p className="mt-3 text-[16px] leading-[1.8] text-muted-foreground">
-          목표에 맞는 분야를 선택하고, 단계별로 학습하세요.
-        </p>
+    <section id="categories" className="py-20 lg:py-28">
+      <div className="mx-auto max-w-7xl px-4 lg:px-8">
+        <div className="mb-12 text-center">
+          <span className="mb-3 inline-block text-sm font-semibold text-primary">CATEGORIES</span>
+          <h2 className="text-3xl font-bold text-foreground md:text-4xl text-balance">
+            관심 분야를 선택하세요
+          </h2>
+          <p className="mt-3 text-muted-foreground">
+            6개 핵심 카테고리에서 200개 이상의 프리미엄 강의를 만나보세요
+          </p>
+        </div>
 
-        <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
           {categories.map((cat) => (
             <button
               key={cat.label}
-              className="group flex items-start gap-5 rounded-xl border border-border bg-white p-6 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
+              className={`group flex flex-col items-center gap-3 rounded-2xl border border-border/50 bg-gradient-to-br ${cat.color} p-6 transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5`}
             >
-              <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl bg-navy/5 transition-colors group-hover:bg-mint/10">
-                <cat.icon className="h-6 w-6 text-navy transition-colors group-hover:text-mint" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-background/50">
+                <cat.icon className="h-6 w-6 text-foreground transition-colors group-hover:text-primary" />
               </div>
-              <div>
-                <h3 className="text-[17px] font-bold text-foreground">{cat.label}</h3>
-                <p className="mt-1 text-[14px] leading-[1.7] text-muted-foreground">{cat.description}</p>
-                <p className="mt-2 text-[13px] font-semibold text-navy-light">{cat.count}개 강의</p>
-              </div>
+              <span className="text-sm font-semibold text-foreground">{cat.label}</span>
+              <span className="text-xs text-muted-foreground">{cat.count}개 강의</span>
             </button>
           ))}
         </div>
