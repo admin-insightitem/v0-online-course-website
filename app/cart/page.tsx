@@ -182,12 +182,14 @@ export default function CartPage() {
                       </span>
                     </div>
                   </div>
-                  <Button
-                    className="mt-6 h-12 w-full bg-accent text-accent-foreground text-base font-semibold hover:bg-accent/90"
-                    disabled={selectedIds.length === 0}
-                  >
-                    상품 주문
-                  </Button>
+                  <Link href="/order">
+                    <Button
+                      className="mt-6 h-12 w-full bg-accent text-accent-foreground text-base font-semibold hover:bg-accent/90"
+                      disabled={selectedIds.length === 0}
+                    >
+                      상품 주문
+                    </Button>
+                  </Link>
                 </div>
               </div>
             </div>
