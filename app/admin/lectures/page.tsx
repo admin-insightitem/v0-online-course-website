@@ -9,8 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+
 import {
   Accordion,
   AccordionContent,
@@ -66,6 +65,41 @@ interface Lecture {
   isFree: boolean
   isPublished: boolean
   materials: Material[]
+}
+
+// 세그먼트 컨트롤 컴포넌트
+function SegmentedControl({ 
+  options, 
+  value, 
+  onChange,
+  size = "default"
+}: { 
+  options: { label: string; value: string }[]
+  value: string
+  onChange: (value: string) => void
+  size?: "default" | "sm"
+}) {
+  return (
+    <div className="inline-flex rounded-lg bg-muted p-0.5">
+      {options.map((option) => (
+        <button
+          key={option.value}
+          type="button"
+          onClick={() => onChange(option.value)}
+          className={`
+            ${size === "sm" ? "px-2.5 py-1 text-xs" : "px-3 py-1.5 text-sm"}
+            rounded-md font-medium transition-all
+            ${value === option.value 
+              ? "bg-background text-foreground shadow-sm" 
+              : "text-muted-foreground hover:text-foreground"
+            }
+          `}
+        >
+          {option.label}
+        </button>
+      ))}
+    </div>
+  )
 }
 
 // 강좌 및 커리큘럼 데이터
@@ -349,16 +383,26 @@ export default function LecturesPage() {
                                 </div>
                               )}
                             </div>
-                            {lecture.isFree && (
-                              <Badge variant="outline" className="text-green-600 border-green-600">
-                                무료
-                              </Badge>
-                            )}
-                            {!lecture.isPublished && (
-                              <Badge variant="secondary">비공개</Badge>
-                            )}
-                          </div>
+                            </div>
                           <div className="flex items-center gap-3">
+                            <SegmentedControl
+                              options={[
+                                { label: "무료", value: "free" },
+                                { label: "유료", value: "paid" },
+                              ]}
+                              value={lecture.isFree ? "free" : "paid"}
+                              onChange={() => {}}
+                              size="sm"
+                            />
+                            <SegmentedControl
+                              options={[
+                                { label: "공개", value: "public" },
+                                { label: "비공개", value: "private" },
+                              ]}
+                              value={lecture.isPublished ? "public" : "private"}
+                              onChange={() => {}}
+                              size="sm"
+                            />
                             {lecture.duration && (
                               <div className="flex items-center gap-1 text-sm text-muted-foreground">
                                 <Clock className="h-3 w-3" />
@@ -413,9 +457,31 @@ export default function LecturesPage() {
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-6 py-4">
-              {/* 강의 제목 */}
+              {/* 강의 제목 + 세그먼트 컨트롤 */}
               <div className="grid gap-2">
-                <Label htmlFor="lectureTitle">강의 제목</Label>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="lectureTitle">강의 제목</Label>
+                  <div className="flex items-center gap-2">
+                    <SegmentedControl
+                      options={[
+                        { label: "무료", value: "free" },
+                        { label: "유료", value: "paid" },
+                      ]}
+                      value={lectureIsFree ? "free" : "paid"}
+                      onChange={(v) => setLectureIsFree(v === "free")}
+                      size="sm"
+                    />
+                    <SegmentedControl
+                      options={[
+                        { label: "공개", value: "public" },
+                        { label: "비공개", value: "private" },
+                      ]}
+                      value={lectureIsPublished ? "public" : "private"}
+                      onChange={(v) => setLectureIsPublished(v === "public")}
+                      size="sm"
+                    />
+                  </div>
+                </div>
                 <Input
                   id="lectureTitle"
                   value={lectureTitle}
@@ -465,37 +531,7 @@ export default function LecturesPage() {
                 </div>
               </div>
 
-              {/* 무료 체크박스 */}
-              <div className="flex items-center space-x-2">
-                <Checkbox 
-                  id="isFree" 
-                  checked={lectureIsFree}
-                  onCheckedChange={(checked) => setLectureIsFree(checked as boolean)}
-                />
-                <Label htmlFor="isFree" className="text-sm font-normal cursor-pointer">
-                  무료 강의로 설정
-                </Label>
               </div>
-
-              {/* 공개/비공개 선택 */}
-              <div className="grid gap-2">
-                <Label>공개 설정</Label>
-                <RadioGroup 
-                  value={lectureIsPublished ? "public" : "private"}
-                  onValueChange={(value) => setLectureIsPublished(value === "public")}
-                  className="flex gap-4"
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="public" id="public" />
-                    <Label htmlFor="public" className="text-sm font-normal cursor-pointer">공개</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="private" id="private" />
-                    <Label htmlFor="private" className="text-sm font-normal cursor-pointer">비공개</Label>
-                  </div>
-                </RadioGroup>
-              </div>
-            </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsLectureDialogOpen(false)}>
                 취소
