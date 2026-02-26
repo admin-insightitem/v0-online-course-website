@@ -808,7 +808,7 @@ export default function PaymentsPage() {
                 <div className="space-y-4 py-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-muted-foreground">환���번호</p>
+                      <p className="text-sm text-muted-foreground">{"환불번호"}</p>
                       <p className="font-mono font-medium">{selectedRefund.id}</p>
                     </div>
                     <div>
@@ -829,14 +829,16 @@ export default function PaymentsPage() {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-muted-foreground">결제 금액</p>
-                      <p className="font-medium">{selectedRefund.amount.toLocaleString()}원</p>
+                      <p className="text-sm text-muted-foreground">{"결제 금액"}</p>
+                      <p className="font-medium">{selectedRefund.amount.toLocaleString()}{"원"}</p>
+                      <p className="text-sm text-muted-foreground mt-2">{"환불 금액"}</p>
+                      <p className="text-lg font-bold text-primary">
+                        {selectedRefund.refundAmount.toLocaleString()}{"원"}
+                      </p>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">환불 금액</p>
-                      <p className="text-lg font-bold text-primary">
-                        {selectedRefund.refundAmount.toLocaleString()}원
-                      </p>
+                      <p className="text-sm text-muted-foreground">{"쿠폰 할인"}</p>
+                      <p className="font-medium text-red-500">{"-10,000원"}</p>
                     </div>
                   </div>
                   <div>
@@ -869,9 +871,9 @@ export default function PaymentsPage() {
                     </div>
                     <div>{getStatusBadge(selectedRefund.status)}</div>
                   </div>
-                  {selectedRefund.status === "pending" && (
+                  {(selectedRefund.status === "pending" || selectedRefund.status === "rejected") && (
                     <div>
-                      <p className="text-sm text-muted-foreground mb-2">답변 내용</p>
+                      <p className="text-sm text-muted-foreground mb-2">{"답변 내용"}</p>
                       <Textarea
                         placeholder="답변 내용을 입력하세요"
                         value={approveReply}
@@ -892,7 +894,7 @@ export default function PaymentsPage() {
                       disabled={!approveReply.trim()}
                     >
                       <XCircle className="mr-2 h-4 w-4" />
-                      거절
+                      {"거절"}
                     </Button>
                     <Button
                       onClick={() => {
@@ -902,7 +904,22 @@ export default function PaymentsPage() {
                       disabled={!approveReply.trim()}
                     >
                       <CheckCircle className="mr-2 h-4 w-4" />
-                      승인
+                      {"승인"}
+                    </Button>
+                  </DialogFooter>
+                )}
+                {selectedRefund.status === "rejected" && (
+                  <DialogFooter>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setIsRefundDetailOpen(false)
+                        setIsRejectDialogOpen(true)
+                      }}
+                      disabled={!approveReply.trim()}
+                    >
+                      <XCircle className="mr-2 h-4 w-4" />
+                      {"거절"}
                     </Button>
                   </DialogFooter>
                 )}
