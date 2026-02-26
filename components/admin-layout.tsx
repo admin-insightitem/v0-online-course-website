@@ -64,7 +64,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
         <div className="flex h-16 items-center justify-between border-b border-border px-4">
           <Link href="/admin" className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-              <span className="font-heading text-sm font-bold text-primary-foreground">T</span>
+              <span className="font-heading text-sm font-bold text-primary-foreground">R</span>
             </div>
             <span className="font-heading text-lg font-bold text-foreground">RichClass</span>
           </Link>
