@@ -11,6 +11,7 @@ import {
   LogOut,
   Star,
   HelpCircle,
+  MessageCircle,
 } from "lucide-react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
@@ -20,6 +21,7 @@ const sideMenu = [
   { icon: Settings, label: "회원정보관리", href: "/mypage/profile" },
   { icon: Ticket, label: "쿠폰목록", href: "/mypage/coupons" },
   { icon: CreditCard, label: "구매내역", href: "/mypage/orders" },
+  { icon: MessageCircle, label: "강의별 Q&A", href: "/mypage/qna" },
   { icon: Star, label: "수강평 목록", href: "/mypage/reviews" },
   { icon: HelpCircle, label: "고객센터", href: "/mypage/support" },
   { icon: LogOut, label: "로그아웃", href: "/" },
