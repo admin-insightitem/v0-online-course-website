@@ -103,7 +103,7 @@ export default function ReviewsPage() {
   const [rating, setRating] = useState(0)
   const [hoverRating, setHoverRating] = useState(0)
   const [reviewContent, setReviewContent] = useState("")
-  const [helpfulReviews, setHelpfulReviews] = useState<string[]>([])
+  const [helpfulReviews, setHelpfulReviews] = useState<string[]>(["all-review-1"])
 
   const handleHelpful = (reviewId: string) => {
     if (helpfulReviews.includes(reviewId)) {
