@@ -133,7 +133,7 @@ export default function ProfilePage() {
       <h2 className="text-xl font-bold text-foreground">회원 정보 수정</h2>
 
       <div className="mt-8 rounded-lg border border-border bg-card p-6">
-        <h3 className="text-base font-semibold text-foreground mb-6">기본 정보</h3>
+        <h3 className="text-base font-semibold text-foreground mb-6">내 프로필</h3>
 
         <div className="flex flex-col gap-6">
           {/* 프로필 이미지 */}
@@ -247,6 +247,11 @@ export default function ProfilePage() {
                 </label>
               </div>
             )}
+          </div>
+
+          {/* 구분선 및 기본정보 타이틀 */}
+          <div className="pt-2 border-t border-border">
+            <h4 className="text-base font-semibold text-foreground mb-2">기본정보</h4>
           </div>
 
           {/* 이름 */}
@@ -536,7 +541,7 @@ export default function ProfilePage() {
                 onClick={() => setIsMarketingTermsOpen(true)}
                 className="text-sm text-muted-foreground border border-border rounded px-3 py-1 hover:bg-muted/50"
               >
-                약관보기
+                ��관보기
               </button>
             </div>
             <p className="mt-2 text-xs text-muted-foreground">
