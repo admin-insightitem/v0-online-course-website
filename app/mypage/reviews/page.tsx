@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { Star, X, Pencil } from "lucide-react"
+import { Star, X, Pencil, CheckCircle } from "lucide-react"
 import { MypageLayout } from "@/components/mypage-layout"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -42,6 +42,8 @@ export default function ReviewsPage() {
   const [activeTab, setActiveTab] = useState<"my-reviews" | "write-review">("my-reviews")
   const [isWriteModalOpen, setIsWriteModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [showThankYouModal, setShowThankYouModal] = useState(false)
+  const [thankYouMessage, setThankYouMessage] = useState("")
   const [selectedCourse, setSelectedCourse] = useState<typeof courses[0] | null>(null)
   const [selectedReview, setSelectedReview] = useState<typeof myReviews[0] | null>(null)
   const [rating, setRating] = useState(0)
@@ -67,16 +69,16 @@ export default function ReviewsPage() {
 
   const handleSubmitReview = () => {
     if (rating === 0 || reviewContent.trim() === "") return
-    // 실제로는 API 호출
-    alert("수강평이 등록되었습니다!")
     setIsWriteModalOpen(false)
+    setThankYouMessage("수강평을 남겨주셔서 감사합니다.")
+    setShowThankYouModal(true)
   }
 
   const handleUpdateReview = () => {
     if (rating === 0 || reviewContent.trim() === "") return
-    // 실제로는 API 호출
-    alert("수강평이 수정되었습니다!")
     setIsEditModalOpen(false)
+    setThankYouMessage("수강평이 수정되었습니다.")
+    setShowThankYouModal(true)
   }
 
   // 수강평 작성이 가능한 강의 (아직 리뷰를 작성하지 않은 강의)
@@ -184,7 +186,12 @@ export default function ReviewsPage() {
                       <span className="text-xs text-muted-foreground">
                         {review.helpful}명에게 도움이 됨
                       </span>
-                      <Button variant="outline" size="sm" className="h-8 gap-1.5 text-xs">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="h-8 gap-1.5 text-xs"
+                        onClick={() => handleOpenEditModal(review)}
+                      >
                         <Pencil className="h-3 w-3" />
                         수정
                       </Button>
@@ -257,53 +264,31 @@ export default function ReviewsPage() {
       {/* Write Review Modal */}
       {isWriteModalOpen && selectedCourse && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-lg rounded-lg bg-card shadow-lg">
-            {/* Modal Header */}
-            <div className="flex items-center justify-between border-b border-border px-5 py-4">
-              <h3 className="text-lg font-bold text-foreground">수강평 작성</h3>
-              <button
+          <div className="w-full max-w-md rounded-xl bg-card p-6 shadow-lg">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-foreground">수강평 작성</h3>
+              <button 
                 onClick={() => setIsWriteModalOpen(false)}
                 className="rounded-full p-1 hover:bg-secondary"
               >
                 <X className="h-5 w-5 text-muted-foreground" />
               </button>
             </div>
-
-            {/* Modal Body */}
-            <div className="px-5 py-4">
-              {/* Course Info */}
-              <div className="flex items-start gap-4 rounded-lg bg-secondary/50 p-4">
-                <div className="relative aspect-[16/10] w-24 shrink-0 overflow-hidden rounded-md">
-                  <Image
-                    src={selectedCourse.image}
-                    alt={selectedCourse.title}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-foreground">
-                    {selectedCourse.title}
-                  </p>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {selectedCourse.instructor}
-                  </p>
-                </div>
-              </div>
-
-              {/* Rating */}
-              <div className="mt-5">
-                <label className="text-sm font-medium text-foreground">별점</label>
-                <div className="mt-2 flex items-center gap-1">
+            
+            <div className="mt-6">
+              {/* Star Rating */}
+              <div className="text-center">
+                <p className="text-sm text-muted-foreground">이 강의는 어땠나요?</p>
+                <div className="mt-3 flex items-center justify-center gap-1">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
                       key={star}
+                      onClick={() => setRating(star)}
                       onMouseEnter={() => setHoverRating(star)}
                       onMouseLeave={() => setHoverRating(0)}
-                      onClick={() => setRating(star)}
-                      className="transition-transform hover:scale-110"
+                      className="p-1 transition-transform hover:scale-110"
                     >
-                      <Star
+                      <Star 
                         className={`h-8 w-8 ${
                           star <= (hoverRating || rating)
                             ? "fill-yellow-400 text-yellow-400"
@@ -312,43 +297,130 @@ export default function ReviewsPage() {
                       />
                     </button>
                   ))}
-                  {rating > 0 && (
-                    <span className="ml-2 text-sm font-medium text-foreground">{rating}.0점</span>
-                  )}
                 </div>
+                {rating > 0 && (
+                  <p className="mt-2 text-sm font-medium text-foreground">
+                    {rating === 1 && "별로예요"}
+                    {rating === 2 && "그저 그래요"}
+                    {rating === 3 && "보통이에요"}
+                    {rating === 4 && "좋아요"}
+                    {rating === 5 && "최고예요!"}
+                  </p>
+                )}
               </div>
 
               {/* Review Content */}
-              <div className="mt-5">
-                <label className="text-sm font-medium text-foreground">수강평 내용</label>
+              <div className="mt-6">
                 <Textarea
+                  placeholder="수강 후기를 작성해주세요..."
                   value={reviewContent}
                   onChange={(e) => setReviewContent(e.target.value)}
-                  placeholder="강의에 대한 솔직한 수강평을 작성해 주세요. (최소 20자)"
-                  className="mt-2 min-h-32 resize-none"
+                  className="min-h-[120px] resize-none"
                 />
-                <p className="mt-1.5 text-xs text-muted-foreground">
-                  {reviewContent.length}자 / 최소 20자
-                </p>
               </div>
-            </div>
 
-            {/* Modal Footer */}
-            <div className="flex items-center justify-end gap-3 border-t border-border px-5 py-4">
-              <Button
-                variant="outline"
-                onClick={() => setIsWriteModalOpen(false)}
-              >
-                취소
-              </Button>
+              {/* Submit Button */}
               <Button
                 onClick={handleSubmitReview}
-                disabled={rating === 0 || reviewContent.length < 20}
-                className="bg-accent text-accent-foreground hover:bg-accent/90 disabled:bg-muted disabled:text-muted-foreground"
+                disabled={rating === 0 || !reviewContent.trim()}
+                className="mt-4 w-full bg-accent text-accent-foreground hover:bg-accent/90"
               >
-                등록하기
+                수강평 등록
               </Button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Review Modal */}
+      {isEditModalOpen && selectedCourse && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-md rounded-xl bg-card p-6 shadow-lg">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-foreground">수강평 수정</h3>
+              <button 
+                onClick={() => setIsEditModalOpen(false)}
+                className="rounded-full p-1 hover:bg-secondary"
+              >
+                <X className="h-5 w-5 text-muted-foreground" />
+              </button>
+            </div>
+            
+            <div className="mt-6">
+              {/* Star Rating */}
+              <div className="text-center">
+                <p className="text-sm text-muted-foreground">이 강의는 어땠나요?</p>
+                <div className="mt-3 flex items-center justify-center gap-1">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      onClick={() => setRating(star)}
+                      onMouseEnter={() => setHoverRating(star)}
+                      onMouseLeave={() => setHoverRating(0)}
+                      className="p-1 transition-transform hover:scale-110"
+                    >
+                      <Star 
+                        className={`h-8 w-8 ${
+                          star <= (hoverRating || rating)
+                            ? "fill-yellow-400 text-yellow-400"
+                            : "text-muted-foreground/30"
+                        }`}
+                      />
+                    </button>
+                  ))}
+                </div>
+                {rating > 0 && (
+                  <p className="mt-2 text-sm font-medium text-foreground">
+                    {rating === 1 && "별로예요"}
+                    {rating === 2 && "그저 그래요"}
+                    {rating === 3 && "보통이에요"}
+                    {rating === 4 && "좋아요"}
+                    {rating === 5 && "최고예요!"}
+                  </p>
+                )}
+              </div>
+
+              {/* Review Content */}
+              <div className="mt-6">
+                <Textarea
+                  placeholder="수강 후기를 작성해주세요..."
+                  value={reviewContent}
+                  onChange={(e) => setReviewContent(e.target.value)}
+                  className="min-h-[120px] resize-none"
+                />
+              </div>
+
+              {/* Submit Button */}
+              <Button
+                onClick={handleUpdateReview}
+                disabled={rating === 0 || !reviewContent.trim()}
+                className="mt-4 w-full bg-accent text-accent-foreground hover:bg-accent/90"
+              >
+                수정 완료
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Thank You Modal */}
+      {showThankYouModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-sm rounded-xl bg-card p-6 text-center shadow-lg">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+              <CheckCircle className="h-6 w-6 text-green-600" />
+            </div>
+            <h3 className="mt-4 text-lg font-semibold text-foreground">감사합니다!</h3>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {thankYouMessage}<br />
+              앞으로 더 좋은 지식을 전달하도록 노력하겠습니다.
+            </p>
+            <Button
+              onClick={() => setShowThankYouModal(false)}
+              className="mt-6 w-full bg-accent text-accent-foreground hover:bg-accent/90"
+            >
+              확인
+            </Button>
           </div>
         </div>
       )}
