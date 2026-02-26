@@ -1,11 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import Image from "next/image"
 import Link from "next/link"
-import { MessageCircle, ChevronLeft, ChevronRight, Clock, User } from "lucide-react"
+import { MessageCircle, ChevronLeft, ChevronRight, ThumbsUp } from "lucide-react"
 import { MypageLayout } from "@/components/mypage-layout"
 import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
 import {
   Select,
   SelectContent,
@@ -30,156 +31,203 @@ const qnaData = [
     courseId: courses[0].id,
     course: courses[0],
     lectureTitle: "Section 1. AI 수익화 개론 > 강의 소개 및 로드맵 안내",
-    title: "ChatGPT API 키 발급 관련 질문드립니다",
-    content: "강의에서 API 키를 발급받는 부분이 나오는데, 현재 OpenAI 사이트가 업데이트되어서 화면이 다른 것 같습니다. 최신 버전에서는 어떻게 발급받아야 하나요?",
-    author: "김경민",
-    isMyQuestion: true,
+    content: "강의 중간에 나온 API 호출 예시에서 에러가 발생하는데, 해결 방법이 있을까요?",
+    author: "김수현",
+    authorImage: "/images/instructor-1.jpg",
+    isMyQuestion: false,
     createdAt: "2026.02.25",
-    answers: 2,
+    likes: 5,
     lectureOrder: 1,
+    replies: [
+      {
+        id: "r1",
+        author: "김도현 (강사)",
+        authorImage: "/images/instructor-1.jpg",
+        date: "2026.02.25",
+        content: "네, API 키 설정이 제대로 되어있는지 확인해주세요. 환경변수에 OPENAI_API_KEY가 설정되어 있어야 합니다.",
+        isInstructor: true,
+      },
+    ],
   },
   {
     id: "q2",
     courseId: courses[0].id,
     course: courses[0],
     lectureTitle: "Section 2. ChatGPT 프롬프트 마스터 > 프롬프트 엔지니어링 기초",
-    title: "프롬프트 작성 시 토큰 제한에 대해 궁금합니다",
     content: "GPT-4 모델에서 토큰 제한이 있다고 하셨는데, 긴 문서를 처리할 때는 어떤 방법을 사용하면 좋을까요?",
     author: "이수진",
+    authorImage: "/images/instructor-2.jpg",
     isMyQuestion: false,
     createdAt: "2026.02.24",
-    answers: 5,
+    likes: 3,
     lectureOrder: 5,
+    replies: [
+      {
+        id: "r2",
+        author: "김도현 (강사)",
+        authorImage: "/images/instructor-1.jpg",
+        date: "2026.02.24",
+        content: "긴 문서는 청킹(chunking) 기법을 사용하시면 됩니다. 문서를 작은 단위로 나누어 처리하는 방법이에요.",
+        isInstructor: true,
+      },
+      {
+        id: "r3",
+        author: "박민수",
+        authorImage: "/images/instructor-3.jpg",
+        date: "2026.02.24",
+        content: "저도 같은 문제가 있었는데, LangChain을 사용하니까 해결됐어요!",
+        isInstructor: false,
+      },
+    ],
   },
   {
     id: "q3",
     courseId: courses[0].id,
     course: courses[0],
     lectureTitle: "Section 1. AI 수익화 개론 > 수익화 가능한 AI 비즈니스 모델 10가지",
-    title: "AI 콘텐츠 자동 생성 시 저작권 문제",
     content: "AI로 생성한 콘텐츠를 상업적으로 사용할 때 저작권 문제가 있을 수 있나요? 법적인 부분이 걱정됩니다.",
     author: "박준혁",
+    authorImage: "/images/instructor-3.jpg",
     isMyQuestion: false,
     createdAt: "2026.02.23",
-    answers: 3,
+    likes: 8,
     lectureOrder: 3,
+    replies: [],
   },
   {
     id: "q4",
     courseId: courses[1].id,
     course: courses[1],
     lectureTitle: "Section 1. 주식 투자 기초 > 차트 분석의 기본",
-    title: "이동평균선 설정값 관련 질문",
     content: "강의에서 20일, 60일, 120일 이동평균선을 사용하셨는데, 다른 기간으로 설정해도 괜찮을까요?",
     author: "김경민",
+    authorImage: "/images/instructor-1.jpg",
     isMyQuestion: true,
     createdAt: "2026.02.22",
-    answers: 1,
+    likes: 2,
     lectureOrder: 2,
+    replies: [
+      {
+        id: "r4",
+        author: "이재원 (강사)",
+        authorImage: "/images/instructor-2.jpg",
+        date: "2026.02.22",
+        content: "네, 본인의 투자 스타일에 맞게 조정하셔도 됩니다. 단기 투자자는 5일, 10일선을 더 많이 참고해요.",
+        isInstructor: true,
+      },
+    ],
   },
   {
     id: "q5",
     courseId: courses[0].id,
     course: courses[0],
     lectureTitle: "Section 3. AI 자동화 시스템 구축 > Zapier & Make 자동화 기초",
-    title: "Zapier 무료 플랜 제한 관련",
     content: "Zapier 무료 플랜으로도 강의 내용을 따라할 수 있을까요? 유료 플랜이 필요한 기능이 있는지 궁금합니다.",
     author: "최서연",
+    authorImage: "/images/instructor-3.jpg",
     isMyQuestion: false,
     createdAt: "2026.02.21",
-    answers: 4,
+    likes: 4,
     lectureOrder: 8,
+    replies: [],
   },
   {
     id: "q6",
     courseId: courses[4].id,
     course: courses[4],
     lectureTitle: "Section 1. 이커머스 기초 > 스마트스토어 입점 가이드",
-    title: "스마트스토어 사업자등록 관련 질문",
     content: "개인사업자와 법인사업자 중 어떤 것으로 시작하는 게 좋을까요? 세금 관련해서도 조언 부탁드립니다.",
     author: "정민수",
+    authorImage: "/images/instructor-1.jpg",
     isMyQuestion: false,
     createdAt: "2026.02.20",
-    answers: 6,
+    likes: 6,
     lectureOrder: 1,
+    replies: [],
   },
   {
     id: "q7",
     courseId: courses[0].id,
     course: courses[0],
     lectureTitle: "Section 2. ChatGPT 프롬프트 마스터 > 고급 프롬프트 테크닉 10가지",
-    title: "Chain of Thought 프롬프팅 예시 요청",
     content: "강의에서 설명하신 Chain of Thought 기법의 실제 활용 예시를 좀 더 알 수 있을까요?",
     author: "한수빈",
+    authorImage: "/images/instructor-2.jpg",
     isMyQuestion: false,
     createdAt: "2026.02.19",
-    answers: 2,
+    likes: 2,
     lectureOrder: 6,
+    replies: [],
   },
   {
     id: "q8",
     courseId: courses[1].id,
     course: courses[1],
     lectureTitle: "Section 2. 기술적 분석 > RSI 지표 활용법",
-    title: "RSI 과매수/과매도 구간 판단 기준",
     content: "RSI 70 이상이 과매수, 30 이하가 과매도라고 하셨는데, 실제로는 어느 정도까지 기다렸다가 매매해야 할까요?",
     author: "김경민",
+    authorImage: "/images/instructor-1.jpg",
     isMyQuestion: true,
     createdAt: "2026.02.18",
-    answers: 3,
+    likes: 3,
     lectureOrder: 4,
+    replies: [],
   },
   {
     id: "q9",
     courseId: courses[0].id,
     course: courses[0],
     lectureTitle: "Section 1. AI 수익화 개론 > AI 시대, 왜 지금 시작해야 하는가",
-    title: "AI 분야 취업 전망에 대해 궁금합니다",
     content: "AI 관련 스킬을 배우면 어떤 직종으로 취업할 수 있을까요? 개발자가 아니어도 가능한가요?",
     author: "윤지아",
+    authorImage: "/images/instructor-3.jpg",
     isMyQuestion: false,
     createdAt: "2026.02.17",
-    answers: 8,
+    likes: 8,
     lectureOrder: 2,
+    replies: [],
   },
   {
     id: "q10",
     courseId: courses[4].id,
     course: courses[4],
     lectureTitle: "Section 2. 상품 소싱 > 해외 소싱 플랫폼 활용",
-    title: "알리바바 소싱 시 주의사항",
     content: "알리바바에서 소싱할 때 사기를 피하려면 어떤 점을 확인해야 할까요? 믿을 수 있는 판매자 찾는 팁이 있나요?",
     author: "이도현",
+    authorImage: "/images/instructor-2.jpg",
     isMyQuestion: false,
     createdAt: "2026.02.16",
-    answers: 5,
+    likes: 5,
     lectureOrder: 3,
+    replies: [],
   },
   {
     id: "q11",
     courseId: courses[0].id,
     course: courses[0],
     lectureTitle: "Section 3. AI 자동화 시스템 구축 > AI 콘텐츠 자동 생성 파이프라인",
-    title: "자동화 파이프라인 에러 해결 방법",
     content: "Make에서 시나리오를 실행하면 중간에 에러가 발생합니다. 에러 로그를 어떻게 확인하고 해결해야 할까요?",
     author: "김경민",
+    authorImage: "/images/instructor-1.jpg",
     isMyQuestion: true,
     createdAt: "2026.02.15",
-    answers: 2,
+    likes: 2,
     lectureOrder: 9,
+    replies: [],
   },
   {
     id: "q12",
     courseId: courses[1].id,
     course: courses[1],
     lectureTitle: "Section 1. 주식 투자 기초 > 주식 시장의 이해",
-    title: "미국 주식과 한국 주식 차이점",
     content: "미국 주식 투자를 시작하려고 하는데, 한국 주식과 비교했을 때 어떤 점을 주의해야 할까요?",
     author: "송민재",
+    authorImage: "/images/instructor-3.jpg",
     isMyQuestion: false,
     createdAt: "2026.02.14",
-    answers: 4,
+    likes: 4,
     lectureOrder: 1,
+    replies: [],
   },
 ]
 
@@ -188,8 +236,18 @@ const ITEMS_PER_PAGE = 10
 export default function QnAPage() {
   const [selectedCourse, setSelectedCourse] = useState("all")
   const [questionFilter, setQuestionFilter] = useState<"all" | "my">("all")
-  const [sortBy, setSortBy] = useState<"latest" | "lecture" | "answers">("latest")
+  const [sortBy, setSortBy] = useState<"latest" | "lecture" | "replies">("latest")
   const [currentPage, setCurrentPage] = useState(1)
+  // 첫 번째 질문은 답글이 열린 상태로 시작
+  const [expandedReplies, setExpandedReplies] = useState<string[]>(["q1"])
+
+  const toggleReplies = (questionId: string) => {
+    setExpandedReplies((prev) =>
+      prev.includes(questionId)
+        ? prev.filter((id) => id !== questionId)
+        : [...prev, questionId]
+    )
+  }
 
   // 필터링된 질문 목록
   const filteredQuestions = qnaData
@@ -206,8 +264,8 @@ export default function QnAPage() {
           return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         case "lecture":
           return a.lectureOrder - b.lectureOrder
-        case "answers":
-          return b.answers - a.answers
+        case "replies":
+          return b.replies.length - a.replies.length
         default:
           return 0
       }
@@ -231,7 +289,7 @@ export default function QnAPage() {
   }
 
   const handleSortChange = (value: string) => {
-    setSortBy(value as "latest" | "lecture" | "answers")
+    setSortBy(value as "latest" | "lecture" | "replies")
     setCurrentPage(1)
   }
 
@@ -294,7 +352,7 @@ export default function QnAPage() {
             <SelectContent>
               <SelectItem value="latest">최신순</SelectItem>
               <SelectItem value="lecture">강의 목차 순</SelectItem>
-              <SelectItem value="answers">답변 많은 순</SelectItem>
+              <SelectItem value="replies">답변 많은 순</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -311,55 +369,79 @@ export default function QnAPage() {
           </div>
         ) : (
           paginatedQuestions.map((question) => (
-            <Link
+            <div
               key={question.id}
-              href={`/courses/${question.courseId}/watch/lecture-1`}
-              className="block rounded-lg border border-border bg-card transition-colors hover:border-accent/50"
+              className="rounded-lg border border-border bg-card p-4"
             >
-              <div className="p-5">
-                {/* 강좌 & 강의 정보 */}
-                <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                  <span className="rounded bg-muted px-2 py-0.5 font-medium">
-                    {question.course.title.length > 30 
-                      ? question.course.title.substring(0, 30) + "..." 
-                      : question.course.title}
-                  </span>
-                  <span className="text-muted-foreground/50">|</span>
-                  <span>{question.lectureTitle}</span>
-                </div>
+              {/* 강좌 & 강의 정보 */}
+              <div className="mb-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                <span className="rounded bg-muted px-2 py-0.5 font-medium">
+                  {question.course.title.length > 30 
+                    ? question.course.title.substring(0, 30) + "..." 
+                    : question.course.title}
+                </span>
+                <span className="text-muted-foreground/50">|</span>
+                <span>{question.lectureTitle}</span>
+              </div>
 
-                {/* 질문 제목 */}
-                <h3 className="mt-3 text-base font-semibold text-foreground">
-                  {question.isMyQuestion && (
-                    <span className="mr-2 inline-block rounded bg-accent/10 px-2 py-0.5 text-xs font-medium text-accent">
-                      내 질문
-                    </span>
+              <div className="flex items-start gap-3">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={question.authorImage} />
+                  <AvatarFallback>{question.author[0]}</AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-foreground">{question.author}</span>
+                    {question.isMyQuestion && (
+                      <Badge variant="secondary" className="text-[10px] bg-accent/10 text-accent">
+                        내 질문
+                      </Badge>
+                    )}
+                    <span className="text-xs text-muted-foreground">{question.createdAt}</span>
+                  </div>
+                  <p className="mt-2 text-sm text-foreground">{question.content}</p>
+                  <div className="mt-3 flex items-center gap-4">
+                    <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
+                      <ThumbsUp className="h-3.5 w-3.5" />
+                      {question.likes}
+                    </button>
+                    <button 
+                      onClick={() => toggleReplies(question.id)}
+                      className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+                    >
+                      <MessageCircle className="h-3.5 w-3.5" />
+                      답글 {question.replies.length}
+                    </button>
+                  </div>
+
+                  {/* 답글 목록 */}
+                  {expandedReplies.includes(question.id) && question.replies.length > 0 && (
+                    <div className="mt-4 space-y-3 border-l-2 border-border pl-4">
+                      {question.replies.map((reply) => (
+                        <div key={reply.id} className="flex items-start gap-3">
+                          <Avatar className="h-7 w-7">
+                            <AvatarImage src={reply.authorImage} />
+                            <AvatarFallback>{reply.author[0]}</AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-medium text-foreground">{reply.author}</span>
+                              {reply.isInstructor && (
+                                <Badge variant="secondary" className="text-[10px] bg-accent/10 text-accent">
+                                  강사
+                                </Badge>
+                              )}
+                              <span className="text-xs text-muted-foreground">{reply.date}</span>
+                            </div>
+                            <p className="mt-1 text-sm text-foreground">{reply.content}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   )}
-                  {question.title}
-                </h3>
-
-                {/* 질문 내용 미리보기 */}
-                <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
-                  {question.content}
-                </p>
-
-                {/* 메타 정보 */}
-                <div className="mt-4 flex items-center gap-4 text-xs text-muted-foreground">
-                  <div className="flex items-center gap-1">
-                    <User className="h-3.5 w-3.5" />
-                    <span>{question.author}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Clock className="h-3.5 w-3.5" />
-                    <span>{question.createdAt}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <MessageCircle className="h-3.5 w-3.5" />
-                    <span>답변 {question.answers}개</span>
-                  </div>
                 </div>
               </div>
-            </Link>
+            </div>
           ))
         )}
       </div>
