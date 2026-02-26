@@ -335,58 +335,57 @@ export default function StudentsPage() {
           </Card>
         </div>
 
-        {/* Filters */}
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  placeholder="이름 또는 이메일로 검색"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-              <div className="flex items-center gap-2">
-                <Filter className="h-4 w-4 text-muted-foreground" />
-                <Select value={selectedCourse} onValueChange={setSelectedCourse}>
-                  <SelectTrigger className="w-[200px]">
-                    <SelectValue placeholder="강좌 필터" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {courseFilters.map((course) => (
-                      <SelectItem key={course} value={course}>
-                        {course}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-[130px]">
-                    <SelectValue placeholder="상태" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">전체</SelectItem>
-                    <SelectItem value="active">활성</SelectItem>
-                    <SelectItem value="inactive">비활성</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Students Table */}
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Users className="h-5 w-5" />
-              수강생 목록
-            </CardTitle>
-            <CardDescription>
-              총 {sortedStudents.length}명의 수강생 (30명씩 표시)
-            </CardDescription>
+          <CardHeader className="pb-4">
+            <div className="flex flex-col gap-4">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <Users className="h-5 w-5" />
+                  수강생 목록
+                </CardTitle>
+                <CardDescription>
+                  총 {sortedStudents.length}명의 수강생 (30명씩 표시)
+                </CardDescription>
+              </div>
+              {/* 검색 및 필터 */}
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    placeholder="이름 또는 이메일로 검색"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <Filter className="h-4 w-4 text-muted-foreground" />
+                  <Select value={selectedCourse} onValueChange={setSelectedCourse}>
+                    <SelectTrigger className="w-[200px]">
+                      <SelectValue placeholder="강좌 필터" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {courseFilters.map((course) => (
+                        <SelectItem key={course} value={course}>
+                          {course}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <SelectTrigger className="w-[130px]">
+                      <SelectValue placeholder="상태" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">전체</SelectItem>
+                      <SelectItem value="active">활성</SelectItem>
+                      <SelectItem value="inactive">비활성</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
             <Table>
