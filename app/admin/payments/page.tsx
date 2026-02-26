@@ -892,10 +892,12 @@ export default function PaymentsPage() {
                       <p className="text-sm text-muted-foreground">{"신청일"}</p>
                       <p className="text-sm">{selectedRefund.requestDate}</p>
                     </div>
-                    <div>{getStatusBadge(selectedRefund.status)}</div>
+                    {selectedRefund.status !== "rejected" && (
+                      <div>{getStatusBadge(selectedRefund.status)}</div>
+                    )}
                   </div>
                 </div>
-                {selectedRefund.status === "pending" && (
+                {(selectedRefund.status === "pending" || selectedRefund.status === "rejected") && (
                   <DialogFooter>
                     <Button
                       variant="outline"
@@ -917,21 +919,6 @@ export default function PaymentsPage() {
                     >
                       <CheckCircle className="mr-2 h-4 w-4" />
                       {"승인"}
-                    </Button>
-                  </DialogFooter>
-                )}
-                {selectedRefund.status === "rejected" && (
-                  <DialogFooter>
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        setIsRefundDetailOpen(false)
-                        setIsRejectDialogOpen(true)
-                      }}
-                      disabled={!approveReply.trim()}
-                    >
-                      <XCircle className="mr-2 h-4 w-4" />
-                      {"거절"}
                     </Button>
                   </DialogFooter>
                 )}
