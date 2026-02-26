@@ -502,7 +502,7 @@ export default function PaymentsPage() {
               </CardHeader>
               <CardContent>
                 <Table>
-<TableHeader>
+                  <TableHeader>
                     <TableRow>
                       <TableHead className="w-16 text-center">No.</TableHead>
                       <TableHead>결제일시</TableHead>
