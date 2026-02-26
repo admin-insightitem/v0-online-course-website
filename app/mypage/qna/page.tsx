@@ -95,7 +95,7 @@ const qnaData = [
     content: "AI로 생성한 콘텐츠를 상업적으로 사용할 때 저작권 문제가 있을 수 있나요? 법적인 부분이 걱정됩니다.",
     author: "박준혁",
     authorImage: "/images/instructor-3.jpg",
-    isMyQuestion: false,
+    isMyQuestion: true,
     createdAt: "2026.02.23",
     likes: 8,
     lectureOrder: 3,
@@ -255,6 +255,9 @@ export default function QnAPage() {
   // 수정 모드 상태 (박민수 답글 r3는 수정 모드로 시작)
   const [editingReplyId, setEditingReplyId] = useState<string | null>("r3")
   const [editReplyText, setEditReplyText] = useState("저도 같은 문제가 있었는데, LangChain을 사용하니까 해결됐어요!")
+  // 질문 수정 모드 상태 (박준혁 질문 q3는 수정 모드로 시작)
+  const [editingQuestionId, setEditingQuestionId] = useState<string | null>("q3")
+  const [editQuestionText, setEditQuestionText] = useState("AI로 생성한 콘텐츠를 상업적으로 사용할 때 저작권 문제가 있을 수 있나요? 법적인 부분이 걱정됩니다.")
 
   const toggleReplies = (questionId: string) => {
     setExpandedReplies((prev) =>
@@ -438,14 +441,42 @@ export default function QnAPage() {
                       </Badge>
                     )}
                     <span className="text-xs text-muted-foreground">{question.createdAt}</span>
-                    {question.isMyQuestion && (
-                      <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground ml-1">
+                    {question.isMyQuestion && editingQuestionId !== question.id && (
+                      <button 
+                        onClick={() => {
+                          setEditingQuestionId(question.id)
+                          setEditQuestionText(question.content)
+                        }}
+                        className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground ml-1"
+                      >
                         <Pencil className="h-3 w-3" />
                         수정
                       </button>
                     )}
                   </div>
-                  <p className="mt-2 text-sm text-foreground">{question.content}</p>
+                  {editingQuestionId === question.id ? (
+                    <div className="mt-2 space-y-2">
+                      <Textarea
+                        value={editQuestionText}
+                        onChange={(e) => setEditQuestionText(e.target.value)}
+                        className="min-h-[80px] text-sm"
+                      />
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setEditingQuestionId(null)}
+                        >
+                          취소
+                        </Button>
+                        <Button size="sm" onClick={() => setEditingQuestionId(null)}>
+                          수정
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="mt-2 text-sm text-foreground">{question.content}</p>
+                  )}
                   <div className="mt-3 flex items-center gap-4">
                     <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
                       <ThumbsUp className="h-3.5 w-3.5" />
