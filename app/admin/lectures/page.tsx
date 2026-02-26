@@ -490,6 +490,18 @@ export default function LecturesPage() {
                 />
               </div>
 
+              {/* 강의 영상 업로드 */}
+              <div className="grid gap-3">
+                <Label>강의 영상</Label>
+                <div
+                  className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-border bg-muted/30 p-8 cursor-pointer hover:bg-muted/50 transition-colors"
+                >
+                  <Video className="h-10 w-10 text-muted-foreground mb-3" />
+                  <p className="text-sm font-medium">클릭하여 영상을 업로드하세요</p>
+                  <p className="text-xs text-muted-foreground mt-1">MP4, MOV, WebM (최대 2GB)</p>
+                </div>
+              </div>
+
               {/* 학습 자료 */}
               <div className="grid gap-3">
                 <Label>학습 자료</Label>
