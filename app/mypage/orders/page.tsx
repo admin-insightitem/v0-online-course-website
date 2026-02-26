@@ -149,16 +149,10 @@ export default function OrdersPage() {
             {/* Modal Body */}
             <div className="px-5 py-4">
               <p className="text-sm text-foreground">
-                환불 신청 또는 환불 금액 관련 문의는
+                <span className="font-semibold text-destructive">1:1 문의 등록</span>(하단 클릭)을 통해 제출해주시면,
               </p>
               <p className="mt-2 text-sm text-foreground">
-                <span className="font-semibold text-destructive">1:1 문의 등록</span>(하단 클릭)을 통해 제출해 주시면
-              </p>
-              <p className="mt-2 text-sm text-foreground">
-                접수 시 기재하신 메일로 답변 드리오니 꼭 확인 바랍니다.
-              </p>
-              <p className="mt-3 text-sm text-muted-foreground">
-                • <Link href="/faq" className="text-accent hover:underline">FAQ 참고</Link>
+                빠른 시일내 답변을 드리겠으니 꼭 확인 바랍니다.
               </p>
             </div>
 
@@ -174,7 +168,7 @@ export default function OrdersPage() {
                 href={`/mypage/support?tab=inquiry&type=payment&title=${encodeURIComponent(selectedOrder ? `${selectedOrder.course.title}[${selectedOrder.orderId}] 환불 문의` : '')}`}
               >
                 <Button
-                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  className="bg-primary text-primary-foreground hover:bg-primary/90"
                   onClick={() => setIsRefundModalOpen(false)}
                 >
                   1:1 문의 등록
