@@ -391,6 +391,7 @@ export default function StudentsPage() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-12 text-center">No.</TableHead>
                   <TableHead>
                     <button onClick={() => handleSort("name")} className="flex items-center hover:text-foreground">
                       이름 {getSortIcon("name")}
@@ -435,13 +436,17 @@ export default function StudentsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {paginatedStudents.map((student) => {
+                {paginatedStudents.map((student, index) => {
                   const avgProgress = Math.round(
                     student.courses.reduce((acc, c) => acc + c.progress, 0) /
                       student.courses.length
                   )
+                  const rowNumber = (currentPage - 1) * itemsPerPage + index + 1
                   return (
                     <TableRow key={student.id}>
+                      <TableCell className="text-center text-muted-foreground">
+                        {rowNumber}
+                      </TableCell>
 <TableCell>
                                         <div className="flex items-center gap-3">
                                           <Avatar className="h-9 w-9">
