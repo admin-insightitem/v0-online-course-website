@@ -1,0 +1,423 @@
+"use client"
+
+import { useState, use } from "react"
+import Link from "next/link"
+import { ChevronLeft, ChevronDown, PlayCircle, CheckCircle, Lock, Clock, Download, FileText, Code, MessageSquare, ThumbsUp, Send, ArrowLeft } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Textarea } from "@/components/ui/textarea"
+import { getCourseById } from "@/lib/courses"
+
+// Mock data for lecture materials
+const lectureMaterials = {
+  pdf: { name: "강의 노트.pdf", size: "2.4 MB" },
+  source: { name: "소스코드.zip", size: "1.8 MB" },
+}
+
+// Mock Q&A data
+const mockQuestions = [
+  {
+    id: 1,
+    author: "김수현",
+    authorImage: "/images/instructor-1.jpg",
+    date: "2026.02.25",
+    content: "강의 중간에 나온 API 호출 예시에서 에러가 발생하는데, 해결 방법이 있을까요?",
+    likes: 5,
+    replies: [
+      {
+        id: 1,
+        author: "김도현 (강사)",
+        authorImage: "/images/instructor-1.jpg",
+        date: "2026.02.25",
+        content: "네, API 키 설정이 제대로 되어있는지 확인해주세요. 환경변수에 OPENAI_API_KEY가 설정되어 있어야 합니다.",
+        isInstructor: true,
+      },
+    ],
+  },
+  {
+    id: 2,
+    author: "이지은",
+    authorImage: "/images/instructor-2.jpg",
+    date: "2026.02.24",
+    content: "프롬프트 템플릿 파일은 어디서 다운로드 받을 수 있나요?",
+    likes: 3,
+    replies: [],
+  },
+]
+
+export default function WatchPage({ params }: { params: Promise<{ id: string; lectureId: string }> }) {
+  const { id, lectureId } = use(params)
+  const course = getCourseById(id)
+  
+  const [openSections, setOpenSections] = useState<number[]>([0, 1, 2, 3])
+  const [activeTab, setActiveTab] = useState<"materials" | "qna">("materials")
+  const [newQuestion, setNewQuestion] = useState("")
+  const [questions, setQuestions] = useState(mockQuestions)
+
+  if (!course) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <p className="text-muted-foreground">강의를 찾을 수 없습니다.</p>
+      </div>
+    )
+  }
+
+  // Find current lecture info
+  let currentLectureIndex = 0
+  let currentSectionIndex = 0
+  let lectureCounter = 0
+  let currentLesson = course.curriculum[0]?.lessons[0]
+
+  for (let sIdx = 0; sIdx < course.curriculum.length; sIdx++) {
+    for (let lIdx = 0; lIdx < course.curriculum[sIdx].lessons.length; lIdx++) {
+      lectureCounter++
+      if (`lecture-${lectureCounter}` === lectureId) {
+        currentSectionIndex = sIdx
+        currentLectureIndex = lIdx
+        currentLesson = course.curriculum[sIdx].lessons[lIdx]
+        break
+      }
+    }
+  }
+
+  const toggleSection = (index: number) => {
+    setOpenSections((prev) =>
+      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
+    )
+  }
+
+  const handleSubmitQuestion = () => {
+    if (!newQuestion.trim()) return
+    
+    const newQ = {
+      id: questions.length + 1,
+      author: "나",
+      authorImage: "/images/instructor-1.jpg",
+      date: new Date().toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" }).replace(/\. /g, ".").replace(".", ""),
+      content: newQuestion,
+      likes: 0,
+      replies: [],
+    }
+    setQuestions([newQ, ...questions])
+    setNewQuestion("")
+  }
+
+  // Calculate lecture number for navigation
+  let lectureNum = 0
+  const allLectures: { sectionIndex: number; lessonIndex: number; lectureId: string; title: string }[] = []
+  
+  course.curriculum.forEach((section, sIdx) => {
+    section.lessons.forEach((lesson, lIdx) => {
+      lectureNum++
+      allLectures.push({
+        sectionIndex: sIdx,
+        lessonIndex: lIdx,
+        lectureId: `lecture-${lectureNum}`,
+        title: lesson.title,
+      })
+    })
+  })
+
+  const currentLectureGlobalIndex = allLectures.findIndex(l => l.lectureId === lectureId)
+  const prevLecture = currentLectureGlobalIndex > 0 ? allLectures[currentLectureGlobalIndex - 1] : null
+  const nextLecture = currentLectureGlobalIndex < allLectures.length - 1 ? allLectures[currentLectureGlobalIndex + 1] : null
+
+  return (
+    <div className="flex min-h-screen flex-col bg-background">
+      {/* Compact Header */}
+      <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-sm">
+        <div className="flex h-14 items-center justify-between px-4">
+          <div className="flex items-center gap-3">
+            <Link href={`/courses/${id}`} className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors">
+              <ArrowLeft className="h-4 w-4" />
+              <span className="text-sm">강의 상세</span>
+            </Link>
+            <span className="text-border">|</span>
+            <h1 className="line-clamp-1 text-sm font-medium text-foreground">{course.title}</h1>
+          </div>
+          <Link href="/mypage">
+            <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+              내 강의실
+            </Button>
+          </Link>
+        </div>
+      </header>
+
+      <div className="flex flex-1 flex-col lg:flex-row">
+        {/* Main Content */}
+        <div className="flex-1 overflow-y-auto">
+          {/* Video Player */}
+          <div className="relative aspect-video w-full bg-foreground">
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="text-center text-background">
+                <PlayCircle className="mx-auto h-16 w-16 opacity-80" />
+                <p className="mt-4 text-lg font-medium">{currentLesson?.title}</p>
+                <p className="mt-1 text-sm opacity-70">{currentLesson?.duration}</p>
+              </div>
+            </div>
+            
+            {/* Video Controls Overlay */}
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  {prevLecture && (
+                    <Link href={`/courses/${id}/watch/${prevLecture.lectureId}`}>
+                      <Button variant="ghost" size="sm" className="text-background hover:bg-white/20">
+                        <ChevronLeft className="h-4 w-4 mr-1" />
+                        이전
+                      </Button>
+                    </Link>
+                  )}
+                  {nextLecture && (
+                    <Link href={`/courses/${id}/watch/${nextLecture.lectureId}`}>
+                      <Button variant="ghost" size="sm" className="text-background hover:bg-white/20">
+                        다음
+                        <ChevronLeft className="h-4 w-4 ml-1 rotate-180" />
+                      </Button>
+                    </Link>
+                  )}
+                </div>
+                <span className="text-sm text-background/80">
+                  {currentLectureGlobalIndex + 1} / {allLectures.length}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Content Tabs */}
+          <div className="border-b border-border">
+            <div className="flex">
+              <button
+                onClick={() => setActiveTab("materials")}
+                className={`px-6 py-3 text-sm font-medium transition-colors border-b-2 ${
+                  activeTab === "materials"
+                    ? "border-accent text-accent"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                학습 자료
+              </button>
+              <button
+                onClick={() => setActiveTab("qna")}
+                className={`px-6 py-3 text-sm font-medium transition-colors border-b-2 ${
+                  activeTab === "qna"
+                    ? "border-accent text-accent"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                Q&A ({questions.length})
+              </button>
+            </div>
+          </div>
+
+          {/* Tab Content */}
+          <div className="p-4 lg:p-6">
+            {activeTab === "materials" && (
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-foreground">학습 자료 다운로드</h3>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {/* PDF Download */}
+                  <button className="flex items-center gap-3 rounded-lg border border-border bg-card p-4 text-left transition-colors hover:bg-secondary">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-red-100">
+                      <FileText className="h-5 w-5 text-red-600" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-foreground">{lectureMaterials.pdf.name}</p>
+                      <p className="text-xs text-muted-foreground">{lectureMaterials.pdf.size}</p>
+                    </div>
+                    <Download className="h-4 w-4 text-muted-foreground" />
+                  </button>
+
+                  {/* Source Code Download */}
+                  <button className="flex items-center gap-3 rounded-lg border border-border bg-card p-4 text-left transition-colors hover:bg-secondary">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100">
+                      <Code className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-foreground">{lectureMaterials.source.name}</p>
+                      <p className="text-xs text-muted-foreground">{lectureMaterials.source.size}</p>
+                    </div>
+                    <Download className="h-4 w-4 text-muted-foreground" />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {activeTab === "qna" && (
+              <div className="space-y-6">
+                {/* Ask Question */}
+                <div className="space-y-3">
+                  <h3 className="text-lg font-semibold text-foreground">질문하기</h3>
+                  <div className="space-y-2">
+                    <Textarea
+                      placeholder="강의 내용에 대해 궁금한 점을 질문해주세요..."
+                      value={newQuestion}
+                      onChange={(e) => setNewQuestion(e.target.value)}
+                      className="min-h-[100px] resize-none"
+                    />
+                    <div className="flex justify-end">
+                      <Button 
+                        onClick={handleSubmitQuestion}
+                        className="gap-1.5 bg-accent text-accent-foreground hover:bg-accent/90"
+                        disabled={!newQuestion.trim()}
+                      >
+                        <Send className="h-4 w-4" />
+                        질문 등록
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Questions List */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-foreground">질문 목록</h3>
+                  {questions.map((question) => (
+                    <div key={question.id} className="rounded-lg border border-border bg-card p-4">
+                      <div className="flex items-start gap-3">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src={question.authorImage} />
+                          <AvatarFallback>{question.author[0]}</AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-medium text-foreground">{question.author}</span>
+                            <span className="text-xs text-muted-foreground">{question.date}</span>
+                          </div>
+                          <p className="mt-2 text-sm text-foreground">{question.content}</p>
+                          <div className="mt-3 flex items-center gap-4">
+                            <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
+                              <ThumbsUp className="h-3.5 w-3.5" />
+                              {question.likes}
+                            </button>
+                            <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
+                              <MessageSquare className="h-3.5 w-3.5" />
+                              답글 {question.replies.length}
+                            </button>
+                          </div>
+
+                          {/* Replies */}
+                          {question.replies.length > 0 && (
+                            <div className="mt-4 space-y-3 border-l-2 border-border pl-4">
+                              {question.replies.map((reply) => (
+                                <div key={reply.id} className="flex items-start gap-3">
+                                  <Avatar className="h-7 w-7">
+                                    <AvatarImage src={reply.authorImage} />
+                                    <AvatarFallback>{reply.author[0]}</AvatarFallback>
+                                  </Avatar>
+                                  <div>
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-sm font-medium text-foreground">{reply.author}</span>
+                                      {reply.isInstructor && (
+                                        <Badge variant="secondary" className="text-[10px] bg-accent/10 text-accent">
+                                          강사
+                                        </Badge>
+                                      )}
+                                      <span className="text-xs text-muted-foreground">{reply.date}</span>
+                                    </div>
+                                    <p className="mt-1 text-sm text-foreground">{reply.content}</p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Curriculum Sidebar */}
+        <aside className="w-full shrink-0 border-t border-border bg-card lg:w-[360px] lg:border-l lg:border-t-0">
+          <div className="sticky top-14 max-h-[calc(100vh-3.5rem)] overflow-y-auto">
+            <div className="border-b border-border p-4">
+              <h2 className="font-semibold text-foreground">커리큘럼</h2>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {course.curriculum.length}개 섹션 · {allLectures.length}개 강의
+              </p>
+            </div>
+
+            <div>
+              {course.curriculum.map((section, sIdx) => {
+                const isOpen = openSections.includes(sIdx)
+                let sectionLectureNum = 0
+                for (let i = 0; i < sIdx; i++) {
+                  sectionLectureNum += course.curriculum[i].lessons.length
+                }
+
+                return (
+                  <div key={section.title} className={sIdx > 0 ? "border-t border-border" : ""}>
+                    <button
+                      onClick={() => toggleSection(sIdx)}
+                      className="flex w-full items-center justify-between bg-secondary/30 px-4 py-3 text-left transition-colors hover:bg-secondary/50"
+                      aria-expanded={isOpen}
+                    >
+                      <div className="flex items-center gap-2">
+                        <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${isOpen ? "rotate-0" : "-rotate-90"}`} />
+                        <span className="text-sm font-medium text-foreground">{section.title}</span>
+                      </div>
+                      <span className="text-xs text-muted-foreground">{section.lessons.length}개</span>
+                    </button>
+
+                    {isOpen && (
+                      <ul>
+                        {section.lessons.map((lesson, lIdx) => {
+                          const thisLectureId = `lecture-${sectionLectureNum + lIdx + 1}`
+                          const isActive = thisLectureId === lectureId
+                          const isCompleted = sectionLectureNum + lIdx + 1 < currentLectureGlobalIndex + 1
+
+                          return (
+                            <li key={lesson.title}>
+                              <Link
+                                href={`/courses/${id}/watch/${thisLectureId}`}
+                                className={`flex items-center gap-3 px-4 py-3 text-left transition-colors ${
+                                  isActive 
+                                    ? "bg-accent/10 border-l-2 border-accent" 
+                                    : "hover:bg-secondary/30"
+                                }`}
+                              >
+                                {isCompleted ? (
+                                  <CheckCircle className="h-4 w-4 shrink-0 text-green-500" />
+                                ) : isActive ? (
+                                  <PlayCircle className="h-4 w-4 shrink-0 text-accent" />
+                                ) : lesson.isFree ? (
+                                  <PlayCircle className="h-4 w-4 shrink-0 text-muted-foreground" />
+                                ) : (
+                                  <Lock className="h-4 w-4 shrink-0 text-muted-foreground/50" />
+                                )}
+                                <div className="flex-1 min-w-0">
+                                  <p className={`text-sm truncate ${isActive ? "font-medium text-accent" : "text-foreground"}`}>
+                                    {lesson.title}
+                                  </p>
+                                  <div className="flex items-center gap-2 mt-0.5">
+                                    <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                                      <Clock className="h-3 w-3" />
+                                      {lesson.duration}
+                                    </span>
+                                    {lesson.isFree && (
+                                      <Badge variant="secondary" className="text-[10px] text-accent">
+                                        미리보기
+                                      </Badge>
+                                    )}
+                                  </div>
+                                </div>
+                              </Link>
+                            </li>
+                          )
+                        })}
+                      </ul>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  )
+}
