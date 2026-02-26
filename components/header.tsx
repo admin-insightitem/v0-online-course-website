@@ -231,9 +231,15 @@ export function Header({ variant = "default" }: HeaderProps) {
                             </button>
                             
                             {menuOpenId === notification.id && (
-                              <div className="absolute right-0 top-full mt-1 w-24 rounded-lg border border-border bg-card shadow-lg z-10">
+                              <div className="absolute right-0 top-full mt-1 w-56 rounded-lg border border-border bg-card shadow-lg z-10">
+                                <div className="px-3 py-2 border-b border-border">
+                                  <p className="text-xs text-muted-foreground">삭제할 알림</p>
+                                  <p className="text-sm font-medium text-foreground line-clamp-1 mt-0.5">
+                                    {notification.title}
+                                  </p>
+                                </div>
                                 <button 
-                                  className="w-full px-3 py-2 text-left text-sm text-destructive hover:bg-muted/50 rounded-t-lg"
+                                  className="w-full px-3 py-2 text-left text-sm text-destructive hover:bg-muted/50"
                                   onClick={() => handleDeleteNotification(notification.id)}
                                 >
                                   삭제하기
