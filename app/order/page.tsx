@@ -57,6 +57,7 @@ export default function OrderPage() {
   const [selectedInstallment, setSelectedInstallment] = useState("일시불")
   const [couponCode, setCouponCode] = useState("")
   const [agreedToTerms, setAgreedToTerms] = useState(false)
+  const [agreedToMarketing, setAgreedToMarketing] = useState(true)
 
   const totalOriginalPrice = orderItems.reduce((sum, item) => sum + parsePrice(item.originalPrice), 0)
   const totalPrice = orderItems.reduce((sum, item) => sum + parsePrice(item.price), 0)
@@ -234,6 +235,30 @@ export default function OrderPage() {
                     </div>
                   </div>
                 )}
+              </section>
+
+              <div className="my-8 border-t border-border" />
+
+              {/* Marketing Consent */}
+              <section>
+                <h2 className="text-lg font-bold text-foreground">마케팅 수신 설정</h2>
+                <div className="mt-4 rounded-lg border border-border bg-card p-4">
+                  <label className="flex cursor-pointer items-start gap-3">
+                    <Checkbox
+                      checked={agreedToMarketing}
+                      onCheckedChange={(checked) => setAgreedToMarketing(checked === true)}
+                      className="mt-0.5 h-5 w-5 shrink-0 border-border data-[state=checked]:border-accent data-[state=checked]:bg-accent"
+                    />
+                    <div className="flex flex-col gap-1">
+                      <span className="text-sm font-medium text-foreground">
+                        이벤트/쿠폰 등 혜택 수신 동의
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        체크하지 않으면 무료특강 혜택을 받으실 수 없습니다.
+                      </span>
+                    </div>
+                  </label>
+                </div>
               </section>
             </div>
 
