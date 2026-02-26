@@ -1,10 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { MypageLayout } from "@/components/mypage-layout"
 import { Button } from "@/components/ui/button"
-import { Eye, EyeOff } from "lucide-react"
+import { Eye, EyeOff, Pencil } from "lucide-react"
 
 export default function ProfilePage() {
   // 기본 데이터
@@ -12,6 +13,27 @@ export default function ProfilePage() {
   const [email, setEmail] = useState("k1k1m1@naver.com")
   const [phone, setPhone] = useState("01028153911")
   const [marketing, setMarketing] = useState(true)
+
+  // 프로필 이미지 및 닉네임
+  const [profileImage, setProfileImage] = useState<string | null>(null)
+  const [nickname, setNickname] = useState("김*민1580650")
+  const [useProfileNickname, setUseProfileNickname] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleImageClick = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setProfileImage(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
 
   // 편집 모드 상태
   const [editingField, setEditingField] = useState<"name" | "email" | "phone" | "password" | null>(null)
@@ -89,6 +111,65 @@ export default function ProfilePage() {
         <h3 className="text-base font-semibold text-foreground mb-6">기본 정보</h3>
 
         <div className="flex flex-col gap-6">
+          {/* 프로필 이미지 */}
+          <div className="flex flex-col items-center gap-4 pb-6 border-b border-border">
+            <div className="relative">
+              <div className="h-24 w-24 rounded-full bg-amber-100 overflow-hidden flex items-center justify-center">
+                {profileImage ? (
+                  <Image
+                    src={profileImage}
+                    alt="프로필 이미지"
+                    width={96}
+                    height={96}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="h-full w-full bg-amber-100 flex items-center justify-center">
+                    <span className="text-4xl">👤</span>
+                  </div>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={handleImageClick}
+                className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full bg-foreground text-background hover:bg-foreground/90 transition-colors"
+              >
+                <Pencil className="h-4 w-4" />
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="hidden"
+              />
+            </div>
+
+            {/* 닉네임 */}
+            <div className="w-full max-w-sm">
+              <label className="text-sm text-muted-foreground">닉네임</label>
+              <input
+                type="text"
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
+                maxLength={10}
+                className="mt-2 flex h-11 w-full rounded-md border border-border bg-card px-4 text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-1 focus:ring-ring"
+              />
+              <p className="mt-1 text-xs text-muted-foreground">
+                특수문자, 특수기호, 공백 제외 2~10자
+              </p>
+              <label className="mt-3 flex cursor-pointer items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={useProfileNickname}
+                  onChange={(e) => setUseProfileNickname(e.target.checked)}
+                  className="h-4 w-4 rounded border-border"
+                />
+                <span className="text-sm text-muted-foreground">내 프로필 닉네임 사용</span>
+              </label>
+            </div>
+          </div>
+
           {/* 이름 */}
           <div className="flex flex-col gap-2">
             <label className="text-sm text-muted-foreground">이름</label>
