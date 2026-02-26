@@ -17,7 +17,7 @@ const navItems = [
 const notificationsData = [
   {
     id: 1,
-    sender: "Route01",
+    sender: "RichClass",
     badge: "공지사항",
     badgeColor: "bg-blue-100 text-blue-700",
     date: "오늘 오전 10:30",
@@ -39,7 +39,7 @@ const notificationsData = [
   },
   {
     id: 3,
-    sender: "Route01",
+    sender: "RichClass",
     badge: "프로모션",
     badgeColor: "bg-orange-100 text-orange-700",
     date: "2월 24일",
@@ -96,7 +96,7 @@ export function Header({ variant = "default" }: HeaderProps) {
             <span className="text-sm font-bold text-primary-foreground">R</span>
           </div>
           <span className="text-lg font-bold tracking-tight text-foreground">
-            Route<span className="text-primary">01</span>
+            Rich<span className="text-primary">Class</span>
           </span>
         </Link>
 

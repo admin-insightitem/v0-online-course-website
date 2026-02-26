@@ -131,7 +131,7 @@ export default function AdminDashboard() {
         {/* Page Header */}
         <div>
           <h2 className="text-2xl font-bold tracking-tight">대시보드</h2>
-          <p className="text-muted-foreground">Route01 운영 현황을 한눈에 확인하세요.</p>
+          <p className="text-muted-foreground">RichClass 운영 현황을 한눈에 확인하세요.</p>
         </div>
 
         {/* Stats Grid */}

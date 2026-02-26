@@ -66,7 +66,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
               <span className="font-heading text-sm font-bold text-primary-foreground">T</span>
             </div>
-            <span className="font-heading text-lg font-bold text-foreground">Route01</span>
+            <span className="font-heading text-lg font-bold text-foreground">RichClass</span>
           </Link>
           <Button
             variant="ghost"

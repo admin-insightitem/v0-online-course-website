@@ -29,13 +29,13 @@ export default function ForgotPasswordPage() {
                     <span className="text-xs font-bold text-primary-foreground">R</span>
                   </div>
                   <span className="text-base font-bold tracking-tight text-foreground">
-                    Route<span className="text-primary">01</span>
+                    Rich<span className="text-primary">Class</span>
                   </span>
                 </Link>
                 <h1 className="text-2xl font-semibold leading-snug text-foreground">
                   당신의 성장을 위한 교육,
                   <br />
-                  Route01.
+                  RichClass.
                 </h1>
               </div>
 
@@ -95,7 +95,7 @@ export default function ForgotPasswordPage() {
                     <span className="text-xs font-bold text-primary-foreground">R</span>
                   </div>
                   <span className="text-base font-bold tracking-tight text-foreground">
-                    Route<span className="text-primary">01</span>
+                    Rich<span className="text-primary">Class</span>
                   </span>
                 </Link>
                 <h1 className="text-2xl font-semibold leading-snug text-foreground">

@@ -21,7 +21,7 @@ export default function LoginPage() {
               <span className="text-sm font-bold text-primary-foreground">R</span>
             </div>
             <span className="text-lg font-bold tracking-tight text-foreground">
-              Route<span className="text-primary">01</span>
+              Rich<span className="text-primary">Class</span>
             </span>
           </Link>
         </div>

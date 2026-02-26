@@ -41,7 +41,7 @@ export function Footer() {
                 <span className="text-sm font-bold text-primary-foreground">R</span>
               </div>
               <span className="text-lg font-bold tracking-tight text-foreground">
-                Route<span className="text-primary">01</span>
+                Rich<span className="text-primary">Class</span>
               </span>
             </Link>
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-muted-foreground">
@@ -83,7 +83,7 @@ export function Footer() {
 
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border/50 pt-8 md:flex-row">
           <p className="text-xs text-muted-foreground">
-            &copy; 2026 Route01. All rights reserved.
+            &copy; 2026 RichClass. All rights reserved.
           </p>
           <div className="flex gap-6 text-xs text-muted-foreground">
             <Link href="#" className="hover:text-foreground">개인정보처리방침</Link>
