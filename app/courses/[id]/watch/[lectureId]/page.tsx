@@ -2,7 +2,7 @@
 
 import { useState, use } from "react"
 import Link from "next/link"
-import { ChevronLeft, ChevronDown, PlayCircle, CheckCircle, Lock, Clock, Download, FileText, Code, MessageSquare, ThumbsUp, Send, ArrowLeft, Star, X } from "lucide-react"
+import { ChevronLeft, ChevronDown, ChevronUp, PlayCircle, CheckCircle, Lock, Clock, Download, FileText, Code, MessageSquare, ThumbsUp, Send, ArrowLeft, Star, X, Pencil } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -24,6 +24,7 @@ const mockQuestions = [
     date: "2026.02.25",
     content: "강의 중간에 나온 API 호출 예시에서 에러가 발생하는데, 해결 방법이 있을까요?",
     likes: 5,
+    isMyQuestion: false,
     replies: [
       {
         id: 1,
@@ -32,6 +33,8 @@ const mockQuestions = [
         date: "2026.02.25",
         content: "네, API 키 설정이 제대로 되어있는지 확인해주세요. 환경변수에 OPENAI_API_KEY가 설정되어 있어야 합니다.",
         isInstructor: true,
+        isMyReply: false,
+        likes: 3,
       },
     ],
   },
@@ -42,7 +45,29 @@ const mockQuestions = [
     date: "2026.02.24",
     content: "프롬프트 템플릿 파일은 어디서 다운로드 받을 수 있나요?",
     likes: 3,
-    replies: [],
+    isMyQuestion: true,
+    replies: [
+      {
+        id: 2,
+        author: "김도현 (강사)",
+        authorImage: "/images/instructor-1.jpg",
+        date: "2026.02.24",
+        content: "강의자료 탭에서 다운로드 가능합니다. PDF 파일에 템플릿이 포함되어 있어요.",
+        isInstructor: true,
+        isMyReply: true,
+        likes: 5,
+      },
+      {
+        id: 3,
+        author: "박민수",
+        authorImage: "/images/instructor-3.jpg",
+        date: "2026.02.24",
+        content: "저도 같은 질문 있었는데, 강의자료에서 찾았습니다!",
+        isInstructor: false,
+        isMyReply: true,
+        likes: 2,
+      },
+    ],
   },
 ]
 
@@ -55,6 +80,15 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
   const [newQuestion, setNewQuestion] = useState("")
   const [questions, setQuestions] = useState(mockQuestions)
   const [qnaFilter, setQnaFilter] = useState<"all" | "my">("all")
+  
+  // Q&A 토글 및 수정 상태
+  const [expandedReplies, setExpandedReplies] = useState<number[]>([1, 2])
+  const [replyInputOpen, setReplyInputOpen] = useState<number[]>([1])
+  const [replyText, setReplyText] = useState("")
+  const [editingReplyId, setEditingReplyId] = useState<number | null>(3)
+  const [editReplyText, setEditReplyText] = useState("저도 같은 질문 있었는데, 강의자료에서 찾았습니다!")
+  const [editingQuestionId, setEditingQuestionId] = useState<number | null>(null)
+  const [editQuestionText, setEditQuestionText] = useState("")
   
   // Review modal state
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
@@ -93,6 +127,25 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
     setOpenSections((prev) =>
       prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
     )
+  }
+
+  const toggleReplies = (questionId: number) => {
+    setExpandedReplies((prev) =>
+      prev.includes(questionId)
+        ? prev.filter((id) => id !== questionId)
+        : [...prev, questionId]
+    )
+  }
+
+  const toggleReplyInput = (questionId: number) => {
+    setReplyInputOpen((prev) =>
+      prev.includes(questionId)
+        ? prev.filter((id) => id !== questionId)
+        : [...prev, questionId]
+    )
+    if (!expandedReplies.includes(questionId)) {
+      setExpandedReplies((prev) => [...prev, questionId])
+    }
   }
 
   const handleSubmitQuestion = () => {
@@ -347,7 +400,7 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
                     </div>
                   </div>
                   {questions
-                    .filter((q) => qnaFilter === "all" || q.author === "나")
+                    .filter((q) => qnaFilter === "all" || q.author === "나" || q.isMyQuestion)
                     .map((question) => (
                     <div key={question.id} className="rounded-lg border border-border bg-card p-4">
                       <div className="flex items-start gap-3">
@@ -358,43 +411,170 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
                             <span className="text-sm font-medium text-foreground">{question.author}</span>
+                            {question.isMyQuestion && (
+                              <Badge variant="secondary" className="text-[10px] bg-accent/10 text-accent">
+                                내 질문
+                              </Badge>
+                            )}
                             <span className="text-xs text-muted-foreground">{question.date}</span>
+                            {question.isMyQuestion && editingQuestionId !== question.id && (
+                              <button 
+                                onClick={() => {
+                                  setEditingQuestionId(question.id)
+                                  setEditQuestionText(question.content)
+                                }}
+                                className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground ml-1"
+                              >
+                                <Pencil className="h-3 w-3" />
+                                수정
+                              </button>
+                            )}
                           </div>
-                          <p className="mt-2 text-sm text-foreground">{question.content}</p>
+                          {editingQuestionId === question.id ? (
+                            <div className="mt-2 space-y-2">
+                              <Textarea
+                                value={editQuestionText}
+                                onChange={(e) => setEditQuestionText(e.target.value)}
+                                className="min-h-[80px] text-sm"
+                              />
+                              <div className="flex justify-end gap-2">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => setEditingQuestionId(null)}
+                                >
+                                  취소
+                                </Button>
+                                <Button size="sm" onClick={() => setEditingQuestionId(null)}>
+                                  수정
+                                </Button>
+                              </div>
+                            </div>
+                          ) : (
+                            <p className="mt-2 text-sm text-foreground">{question.content}</p>
+                          )}
                           <div className="mt-3 flex items-center gap-4">
                             <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
                               <ThumbsUp className="h-3.5 w-3.5" />
                               {question.likes}
                             </button>
-                            <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
+                            <button 
+                              onClick={() => toggleReplies(question.id)}
+                              className={`flex items-center gap-1 text-xs hover:text-foreground ${
+                                expandedReplies.includes(question.id) ? "text-primary" : "text-muted-foreground"
+                              }`}
+                            >
                               <MessageSquare className="h-3.5 w-3.5" />
                               답글 {question.replies.length}
+                              {question.replies.length > 0 && (
+                                expandedReplies.includes(question.id) 
+                                  ? <ChevronUp className="h-3.5 w-3.5" />
+                                  : <ChevronDown className="h-3.5 w-3.5" />
+                              )}
                             </button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="ml-2 h-7 px-3 text-xs"
+                              onClick={() => toggleReplyInput(question.id)}
+                            >
+                              답글 등록
+                            </Button>
                           </div>
 
-                          {/* Replies */}
-                          {question.replies.length > 0 && (
-                            <div className="mt-4 space-y-3 border-l-2 border-border pl-4">
-                              {question.replies.map((reply) => (
-                                <div key={reply.id} className="flex items-start gap-3">
-                                  <Avatar className="h-7 w-7">
-                                    <AvatarImage src={reply.authorImage} />
-                                    <AvatarFallback>{reply.author[0]}</AvatarFallback>
-                                  </Avatar>
-                                  <div>
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-sm font-medium text-foreground">{reply.author}</span>
-                                      {reply.isInstructor && (
-                                        <Badge variant="secondary" className="text-[10px] bg-accent/10 text-accent">
-                                          강사
-                                        </Badge>
-                                      )}
-                                      <span className="text-xs text-muted-foreground">{reply.date}</span>
-                                    </div>
-                                    <p className="mt-1 text-sm text-foreground">{reply.content}</p>
+                          {/* 답글 입력창 및 답글 목록 */}
+                          {expandedReplies.includes(question.id) && (
+                            <div className="mt-4 space-y-4 border-l-2 border-border pl-4">
+                              {/* 답글 입력창 */}
+                              {replyInputOpen.includes(question.id) && (
+                                <div className="space-y-2">
+                                  <Textarea
+                                    placeholder="답글을 입력하세요..."
+                                    value={replyText}
+                                    onChange={(e) => setReplyText(e.target.value)}
+                                    className="min-h-[80px] text-sm"
+                                  />
+                                  <div className="flex justify-end gap-2">
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => {
+                                        setReplyInputOpen((prev) => prev.filter((id) => id !== question.id))
+                                        setReplyText("")
+                                      }}
+                                    >
+                                      취소
+                                    </Button>
+                                    <Button size="sm">등록</Button>
                                   </div>
                                 </div>
-                              ))}
+                              )}
+
+                              {/* 기존 답글 목록 */}
+                              {question.replies.length > 0 && (
+                                <div className="space-y-3">
+                                  {question.replies.map((reply) => (
+                                    <div key={reply.id} className="flex items-start gap-3">
+                                      <Avatar className="h-7 w-7">
+                                        <AvatarImage src={reply.authorImage} />
+                                        <AvatarFallback>{reply.author[0]}</AvatarFallback>
+                                      </Avatar>
+                                      <div className="flex-1">
+                                        <div className="flex items-center gap-2">
+                                          <span className="text-sm font-medium text-foreground">{reply.author}</span>
+                                          {reply.isInstructor && (
+                                            <Badge variant="secondary" className="text-[10px] bg-accent/10 text-accent">
+                                              강사
+                                            </Badge>
+                                          )}
+                                          <span className="text-xs text-muted-foreground">{reply.date}</span>
+                                          {reply.isMyReply && editingReplyId !== reply.id && (
+                                            <button 
+                                              onClick={() => {
+                                                setEditingReplyId(reply.id)
+                                                setEditReplyText(reply.content)
+                                              }}
+                                              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground ml-1"
+                                            >
+                                              <Pencil className="h-3 w-3" />
+                                              수정
+                                            </button>
+                                          )}
+                                        </div>
+                                        {editingReplyId === reply.id ? (
+                                          <div className="mt-2 space-y-2">
+                                            <Textarea
+                                              value={editReplyText}
+                                              onChange={(e) => setEditReplyText(e.target.value)}
+                                              className="min-h-[60px] text-sm"
+                                            />
+                                            <div className="flex justify-end gap-2">
+                                              <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => setEditingReplyId(null)}
+                                              >
+                                                취소
+                                              </Button>
+                                              <Button size="sm" onClick={() => setEditingReplyId(null)}>
+                                                수정
+                                              </Button>
+                                            </div>
+                                          </div>
+                                        ) : (
+                                          <p className="mt-1 text-sm text-foreground">{reply.content}</p>
+                                        )}
+                                        <div className="mt-2 flex items-center gap-1">
+                                          <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
+                                            <ThumbsUp className="h-3 w-3" />
+                                            {reply.likes}
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
                             </div>
                           )}
                         </div>
