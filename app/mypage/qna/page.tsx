@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { MessageCircle, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, ThumbsUp } from "lucide-react"
+import { MessageCircle, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, ThumbsUp, Pencil } from "lucide-react"
 import { MypageLayout } from "@/components/mypage-layout"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -47,6 +47,8 @@ const qnaData = [
         date: "2026.02.25",
         content: "네, API 키 설정이 제대로 되어있는지 확인해주세요. 환경변수에 OPENAI_API_KEY가 설정되어 있어야 합니다.",
         isInstructor: true,
+        isMyReply: false,
+        likes: 3,
       },
     ],
   },
@@ -58,7 +60,7 @@ const qnaData = [
     content: "GPT-4 모델에서 토큰 제한이 있다고 하셨는데, 긴 문서를 처리할 때는 어떤 방법을 사용하면 좋을까요?",
     author: "이수진",
     authorImage: "/images/instructor-2.jpg",
-    isMyQuestion: false,
+    isMyQuestion: true,
     createdAt: "2026.02.24",
     likes: 3,
     lectureOrder: 5,
@@ -70,6 +72,8 @@ const qnaData = [
         date: "2026.02.24",
         content: "긴 문서는 청킹(chunking) 기법을 사용하시면 됩니다. 문서를 작은 단위로 나누어 처리하는 방법이에요.",
         isInstructor: true,
+        isMyReply: true,
+        likes: 5,
       },
       {
         id: "r3",
@@ -78,6 +82,8 @@ const qnaData = [
         date: "2026.02.24",
         content: "저도 같은 문제가 있었는데, LangChain을 사용하니까 해결됐어요!",
         isInstructor: false,
+        isMyReply: true,
+        likes: 2,
       },
     ],
   },
@@ -115,6 +121,8 @@ const qnaData = [
         date: "2026.02.22",
         content: "네, 본인의 투자 스타일에 맞게 조정하셔도 됩니다. 단기 투자자는 5일, 10일선을 더 많이 참고해요.",
         isInstructor: true,
+        isMyReply: false,
+        likes: 4,
       },
     ],
   },
@@ -239,11 +247,14 @@ export default function QnAPage() {
   const [questionFilter, setQuestionFilter] = useState<"all" | "my">("all")
   const [sortBy, setSortBy] = useState<"latest" | "lecture" | "replies">("latest")
   const [currentPage, setCurrentPage] = useState(1)
-  // 첫 번째 질문은 답글이 열린 상태로 시작
-  const [expandedReplies, setExpandedReplies] = useState<string[]>(["q1"])
+  // 첫 번째, 두 번째 질문은 답글이 열린 상태로 시작
+  const [expandedReplies, setExpandedReplies] = useState<string[]>(["q1", "q2"])
   // 첫 번째 질문은 답글 입력창이 열린 상태로 시작
   const [replyInputOpen, setReplyInputOpen] = useState<string[]>(["q1"])
   const [replyText, setReplyText] = useState("")
+  // 수정 모드 상태 (박민수 답글 r3는 수정 모드로 시작)
+  const [editingReplyId, setEditingReplyId] = useState<string | null>("r3")
+  const [editReplyText, setEditReplyText] = useState("저도 같은 문제가 있었는데, LangChain을 사용하니까 해결됐어요!")
 
   const toggleReplies = (questionId: string) => {
     setExpandedReplies((prev) =>
@@ -427,6 +438,12 @@ export default function QnAPage() {
                       </Badge>
                     )}
                     <span className="text-xs text-muted-foreground">{question.createdAt}</span>
+                    {question.isMyQuestion && (
+                      <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground ml-1">
+                        <Pencil className="h-3 w-3" />
+                        수정
+                      </button>
+                    )}
                   </div>
                   <p className="mt-2 text-sm text-foreground">{question.content}</p>
                   <div className="mt-3 flex items-center gap-4">
@@ -495,7 +512,7 @@ export default function QnAPage() {
                                 <AvatarImage src={reply.authorImage} />
                                 <AvatarFallback>{reply.author[0]}</AvatarFallback>
                               </Avatar>
-                              <div>
+                              <div className="flex-1">
                                 <div className="flex items-center gap-2">
                                   <span className="text-sm font-medium text-foreground">{reply.author}</span>
                                   {reply.isInstructor && (
@@ -504,8 +521,48 @@ export default function QnAPage() {
                                     </Badge>
                                   )}
                                   <span className="text-xs text-muted-foreground">{reply.date}</span>
+                                  {reply.isMyReply && editingReplyId !== reply.id && (
+                                    <button 
+                                      onClick={() => {
+                                        setEditingReplyId(reply.id)
+                                        setEditReplyText(reply.content)
+                                      }}
+                                      className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground ml-1"
+                                    >
+                                      <Pencil className="h-3 w-3" />
+                                      수정
+                                    </button>
+                                  )}
                                 </div>
-                                <p className="mt-1 text-sm text-foreground">{reply.content}</p>
+                                {editingReplyId === reply.id ? (
+                                  <div className="mt-2 space-y-2">
+                                    <Textarea
+                                      value={editReplyText}
+                                      onChange={(e) => setEditReplyText(e.target.value)}
+                                      className="min-h-[60px] text-sm"
+                                    />
+                                    <div className="flex justify-end gap-2">
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => setEditingReplyId(null)}
+                                      >
+                                        취소
+                                      </Button>
+                                      <Button size="sm" onClick={() => setEditingReplyId(null)}>
+                                        수정
+                                      </Button>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <p className="mt-1 text-sm text-foreground">{reply.content}</p>
+                                )}
+                                <div className="mt-2 flex items-center gap-1">
+                                  <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
+                                    <ThumbsUp className="h-3 w-3" />
+                                    {reply.likes}
+                                  </button>
+                                </div>
                               </div>
                             </div>
                           ))}
