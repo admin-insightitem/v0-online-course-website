@@ -54,7 +54,7 @@ export function CoursesSection() {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((course) => (
+          {filtered.map((course, index) => (
             <Link
               key={course.id}
               href={`/courses/${course.id}`}
@@ -67,6 +67,7 @@ export function CoursesSection() {
                     alt={course.title}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    priority={index === 0}
                   />
                   {course.badge && (
                     <Badge className={`absolute top-3 left-3 ${course.badgeColor} border-0 text-xs font-bold`}>
