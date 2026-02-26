@@ -36,7 +36,6 @@ import {
   Users,
   Filter,
   Mail,
-  Phone,
   Calendar,
   BookOpen,
   Clock,
@@ -52,9 +51,9 @@ const studentsData = [
     id: "1",
     name: "김경민",
     email: "kyungmin@gmail.com",
-    phone: "010-1234-5678",
     avatar: "/images/avatar-user.jpg",
     joinDate: "2025.08.15",
+    joinMethod: "email" as const,
     courses: [
       { id: "1", title: "ChatGPT & AI 자동화", progress: 75, lastAccess: "2026.02.27" },
       { id: "2", title: "유튜브 수익화 가이드", progress: 30, lastAccess: "2026.02.25" },
@@ -66,9 +65,9 @@ const studentsData = [
     id: "2",
     name: "이수현",
     email: "soohyun@naver.com",
-    phone: "010-2345-6789",
     avatar: "",
     joinDate: "2025.10.20",
+    joinMethod: "kakao" as const,
     courses: [
       { id: "3", title: "퍼포먼스 마케팅 마스터클래스", progress: 100, lastAccess: "2026.02.20" },
     ],
@@ -79,9 +78,9 @@ const studentsData = [
     id: "3",
     name: "박준영",
     email: "junyoung@kakao.com",
-    phone: "010-3456-7890",
     avatar: "",
     joinDate: "2025.12.01",
+    joinMethod: "kakao" as const,
     courses: [
       { id: "1", title: "ChatGPT & AI 자동화", progress: 45, lastAccess: "2026.02.26" },
       { id: "4", title: "프리미어 프로 & 포토샵", progress: 20, lastAccess: "2026.02.22" },
@@ -94,9 +93,9 @@ const studentsData = [
     id: "4",
     name: "최민지",
     email: "minji@gmail.com",
-    phone: "010-4567-8901",
     avatar: "",
     joinDate: "2026.01.05",
+    joinMethod: "email" as const,
     courses: [
       { id: "6", title: "인스타그램 & 틱톡 SNS 수익화", progress: 85, lastAccess: "2026.02.27" },
     ],
@@ -107,9 +106,9 @@ const studentsData = [
     id: "5",
     name: "정태호",
     email: "taeho@naver.com",
-    phone: "010-5678-9012",
     avatar: "",
     joinDate: "2025.09.10",
+    joinMethod: "email" as const,
     courses: [
       { id: "2", title: "유튜브 수익화 가이드", progress: 10, lastAccess: "2026.01.15" },
     ],
@@ -120,9 +119,9 @@ const studentsData = [
     id: "6",
     name: "한소희",
     email: "sohee@gmail.com",
-    phone: "010-6789-0123",
     avatar: "",
     joinDate: "2026.02.01",
+    joinMethod: "kakao" as const,
     courses: [
       { id: "1", title: "ChatGPT & AI 자동화", progress: 5, lastAccess: "2026.02.27" },
     ],
@@ -323,7 +322,9 @@ export default function StudentsPage() {
                 <TableRow>
                   <TableHead>수강생</TableHead>
                   <TableHead>연락처</TableHead>
+                  <TableHead>가입 방법</TableHead>
                   <TableHead>수강 강좌</TableHead>
+                  <TableHead>가입일</TableHead>
                   <TableHead>평균 진도율</TableHead>
                   <TableHead>총 결제액</TableHead>
                   <TableHead className="text-center">상태</TableHead>
@@ -338,40 +339,54 @@ export default function StudentsPage() {
                   )
                   return (
                     <TableRow key={student.id}>
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <Avatar className="h-9 w-9">
-                            <AvatarImage src={student.avatar} alt={student.name} />
-                            <AvatarFallback>{student.name.charAt(0)}</AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <p className="font-medium">{student.name}</p>
-                            <p className="text-xs text-muted-foreground">가입: {student.joinDate}</p>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="space-y-1">
-                          <p className="text-sm">{student.email}</p>
-                          <p className="text-xs text-muted-foreground">{student.phone}</p>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex flex-wrap gap-1">
-                          {student.courses.slice(0, 2).map((course) => (
-                            <Badge key={course.id} variant="secondary" className="text-xs">
-                              {course.title.length > 15
-                                ? course.title.substring(0, 15) + "..."
-                                : course.title}
-                            </Badge>
-                          ))}
-                          {student.courses.length > 2 && (
-                            <Badge variant="outline" className="text-xs">
-                              +{student.courses.length - 2}
-                            </Badge>
-                          )}
-                        </div>
-                      </TableCell>
+<TableCell>
+                                        <div className="flex items-center gap-3">
+                                          <Avatar className="h-9 w-9">
+                                            <AvatarImage src={student.avatar} alt={student.name} />
+                                            <AvatarFallback>{student.name.charAt(0)}</AvatarFallback>
+                                          </Avatar>
+                                          <div>
+                                            <p className="font-medium">{student.name}</p>
+                                          </div>
+                                        </div>
+                                      </TableCell>
+                                      <TableCell>
+                                        <p className="text-sm">{student.email}</p>
+                                      </TableCell>
+                                      <TableCell>
+                                        <Badge 
+                                          variant="secondary" 
+                                          className={
+                                            student.joinMethod === "kakao" 
+                                              ? "bg-yellow-100 text-yellow-700" 
+                                              : "bg-blue-100 text-blue-700"
+                                          }
+                                        >
+                                          {student.joinMethod === "kakao" ? "카카오톡" : "이메일"}
+                                        </Badge>
+                                      </TableCell>
+                                      <TableCell>
+                                        <div className="space-y-1">
+                                          <p className="text-sm font-medium">{student.courses.length}개</p>
+                                          <div className="flex flex-col gap-0.5">
+                                            {student.courses.slice(0, 2).map((course) => (
+                                              <span key={course.id} className="text-xs text-muted-foreground">
+                                                {course.title.length > 18
+                                                  ? course.title.substring(0, 18) + "..."
+                                                  : course.title}
+                                              </span>
+                                            ))}
+                                            {student.courses.length > 2 && (
+                                              <span className="text-xs text-muted-foreground">
+                                                외 {student.courses.length - 2}개
+                                              </span>
+                                            )}
+                                          </div>
+                                        </div>
+                                      </TableCell>
+                                      <TableCell>
+                                        <span className="text-sm">{student.joinDate}</span>
+                                      </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <Progress value={avgProgress} className="w-20" />
@@ -446,24 +461,32 @@ export default function StudentsPage() {
                           {selectedStudent.status === "active" ? "활성" : "비활성"}
                         </Badge>
                       </div>
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div className="flex items-center gap-2">
-                          <Mail className="h-4 w-4 text-muted-foreground" />
-                          {selectedStudent.email}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Phone className="h-4 w-4 text-muted-foreground" />
-                          {selectedStudent.phone}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Calendar className="h-4 w-4 text-muted-foreground" />
-                          가입일: {selectedStudent.joinDate}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <BookOpen className="h-4 w-4 text-muted-foreground" />
-                          수강 강좌: {selectedStudent.courses.length}개
-                        </div>
-                      </div>
+<div className="grid grid-cols-2 gap-4 text-sm">
+                                        <div className="flex items-center gap-2">
+                                          <Mail className="h-4 w-4 text-muted-foreground" />
+                                          {selectedStudent.email}
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                          <Badge 
+                                            variant="secondary" 
+                                            className={
+                                              selectedStudent.joinMethod === "kakao" 
+                                                ? "bg-yellow-100 text-yellow-700" 
+                                                : "bg-blue-100 text-blue-700"
+                                            }
+                                          >
+                                            {selectedStudent.joinMethod === "kakao" ? "카카오톡 가입" : "이메일 가입"}
+                                          </Badge>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                          <Calendar className="h-4 w-4 text-muted-foreground" />
+                                          가입일: {selectedStudent.joinDate}
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                          <BookOpen className="h-4 w-4 text-muted-foreground" />
+                                          수강 강좌: {selectedStudent.courses.length}개
+                                        </div>
+                                      </div>
                     </div>
                   </div>
 
