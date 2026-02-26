@@ -78,7 +78,7 @@ const studentsData = [
       { id: "3", title: "퍼포먼스 마케팅 마스터클래스", progress: 100, lastAccess: "2026.02.20", enrollDate: "2025.10.20", price: 169000, isRefunded: false },
     ],
     refundedCourses: [
-      { id: "7", title: "ChatGPT & AI 자동화", progress: 15, lastAccess: "2025.11.05", enrollDate: "2025.10.25", price: 149000, refundDate: "2025.11.10", isRefunded: true },
+      { id: "7", title: "ChatGPT & AI 자동화", progress: 15, lastAccess: "2025.11.05", enrollDate: "2025.10.25", price: 149000, refundDate: "2025.11.10", refundAmount: 149000, isRefunded: true },
     ],
     totalSpent: 169000,
     status: "active",
@@ -137,7 +137,9 @@ const studentsData = [
     courses: [
       { id: "1", title: "ChatGPT & AI 자동화", progress: 5, lastAccess: "2026.02.27", enrollDate: "2026.02.01", price: 149000, isRefunded: false },
     ],
-    refundedCourses: [],
+    refundedCourses: [
+      { id: "8", title: "유튜브 수익화 가이드", progress: 8, lastAccess: "2026.02.10", enrollDate: "2026.02.05", price: 129000, refundDate: "2026.02.15", refundAmount: 129000, isRefunded: true },
+    ],
     totalSpent: 149000,
     status: "active",
   },
@@ -767,7 +769,10 @@ export default function StudentsPage() {
                               </div>
                               <div className="flex items-center justify-between text-xs text-muted-foreground">
                                 <span>환불일: {course.refundDate}</span>
-                                <span className="line-through">{course.price.toLocaleString()}원</span>
+                                <div className="flex items-center gap-2">
+                                  <span className="line-through">{course.price.toLocaleString()}원</span>
+                                  <span className="text-red-600 font-medium">환불: {course.refundAmount?.toLocaleString()}원</span>
+                                </div>
                               </div>
                             </div>
                           ))}
