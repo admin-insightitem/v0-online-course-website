@@ -408,9 +408,19 @@ export default function StudentsPage() {
                       이름 {getSortIcon("name")}
                     </button>
                   </TableHead>
-                  <TableHead>
+<TableHead>
                     <button onClick={() => handleSort("joinDate")} className="flex items-center hover:text-foreground">
                       가입일 {getSortIcon("joinDate")}
+                    </button>
+                  </TableHead>
+                  <TableHead>
+                    <button onClick={() => handleSort("joinMethod")} className="flex items-center hover:text-foreground">
+                      가입 방법 {getSortIcon("joinMethod")}
+                    </button>
+                  </TableHead>
+                  <TableHead>
+                    <button onClick={() => handleSort("email")} className="flex items-center hover:text-foreground">
+                      이메일 {getSortIcon("email")}
                     </button>
                   </TableHead>
                   <TableHead>
@@ -420,12 +430,12 @@ export default function StudentsPage() {
                   </TableHead>
                   <TableHead>
                     <button onClick={() => handleSort("joinMethod")} className="flex items-center hover:text-foreground">
-                      가입 방법 {getSortIcon("joinMethod")}
+                      가��� 방법 {getSortIcon("joinMethod")}
                     </button>
                   </TableHead>
                   <TableHead>
                     <button onClick={() => handleSort("courses")} className="flex items-center hover:text-foreground">
-                      수강 강좌 {getSortIcon("courses")}
+                      ���강 강좌 {getSortIcon("courses")}
                     </button>
                   </TableHead>
                   <TableHead>환불 강좌</TableHead>
@@ -474,9 +484,6 @@ export default function StudentsPage() {
                                         <span className="text-sm">{student.joinDate}</span>
                                       </TableCell>
                                       <TableCell>
-                                        <p className="text-sm">{student.email}</p>
-                                      </TableCell>
-                                      <TableCell>
                                         <Badge 
                                           variant="secondary" 
                                           className={
@@ -487,6 +494,9 @@ export default function StudentsPage() {
                                         >
                                           {student.joinMethod === "kakao" ? "카카오톡" : "이메일"}
                                         </Badge>
+                                      </TableCell>
+                                      <TableCell>
+                                        <p className="text-sm">{student.email}</p>
                                       </TableCell>
                                       <TableCell>
                                         <div className="space-y-1">
@@ -710,7 +720,7 @@ export default function StudentsPage() {
                       <div className="flex items-center gap-3">
                         {[
                           { value: "enrollDate", label: "수강 신청일 순" },
-                          { value: "lastAccess", label: "마지막 학습��� 순" },
+                          { value: "lastAccess", label: "마지막 학습����� 순" },
                         ].map((option) => (
                           <button
                             key={option.value}
