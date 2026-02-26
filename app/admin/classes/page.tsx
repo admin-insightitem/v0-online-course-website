@@ -26,7 +26,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
@@ -227,7 +226,12 @@ export default function ClassesPage() {
                     <TableCell>
                       <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-2">
-                          <span className="font-medium line-clamp-1">{cls.title}</span>
+                          <Link 
+                            href={`/courses/${cls.id}`} 
+                            className="font-medium line-clamp-1 hover:text-primary hover:underline cursor-pointer"
+                          >
+                            {cls.title}
+                          </Link>
                           {cls.badge && (
                             <Badge
                               variant={cls.badge === "NEW" ? "default" : "secondary"}
@@ -285,11 +289,6 @@ export default function ClassesPage() {
                             <Edit className="mr-2 h-4 w-4" />
                             수정
                           </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <BookOpen className="mr-2 h-4 w-4" />
-                            강의 관리
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
                           <DropdownMenuItem className="text-destructive">
                             <Trash2 className="mr-2 h-4 w-4" />
                             삭제
