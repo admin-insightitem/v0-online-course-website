@@ -382,9 +382,10 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
                 <h2 className="font-semibold text-foreground">커리큘럼</h2>
                 <button 
                   onClick={() => setIsReviewModalOpen(true)}
-                  className="text-xs text-accent hover:underline"
+                  className="flex items-center gap-1.5 rounded-full bg-accent/10 px-3 py-1.5 text-xs font-medium text-accent transition-colors hover:bg-accent/20"
                 >
-                  수강평 작성하기
+                  <Star className="h-3.5 w-3.5 fill-accent" />
+                  수강평 작성
                 </button>
               </div>
               <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">{course.title}</p>
