@@ -177,7 +177,7 @@ export default function OrderPage() {
                 </div>
 
                 <div className="mt-6">
-                  <h3 className="mb-3 text-sm font-semibold text-foreground">결제 방법</h3>
+                  <h3 className="mb-3 text-sm font-semibold text-foreground">결��� 방법</h3>
                   <div className="flex flex-wrap gap-2">
                     {paymentMethods.map((method) => (
                       <button
@@ -241,23 +241,23 @@ export default function OrderPage() {
 
               {/* Marketing Consent */}
               <section>
-                <h2 className="text-lg font-bold text-foreground">마케팅 수신 설정</h2>
-                <div className="mt-4 rounded-lg border border-border bg-card p-4">
-                  <label className="flex cursor-pointer items-start gap-3">
-                    <Checkbox
-                      checked={agreedToMarketing}
-                      onCheckedChange={(checked) => setAgreedToMarketing(checked === true)}
-                      className="mt-0.5 h-5 w-5 shrink-0 border-border data-[state=checked]:border-accent data-[state=checked]:bg-accent"
-                    />
-                    <div className="flex flex-col gap-1">
+                <div className="flex items-start gap-8 rounded-lg bg-secondary/50 px-6 py-5">
+                  <span className="shrink-0 text-sm font-medium text-muted-foreground">마케팅 수신 설정</span>
+                  <div className="flex flex-col gap-1">
+                    <label className="flex cursor-pointer items-center gap-2">
+                      <Checkbox
+                        checked={agreedToMarketing}
+                        onCheckedChange={(checked) => setAgreedToMarketing(checked === true)}
+                        className="h-5 w-5 shrink-0 border-border data-[state=checked]:border-accent data-[state=checked]:bg-accent"
+                      />
                       <span className="text-sm font-medium text-foreground">
                         이벤트/쿠폰 등 혜택 수신 동의
                       </span>
-                      <span className="text-xs text-muted-foreground">
-                        체크하지 않으면 무료특강 혜택을 받으실 수 없습니다.
-                      </span>
-                    </div>
-                  </label>
+                    </label>
+                    <span className="ml-7 text-xs text-muted-foreground">
+                      체크하지 않으면 무료특강 혜택을 받으실 수 없습니다.
+                    </span>
+                  </div>
                 </div>
               </section>
             </div>
