@@ -254,9 +254,9 @@ export default function ProfilePage() {
             <h4 className="text-base font-semibold text-foreground mb-2">기본정보</h4>
           </div>
 
-          {/* 이름 */}
+          {/* 이름(닉네임) */}
           <div className="flex flex-col gap-2">
-            <label className="text-sm text-muted-foreground">이름</label>
+            <label className="text-sm text-muted-foreground">이름(닉네임)</label>
             {editingField === "name" ? (
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
