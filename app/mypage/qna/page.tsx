@@ -7,6 +7,7 @@ import { MypageLayout } from "@/components/mypage-layout"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
+import { Textarea } from "@/components/ui/textarea"
 import {
   Select,
   SelectContent,
@@ -207,7 +208,7 @@ const qnaData = [
     course: courses[0],
     lectureTitle: "Section 3. AI 자동화 시스템 구축 > AI 콘텐츠 자동 생성 파이프라인",
     content: "Make에서 시나리오를 실행하면 중간에 에러가 발생합니다. 에러 로그를 어떻게 확인하고 해결해야 할까요?",
-    author: "김경민",
+    author: "김���민",
     authorImage: "/images/instructor-1.jpg",
     isMyQuestion: true,
     createdAt: "2026.02.15",
@@ -240,6 +241,9 @@ export default function QnAPage() {
   const [currentPage, setCurrentPage] = useState(1)
   // 첫 번째 질문은 답글이 열린 상태로 시작
   const [expandedReplies, setExpandedReplies] = useState<string[]>(["q1"])
+  // 첫 번째 질문은 답글 입력창이 열린 상태로 시작
+  const [replyInputOpen, setReplyInputOpen] = useState<string[]>(["q1"])
+  const [replyText, setReplyText] = useState("")
 
   const toggleReplies = (questionId: string) => {
     setExpandedReplies((prev) =>
@@ -247,6 +251,18 @@ export default function QnAPage() {
         ? prev.filter((id) => id !== questionId)
         : [...prev, questionId]
     )
+  }
+
+  const toggleReplyInput = (questionId: string) => {
+    setReplyInputOpen((prev) =>
+      prev.includes(questionId)
+        ? prev.filter((id) => id !== questionId)
+        : [...prev, questionId]
+    )
+    // 답글 입력창을 열 때 답글 목록도 함께 열기
+    if (!expandedReplies.includes(questionId)) {
+      setExpandedReplies((prev) => [...prev, questionId])
+    }
   }
 
   // 필터링된 질문 목록
@@ -432,34 +448,69 @@ export default function QnAPage() {
                           : <ChevronDown className="h-3.5 w-3.5" />
                       )}
                     </button>
-                    <button className="ml-2 text-xs text-primary hover:text-primary/80 font-medium">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="ml-4 h-7 px-3 text-xs"
+                      onClick={() => toggleReplyInput(question.id)}
+                    >
                       답글 등록
-                    </button>
+                    </Button>
                   </div>
 
-                  {/* 답글 목록 */}
-                  {expandedReplies.includes(question.id) && question.replies.length > 0 && (
-                    <div className="mt-4 space-y-3 border-l-2 border-border pl-4">
-                      {question.replies.map((reply) => (
-                        <div key={reply.id} className="flex items-start gap-3">
-                          <Avatar className="h-7 w-7">
-                            <AvatarImage src={reply.authorImage} />
-                            <AvatarFallback>{reply.author[0]}</AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm font-medium text-foreground">{reply.author}</span>
-                              {reply.isInstructor && (
-                                <Badge variant="secondary" className="text-[10px] bg-accent/10 text-accent">
-                                  강사
-                                </Badge>
-                              )}
-                              <span className="text-xs text-muted-foreground">{reply.date}</span>
-                            </div>
-                            <p className="mt-1 text-sm text-foreground">{reply.content}</p>
+                  {/* 답글 입력창 및 답글 목록 */}
+                  {expandedReplies.includes(question.id) && (
+                    <div className="mt-4 space-y-4 border-l-2 border-border pl-4">
+                      {/* 답글 입력창 */}
+                      {replyInputOpen.includes(question.id) && (
+                        <div className="space-y-2">
+                          <Textarea
+                            placeholder="답글을 입력하세요..."
+                            value={replyText}
+                            onChange={(e) => setReplyText(e.target.value)}
+                            className="min-h-[80px] text-sm"
+                          />
+                          <div className="flex justify-end gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                setReplyInputOpen((prev) => prev.filter((id) => id !== question.id))
+                                setReplyText("")
+                              }}
+                            >
+                              취소
+                            </Button>
+                            <Button size="sm">등록</Button>
                           </div>
                         </div>
-                      ))}
+                      )}
+
+                      {/* 기존 답글 목록 */}
+                      {question.replies.length > 0 && (
+                        <div className="space-y-3">
+                          {question.replies.map((reply) => (
+                            <div key={reply.id} className="flex items-start gap-3">
+                              <Avatar className="h-7 w-7">
+                                <AvatarImage src={reply.authorImage} />
+                                <AvatarFallback>{reply.author[0]}</AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-sm font-medium text-foreground">{reply.author}</span>
+                                  {reply.isInstructor && (
+                                    <Badge variant="secondary" className="text-[10px] bg-accent/10 text-accent">
+                                      강사
+                                    </Badge>
+                                  )}
+                                  <span className="text-xs text-muted-foreground">{reply.date}</span>
+                                </div>
+                                <p className="mt-1 text-sm text-foreground">{reply.content}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
