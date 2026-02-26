@@ -1,6 +1,8 @@
 "use client"
 
 import { useState } from "react"
+import { useSearchParams } from "next/navigation"
+import Image from "next/image"
 import { AdminLayout } from "@/components/admin-layout"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -69,6 +71,7 @@ const coursesWithCurriculum = [
   {
     id: "1",
     title: "ChatGPT & AI 자동화로 월 1,000만원 수익 만들기",
+    thumbnail: "/images/course-ai.jpg",
     sections: [
       {
         id: "s1",
@@ -105,6 +108,7 @@ const coursesWithCurriculum = [
   {
     id: "2",
     title: "유튜브 수익화 완벽 가이드: 0에서 월 500만원까지",
+    thumbnail: "/images/course-youtube.jpg",
     sections: [
       {
         id: "s4",
@@ -120,6 +124,7 @@ const coursesWithCurriculum = [
   {
     id: "3",
     title: "퍼포먼스 마케팅 마스터클래스: ROI 500% 달성 전략",
+    thumbnail: "/images/course-marketing.jpg",
     sections: [
       {
         id: "s5",
@@ -135,13 +140,15 @@ const coursesWithCurriculum = [
 ]
 
 export default function LecturesPage() {
-  const [selectedCourse, setSelectedCourse] = useState(coursesWithCurriculum[0].id)
+  const searchParams = useSearchParams()
+  const classId = searchParams.get("classId") || coursesWithCurriculum[0].id
+  
   const [isAddSectionOpen, setIsAddSectionOpen] = useState(false)
   const [isAddLectureOpen, setIsAddLectureOpen] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
   const [isUploading, setIsUploading] = useState(false)
 
-  const currentCourse = coursesWithCurriculum.find((c) => c.id === selectedCourse)
+  const currentCourse = coursesWithCurriculum.find((c) => c.id === classId)
 
   const totalLectures = currentCourse?.sections.reduce(
     (acc, section) => acc + section.lectures.length,
@@ -328,26 +335,31 @@ export default function LecturesPage() {
           </div>
         </div>
 
-        {/* Course Selector */}
+        {/* Course Info */}
         <Card>
           <CardContent className="pt-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <div className="flex-1">
-                <Label htmlFor="courseSelect" className="mb-2 block text-sm font-medium">
-                  강좌 선택
-                </Label>
-                <Select value={selectedCourse} onValueChange={setSelectedCourse}>
-                  <SelectTrigger id="courseSelect" className="w-full">
-                    <SelectValue placeholder="강좌를 선택하세요" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {coursesWithCurriculum.map((course) => (
-                      <SelectItem key={course.id} value={course.id}>
-                        {course.title}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              <div className="flex items-center gap-4 flex-1">
+                <div className="relative h-20 w-36 overflow-hidden rounded-lg border border-border flex-shrink-0">
+                  {currentCourse?.thumbnail ? (
+                    <Image
+                      src={currentCourse.thumbnail}
+                      alt={currentCourse.title}
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center bg-muted">
+                      <Video className="h-8 w-8 text-muted-foreground" />
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-muted-foreground mb-1">선택된 강좌</p>
+                  <h3 className="font-semibold text-lg leading-tight line-clamp-2">
+                    {currentCourse?.title}
+                  </h3>
+                </div>
               </div>
               <div className="flex items-center gap-6 rounded-lg bg-muted p-4">
                 <div className="text-center">
