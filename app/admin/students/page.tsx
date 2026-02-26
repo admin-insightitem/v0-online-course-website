@@ -408,7 +408,7 @@ export default function StudentsPage() {
                   <TableHead className="w-12 text-center">No.</TableHead>
                   <TableHead>
                     <button onClick={() => handleSort("name")} className="flex items-center hover:text-foreground">
-                      이름 {getSortIcon("name")}
+                      이름(닉네임) {getSortIcon("name")}
                     </button>
                   </TableHead>
                   <TableHead>
@@ -538,12 +538,9 @@ export default function StudentsPage() {
                                         )}
                                       </TableCell>
                       <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Progress value={avgProgress} className="w-20" />
-                          <span className={`text-sm font-medium ${getProgressColor(avgProgress)}`}>
-                            {avgProgress}%
-                          </span>
-                        </div>
+                        <span className={`text-sm font-medium ${getProgressColor(avgProgress)}`}>
+                          {avgProgress}%
+                        </span>
                       </TableCell>
                       <TableCell className="font-medium">
                         {student.totalSpent.toLocaleString()}원
