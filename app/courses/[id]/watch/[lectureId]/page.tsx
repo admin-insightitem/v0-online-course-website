@@ -51,7 +51,7 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
   const course = getCourseById(id)
   
   const [openSections, setOpenSections] = useState<number[]>([0, 1, 2, 3])
-  const [activeTab, setActiveTab] = useState<"materials" | "qna">("materials")
+  const [activeTab, setActiveTab] = useState<"materials" | "qna" | null>(null)
   const [newQuestion, setNewQuestion] = useState("")
   const [questions, setQuestions] = useState(mockQuestions)
   
@@ -232,7 +232,7 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
           <div className="border-b border-border">
             <div className="flex">
               <button
-                onClick={() => setActiveTab("materials")}
+                onClick={() => setActiveTab(activeTab === "materials" ? null : "materials")}
                 className={`px-6 py-3 text-sm font-medium transition-colors border-b-2 ${
                   activeTab === "materials"
                     ? "border-accent text-accent"
@@ -242,7 +242,7 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
                 학습 자료
               </button>
               <button
-                onClick={() => setActiveTab("qna")}
+                onClick={() => setActiveTab(activeTab === "qna" ? null : "qna")}
                 className={`px-6 py-3 text-sm font-medium transition-colors border-b-2 ${
                   activeTab === "qna"
                     ? "border-accent text-accent"
@@ -254,8 +254,8 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
             </div>
           </div>
 
-          {/* Tab Content */}
-          <div className="p-4 lg:p-6">
+          {/* Tab Content - Collapsible */}
+          {activeTab && <div className="p-4 lg:p-6">
             {activeTab === "materials" && (
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-foreground">학습 자료 다운로드</h3>
@@ -371,7 +371,7 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
                 </div>
               </div>
             )}
-          </div>
+          </div>}
         </div>
 
         {/* Curriculum Sidebar */}
