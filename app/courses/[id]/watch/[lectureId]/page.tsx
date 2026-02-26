@@ -436,12 +436,32 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
                         {section.lessons.map((lesson, lIdx) => {
                           const thisLectureId = `lecture-${sectionLectureNum + lIdx + 1}`
                           const isActive = thisLectureId === lectureId
-                          const isCompleted = sectionLectureNum + lIdx + 1 < currentLectureGlobalIndex + 1
+                          
+                          // Demo: Section 1 shows 4 different states
+                          // 1st lesson: preview, 2nd: watched, 3rd: not watched, 4th: locked
+                          let isPreview = lesson.isFree
+                          let isCompleted = false
+                          let isNotWatched = false
+                          let isLocked = !lesson.isFree
+                          
+                          if (sIdx === 0) {
+                            isPreview = lIdx === 0
+                            isCompleted = lIdx === 1
+                            isNotWatched = lIdx === 2
+                            isLocked = lIdx === 3
+                          } else {
+                            // Other sections: use original logic
+                            isCompleted = sectionLectureNum + lIdx + 1 < currentLectureGlobalIndex + 1
+                            isNotWatched = !isCompleted && !isActive && lesson.isFree
+                          }
+
+                          // Determine if clickable
+                          const isClickable = isPreview || isCompleted || isNotWatched || isActive
 
                           return (
                             <li key={lesson.title}>
-                              {/* 4 states: completed, active, preview (free), locked */}
-                              {lesson.isFree || isCompleted || isActive ? (
+                              {/* 4 states: preview, completed, not watched, locked */}
+                              {isClickable ? (
                                 <Link
                                   href={`/courses/${id}/watch/${thisLectureId}`}
                                   className={`flex items-center gap-3 px-4 py-3 text-left transition-colors ${
@@ -468,7 +488,7 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
                                       {isCompleted && (
                                         <span className="text-xs text-green-500">수강완료</span>
                                       )}
-                                      {lesson.isFree && !isCompleted && !isActive && (
+                                      {isPreview && !isCompleted && !isActive && (
                                         <Badge variant="secondary" className="text-[10px] text-accent">
                                           미리보기
                                         </Badge>
