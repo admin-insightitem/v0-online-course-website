@@ -18,23 +18,7 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-muted/30">
-      {/* Header */}
-      <header className="border-b border-border/50 bg-background">
-        <div className="mx-auto flex h-16 max-w-7xl items-center px-4 lg:px-8">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-              <span className="text-sm font-bold text-primary-foreground">T</span>
-            </div>
-            <span className="text-lg font-bold tracking-tight text-foreground">
-              TITAN<span className="text-primary">CLASS</span>
-            </span>
-          </Link>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="flex flex-1 items-start justify-center px-4 pt-12 pb-20 md:pt-20">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-muted/30 px-4 py-12">
         <div className="w-full max-w-[440px] rounded-xl bg-background p-8 shadow-sm">
           {!isSubmitted ? (
             <>
@@ -148,7 +132,6 @@ export default function ForgotPasswordPage() {
             </>
           )}
         </div>
-      </main>
     </div>
   )
 }
