@@ -257,7 +257,7 @@ export function Header({ variant = "default" }: HeaderProps) {
             <Link href="/mypage">
               <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground hover:text-foreground">
                 <User className="h-4 w-4" />
-                이름(닉네임)
+                마이페이지
               </Button>
             </Link>
           </div>
