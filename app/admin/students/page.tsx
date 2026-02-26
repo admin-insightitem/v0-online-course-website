@@ -155,7 +155,7 @@ const courseFilters = [
   "인스타그램 & 틱톡 SNS 수익화",
 ]
 
-type SortKey = "name" | "email" | "joinMethod" | "courses" | "joinDate" | "progress" | "totalSpent" | "status"
+type SortKey = "name" | "email" | "joinMethod" | "courses" | "refundedCourses" | "joinDate" | "progress" | "totalSpent" | "status"
 type SortOrder = "asc" | "desc"
 
 export default function StudentsPage() {
@@ -218,6 +218,9 @@ export default function StudentsPage() {
         break
       case "courses":
         comparison = a.courses.length - b.courses.length
+        break
+      case "refundedCourses":
+        comparison = (a.refundedCourses?.length || 0) - (b.refundedCourses?.length || 0)
         break
       case "joinDate":
         comparison = new Date(a.joinDate.replace(/\./g, "-")).getTime() - new Date(b.joinDate.replace(/\./g, "-")).getTime()
@@ -428,7 +431,11 @@ export default function StudentsPage() {
                       수강 강좌 {getSortIcon("courses")}
                     </button>
                   </TableHead>
-                  <TableHead>환불 강좌</TableHead>
+                  <TableHead>
+                    <button onClick={() => handleSort("refundedCourses")} className="flex items-center hover:text-foreground">
+                      환불 강좌 {getSortIcon("refundedCourses")}
+                    </button>
+                  </TableHead>
                   <TableHead>
                     <button onClick={() => handleSort("progress")} className="flex items-center hover:text-foreground">
                       평균 진도율 {getSortIcon("progress")}
@@ -710,7 +717,7 @@ export default function StudentsPage() {
                       <div className="flex items-center gap-3">
                         {[
                           { value: "enrollDate", label: "수강 신청일 순" },
-                          { value: "lastAccess", label: "마지막 학습����� 순" },
+                          { value: "lastAccess", label: "마지막 학습������� 순" },
                         ].map((option) => (
                           <button
                             key={option.value}
