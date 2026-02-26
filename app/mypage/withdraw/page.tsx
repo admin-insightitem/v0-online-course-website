@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { MypageLayout } from "@/components/mypage-layout"
 import { Button } from "@/components/ui/button"
-import { ChevronDown, CheckCircle } from "lucide-react"
+import { ChevronDown, CheckCircle, Eye, EyeOff } from "lucide-react"
 
 const withdrawReasons = [
   "수강하고자 하는 강의가 없어요",
@@ -17,17 +17,29 @@ const withdrawReasons = [
 
 export default function WithdrawPage() {
   const router = useRouter()
-  const [step, setStep] = useState<1 | 2>(1)
+  const [step, setStep] = useState<1 | 2 | 3>(1)
   const [selectedReason, setSelectedReason] = useState("")
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [agreed, setAgreed] = useState(false)
   const [showComplete, setShowComplete] = useState(false)
 
+  // 비밀번호 확인 상태
+  const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
   const userName = "김경민"
+
+  const handlePasswordStep = () => {
+    if (password && password === confirmPassword) {
+      setStep(2)
+    }
+  }
 
   const handleNextStep = () => {
     if (selectedReason) {
-      setStep(2)
+      setStep(3)
     }
   }
 
@@ -71,7 +83,77 @@ export default function WithdrawPage() {
       <div className="mt-4 h-px bg-border" />
 
       {step === 1 ? (
-        // Step 1: 탈퇴 사유 선택
+        // Step 1: 비밀번호 확인
+        <div className="mt-8">
+          <h3 className="text-2xl font-bold text-red-600">
+            본인 확인을 위해<br />
+            비밀번호를 입력해주세요.
+          </h3>
+
+          <div className="mt-8 space-y-4">
+            {/* 비밀번호 */}
+            <div className="flex flex-col gap-2">
+              <label className="text-sm text-muted-foreground">비밀번호</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="비밀번호를 입력해주세요"
+                  className="flex h-12 w-full rounded-md border border-border bg-card px-4 pr-10 text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-1 focus:ring-ring"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </button>
+              </div>
+            </div>
+
+            {/* 비밀번호 확인 */}
+            <div className="flex flex-col gap-2">
+              <label className="text-sm text-muted-foreground">비밀번호 확인</label>
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="비밀번호를 다시 입력해주세요"
+                  className="flex h-12 w-full rounded-md border border-border bg-card px-4 pr-10 text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-1 focus:ring-ring"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Buttons */}
+          <div className="mt-8 flex gap-3">
+            <Button
+              variant="outline"
+              onClick={() => router.push("/mypage/profile")}
+              className="h-12 flex-1"
+            >
+              취소하기
+            </Button>
+            <Button
+              onClick={handlePasswordStep}
+              disabled={!password || password !== confirmPassword}
+              className="h-12 flex-1 bg-red-600 text-white hover:bg-red-700 disabled:bg-muted disabled:text-muted-foreground"
+            >
+              다음 단계 이동
+            </Button>
+          </div>
+        </div>
+      ) : step === 2 ? (
+        // Step 2: 탈퇴 사유 선택
         <div className="mt-8">
           <h3 className="text-2xl font-bold text-red-600">
             {userName}님,<br />
@@ -117,7 +199,7 @@ export default function WithdrawPage() {
           <div className="mt-8 flex gap-3">
             <Button
               variant="outline"
-              onClick={() => router.push("/mypage/profile")}
+              onClick={() => setStep(1)}
               className="h-12 flex-1"
             >
               취소하기
@@ -132,7 +214,7 @@ export default function WithdrawPage() {
           </div>
         </div>
       ) : (
-        // Step 2: 탈퇴 안내 및 동의
+        // Step 3: 탈퇴 안내 및 동의
         <div className="mt-8">
           <p className="text-base font-semibold text-foreground">
             회원 탈퇴 전 아래 사항을 꼭 확인해주시기 바랍니다.
@@ -218,7 +300,7 @@ export default function WithdrawPage() {
           <div className="mt-8 flex gap-3">
             <Button
               variant="outline"
-              onClick={() => setStep(1)}
+              onClick={() => setStep(2)}
               className="h-12 flex-1"
             >
               취소하기
