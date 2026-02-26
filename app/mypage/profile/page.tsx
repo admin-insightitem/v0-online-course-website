@@ -526,65 +526,75 @@ export default function ProfilePage() {
             </Button>
           </div>
 
-          {/* 마케팅 수신 설정 */}
-          <div className="mt-4 pt-4 border-t border-border">
-            <div className="flex items-center justify-between">
-              <h4 className="text-sm font-semibold text-foreground">마케팅 정보 수신에 동의합니다.</h4>
-              <button 
-                onClick={() => setIsMarketingTermsOpen(true)}
-                className="text-sm text-muted-foreground hover:text-foreground hover:underline"
-              >
-                약관보기
-              </button>
-            </div>
-            <p className="mt-2 text-xs text-muted-foreground">
-              할인 이벤트와 쿠폰 발급 등의 알림을 받으시고 혜택을 놓치지 마세요.
-            </p>
-            
-            <div className="mt-4 space-y-3">
-              {/* 이메일 수신 */}
-              <div className="flex items-center justify-between">
-                <label className="flex cursor-pointer items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={emailMarketing}
-                    onChange={(e) => setEmailMarketing(e.target.checked)}
-                    className="h-4 w-4 rounded border-border accent-sky-500"
-                  />
-                  <span className="text-sm text-foreground">이메일 수신</span>
-                </label>
-                <span className="text-xs text-muted-foreground">
-                  {emailMarketing ? "동의" : "미동의"} 일자: {emailMarketingDate}
-                </span>
-              </div>
-              
-              {/* 문자메시지 수신 */}
-              <div className="flex items-center justify-between">
-                <label className="flex cursor-pointer items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={smsMarketing}
-                    onChange={(e) => setSmsMarketing(e.target.checked)}
-                    className="h-4 w-4 rounded border-border accent-sky-500"
-                  />
-                  <span className="text-sm text-foreground">문자메시지 수신</span>
-                </label>
-                <span className="text-xs text-muted-foreground">
-                  {smsMarketing ? "동의" : "미동의"} 일자: {smsMarketingDate}
-                </span>
-              </div>
-            </div>
+          </div>
+      </div>
+
+      {/* 마케팅 수신 동의 */}
+      <div className="mt-6 rounded-lg border border-border bg-card p-6">
+        <h3 className="text-base font-semibold text-foreground mb-4">마케팅 수신 동의</h3>
+        
+        <div className="flex items-center justify-between">
+          <h4 className="text-sm text-foreground">마케팅 정보 수신에 동의합니다.</h4>
+          <button 
+            onClick={() => setIsMarketingTermsOpen(true)}
+            className="text-sm text-muted-foreground border border-border rounded px-3 py-1 hover:bg-muted/50"
+          >
+            약관보기
+          </button>
+        </div>
+        <p className="mt-2 text-xs text-muted-foreground">
+          할인 이벤트와 쿠폰 발급 등의 알림을 받으시고 혜택을 놓치지 마세요.
+        </p>
+        
+        <div className="mt-4 space-y-3">
+          {/* 이메일 수신 */}
+          <div className="flex items-center justify-between">
+            <label className="flex cursor-pointer items-center gap-2">
+              <input
+                type="checkbox"
+                checked={emailMarketing}
+                onChange={(e) => setEmailMarketing(e.target.checked)}
+                className="h-4 w-4 rounded border-border accent-sky-500"
+              />
+              <span className="text-sm text-foreground">이메일 수신</span>
+            </label>
+            <span className="text-xs text-muted-foreground">
+              {emailMarketing ? "동의" : "미동의"} 일자 : {emailMarketingDate}
+            </span>
+          </div>
+          
+          {/* 문자메시지 수신 */}
+          <div className="flex items-center justify-between">
+            <label className="flex cursor-pointer items-center gap-2">
+              <input
+                type="checkbox"
+                checked={smsMarketing}
+                onChange={(e) => setSmsMarketing(e.target.checked)}
+                className="h-4 w-4 rounded border-border accent-sky-500"
+              />
+              <span className="text-sm text-foreground">문자메시지 수신</span>
+            </label>
+            <span className="text-xs text-muted-foreground">
+              {smsMarketing ? "동의" : "미동의"} 일자 : {smsMarketingDate}
+            </span>
           </div>
         </div>
       </div>
 
+      {/* 수정 완료 버튼 */}
+      <div className="mt-6">
+        <Button className="h-12 px-8 bg-red-500 text-white hover:bg-red-600">
+          수정 완료
+        </Button>
+      </div>
+
       {/* 회원탈퇴 링크 */}
-      <div className="mt-8">
+      <div className="mt-6">
         <Link
           href="/mypage/withdraw"
-          className="text-xs text-muted-foreground underline hover:text-foreground"
+          className="text-sm text-muted-foreground underline hover:text-foreground"
         >
-          회원탈퇴
+          회원 탈퇴하기
         </Link>
       </div>
 
