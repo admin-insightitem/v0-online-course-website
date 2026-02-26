@@ -46,6 +46,7 @@ import {
   ChevronRight,
   Upload,
   X,
+  Check,
 } from "lucide-react"
 import Link from "next/link"
 
@@ -150,6 +151,10 @@ export default function LecturesPage() {
   const [lectureTitle, setLectureTitle] = useState("")
   const [lectureMaterials, setLectureMaterials] = useState<Material[]>([])
 
+  // 섹션 수정 상태 (Section 2는 기본적으로 수정 중)
+  const [editingSectionId, setEditingSectionId] = useState<string | null>("s2")
+  const [editingSectionTitle, setEditingSectionTitle] = useState("Section 2. ChatGPT 프롬프트 마스터")
+
   // 강의 추가 버튼 클릭
   const handleAddLecture = () => {
     setEditingLecture(null)
@@ -184,6 +189,23 @@ export default function LecturesPage() {
   const handleSaveLecture = () => {
     // TODO: 실제 저장 로직 구현
     setIsLectureDialogOpen(false)
+  }
+
+  // 섹션 수정 시작
+  const handleEditSection = (sectionId: string, sectionTitle: string) => {
+    setEditingSectionId(sectionId)
+    setEditingSectionTitle(sectionTitle)
+  }
+
+  // 섹션 수정 저장
+  const handleSaveSection = () => {
+    // TODO: 실제 저장 로직 구현
+    setEditingSectionId(null)
+  }
+
+  // 섹션 수정 취소
+  const handleCancelSectionEdit = () => {
+    setEditingSectionId(null)
   }
 
   return (
@@ -235,18 +257,60 @@ export default function LecturesPage() {
             <Accordion type="multiple" defaultValue={currentCourse?.sections.map((s) => s.id)}>
               {currentCourse?.sections.map((section) => (
                 <AccordionItem key={section.id} value={section.id} className="border rounded-lg mb-4 px-4">
-                  <AccordionTrigger className="hover:no-underline">
-                    <div className="flex items-center gap-3">
-                      <GripVertical className="h-4 w-4 text-muted-foreground cursor-grab" />
-                      <div className="flex items-center gap-2">
-                        <FolderOpen className="h-4 w-4 text-primary" />
-                        <span className="font-medium">{section.title}</span>
+                  <div className="flex items-center justify-between">
+                    <AccordionTrigger className="hover:no-underline flex-1">
+                      <div className="flex items-center gap-3">
+                        <GripVertical className="h-4 w-4 text-muted-foreground cursor-grab" />
+                        {editingSectionId === section.id ? (
+                          <div className="flex items-center gap-2 flex-1" onClick={(e) => e.stopPropagation()}>
+                            <FolderOpen className="h-4 w-4 text-primary" />
+                            <Input
+                              value={editingSectionTitle}
+                              onChange={(e) => setEditingSectionTitle(e.target.value)}
+                              className="h-8 max-w-md"
+                              autoFocus
+                            />
+                            <Button size="sm" variant="ghost" className="h-8 px-2" onClick={handleSaveSection}>
+                              <Check className="h-4 w-4 text-green-600" />
+                            </Button>
+                            <Button size="sm" variant="ghost" className="h-8 px-2" onClick={handleCancelSectionEdit}>
+                              <X className="h-4 w-4 text-muted-foreground" />
+                            </Button>
+                          </div>
+                        ) : (
+                          <>
+                            <div className="flex items-center gap-2">
+                              <FolderOpen className="h-4 w-4 text-primary" />
+                              <span className="font-medium">{section.title}</span>
+                            </div>
+                            <Badge variant="secondary" className="ml-2">
+                              {section.lectures.length}개 강의
+                            </Badge>
+                          </>
+                        )}
                       </div>
-                      <Badge variant="secondary" className="ml-2">
-                        {section.lectures.length}개 강의
-                      </Badge>
-                    </div>
-                  </AccordionTrigger>
+                    </AccordionTrigger>
+                    {editingSectionId !== section.id && (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8 mr-2">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => handleEditSection(section.id, section.title)}>
+                            <Edit className="mr-2 h-4 w-4" />
+                            수정
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem className="text-destructive">
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            삭제
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
+                  </div>
                   <AccordionContent>
                     <div className="space-y-2 pt-2">
                       {section.lectures.map((lecture, index) => (
@@ -337,7 +401,7 @@ export default function LecturesPage() {
             <DialogHeader>
               <DialogTitle>{editingLecture ? "강의 수정" : "강의 추가"}</DialogTitle>
               <DialogDescription>
-                강의 제목과 학습 자료를 입력하세요.
+                강의 제목과 학습 자료를 입력��세요.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-6 py-4">
