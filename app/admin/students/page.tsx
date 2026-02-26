@@ -423,6 +423,7 @@ export default function StudentsPage() {
                       수강 강좌 {getSortIcon("courses")}
                     </button>
                   </TableHead>
+                  <TableHead>환불 강좌</TableHead>
                   <TableHead>
                     <button onClick={() => handleSort("joinDate")} className="flex items-center hover:text-foreground">
                       가입일 {getSortIcon("joinDate")}
@@ -502,6 +503,29 @@ export default function StudentsPage() {
                                             )}
                                           </div>
                                         </div>
+                                      </TableCell>
+                                      <TableCell>
+                                        {student.refundedCourses && student.refundedCourses.length > 0 ? (
+                                          <div className="space-y-1">
+                                            <p className="text-sm font-medium text-red-600">{student.refundedCourses.length}개</p>
+                                            <div className="flex flex-col gap-0.5">
+                                              {student.refundedCourses.slice(0, 2).map((course) => (
+                                                <span key={course.id} className="text-xs text-muted-foreground">
+                                                  {course.title.length > 18
+                                                    ? course.title.substring(0, 18) + "..."
+                                                    : course.title}
+                                                </span>
+                                              ))}
+                                              {student.refundedCourses.length > 2 && (
+                                                <span className="text-xs text-muted-foreground">
+                                                  외 {student.refundedCourses.length - 2}개
+                                                </span>
+                                              )}
+                                            </div>
+                                          </div>
+                                        ) : (
+                                          <span className="text-sm text-muted-foreground">--</span>
+                                        )}
                                       </TableCell>
                                       <TableCell>
                                         <span className="text-sm">{student.joinDate}</span>
