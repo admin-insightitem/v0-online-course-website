@@ -239,12 +239,24 @@ export default function OrderPage() {
 
               <div className="my-8 border-t border-border" />
 
-              {/* Marketing Consent */}
+              {/* Payment & Marketing Consent */}
               <section>
-                <div className="flex items-start gap-8 rounded-lg bg-secondary/50 px-6 py-5">
-                  <span className="shrink-0 text-sm font-medium text-muted-foreground">마케팅 수신 설정</span>
+                <div className="flex flex-col gap-4 rounded-lg bg-secondary/50 px-6 py-5">
+                  {/* Terms Agreement */}
+                  <label className="flex cursor-pointer items-center gap-3">
+                    <Checkbox
+                      checked={agreedToTerms}
+                      onCheckedChange={(checked) => setAgreedToTerms(checked === true)}
+                      className="h-5 w-5 shrink-0 border-border data-[state=checked]:border-accent data-[state=checked]:bg-accent"
+                    />
+                    <span className="text-sm font-medium text-foreground">
+                      강의 및 결제 정보를 확인하였으며, 이에 동의합니다(필수)
+                    </span>
+                  </label>
+
+                  {/* Marketing Consent */}
                   <div className="flex flex-col gap-1">
-                    <label className="flex cursor-pointer items-center gap-2">
+                    <label className="flex cursor-pointer items-center gap-3">
                       <Checkbox
                         checked={agreedToMarketing}
                         onCheckedChange={(checked) => setAgreedToMarketing(checked === true)}
@@ -254,7 +266,7 @@ export default function OrderPage() {
                         이벤트/쿠폰 등 혜택 수신 동의
                       </span>
                     </label>
-                    <span className="ml-7 text-xs text-muted-foreground">
+                    <span className="ml-8 text-xs text-muted-foreground">
                       체크하지 않으면 무료특강 혜택을 받으실 수 없습니다.
                     </span>
                   </div>
@@ -289,19 +301,6 @@ export default function OrderPage() {
                   <p className="text-right text-xs text-muted-foreground">
                     {'12개월 할부 시 월 '}{formatNumber(Math.ceil(totalPrice / 12))}{'원'}
                   </p>
-                </div>
-
-                <div className="mt-6 border-t border-border pt-5">
-                  <label className="flex cursor-pointer items-start gap-2.5">
-                    <Checkbox
-                      checked={agreedToTerms}
-                      onCheckedChange={(checked) => setAgreedToTerms(checked === true)}
-                      className="mt-0.5 h-4.5 w-4.5 shrink-0 border-border data-[state=checked]:border-foreground data-[state=checked]:bg-foreground"
-                    />
-                    <span className="text-xs leading-relaxed text-muted-foreground">
-                      강의 및 결제 정보를 확인하였으며, 이에 동의합니다(필수)
-                    </span>
-                  </label>
                 </div>
 
                 <Button
