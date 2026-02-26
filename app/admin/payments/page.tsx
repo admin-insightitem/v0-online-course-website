@@ -65,8 +65,9 @@ const paymentsData = [
     id: "PAY-2026022701",
     studentName: "김경민",
     email: "kyungmin@gmail.com",
-    course: "ChatGPT & AI 자동화",
+    courses: ["ChatGPT & AI 자동화", "유튜브 수익화 가이드"],
     amount: 149000,
+    couponDiscount: 10000,
     paymentMethod: "카드",
     cardInfo: "신한카드 **** 1234",
     status: "completed",
@@ -77,8 +78,9 @@ const paymentsData = [
     id: "PAY-2026022702",
     studentName: "이수현",
     email: "soohyun@naver.com",
-    course: "유튜브 수익화 가이드",
+    courses: ["유튜브 수익화 가이드"],
     amount: 129000,
+    couponDiscount: 0,
     paymentMethod: "카카오페이",
     cardInfo: "",
     status: "refunded",
@@ -89,8 +91,9 @@ const paymentsData = [
     id: "PAY-2026022703",
     studentName: "박준영",
     email: "junyoung@kakao.com",
-    course: "퍼포먼스 마케팅 마스터클래스",
+    courses: ["퍼포먼스 마케팅 마스터클래스"],
     amount: 169000,
+    couponDiscount: 0,
     paymentMethod: "카드",
     cardInfo: "삼성카드 **** 5678",
     status: "completed",
@@ -101,8 +104,9 @@ const paymentsData = [
     id: "PAY-2026022601",
     studentName: "최민지",
     email: "minji@gmail.com",
-    course: "프리미어 프로 & 포토샵",
+    courses: ["프리미어 프로 & 포토샵"],
     amount: 139000,
+    couponDiscount: 5000,
     paymentMethod: "네이버페이",
     cardInfo: "",
     status: "completed",
@@ -113,8 +117,9 @@ const paymentsData = [
     id: "PAY-2026022602",
     studentName: "정태호",
     email: "taeho@naver.com",
-    course: "스마트스토어 + 쿠팡",
+    courses: ["스마트스토어 + 쿠팡"],
     amount: 159000,
+    couponDiscount: 0,
     paymentMethod: "카드",
     cardInfo: "현대카드 **** 9012",
     status: "completed",
@@ -511,6 +516,7 @@ export default function PaymentsPage() {
                       <TableHead>구매자</TableHead>
                       <TableHead>강좌</TableHead>
                       <TableHead>결제수단</TableHead>
+                      <TableHead className="text-right">쿠폰 할인</TableHead>
                       <TableHead className="text-right">결제금액</TableHead>
                       <TableHead className="text-center">상태</TableHead>
                     </TableRow>
@@ -534,7 +540,13 @@ export default function PaymentsPage() {
                             <p className="text-xs text-muted-foreground">{payment.email}</p>
                           </div>
                         </TableCell>
-                        <TableCell>{payment.course}</TableCell>
+                        <TableCell>
+                          <div className="flex flex-col gap-0.5">
+                            {payment.courses.map((course, idx) => (
+                              <p key={idx} className="text-sm">{course}</p>
+                            ))}
+                          </div>
+                        </TableCell>
                         <TableCell>
                           <div>
                             <p className="text-sm">{payment.paymentMethod}</p>
@@ -542,6 +554,9 @@ export default function PaymentsPage() {
                               <p className="text-xs text-muted-foreground">{payment.cardInfo}</p>
                             )}
                           </div>
+                        </TableCell>
+                        <TableCell className="text-right font-medium text-red-500">
+                          {payment.couponDiscount > 0 ? `-${payment.couponDiscount.toLocaleString()}원` : "-"}
                         </TableCell>
                         <TableCell className="text-right font-medium">
                           {payment.amount.toLocaleString()}원
