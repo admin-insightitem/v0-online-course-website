@@ -177,7 +177,7 @@ export default function OrderPage() {
                 </div>
 
                 <div className="mt-6">
-                  <h3 className="mb-3 text-sm font-semibold text-foreground">결����� 방법</h3>
+                  <h3 className="mb-3 text-sm font-semibold text-foreground">결제 방법</h3>
                   <div className="flex flex-wrap gap-2">
                     {paymentMethods.map((method) => (
                       <button
