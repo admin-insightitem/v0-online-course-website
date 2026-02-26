@@ -767,7 +767,11 @@ export default function StudentsPage() {
                                   {course.progress}%
                                 </span>
                               </div>
-                              <div className="flex items-center justify-between text-xs text-muted-foreground">
+                              <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
+                                <span>수강 신청일: {course.enrollDate}</span>
+                                <span>마지막 학습일: {course.lastAccess || "--"}</span>
+                              </div>
+                              <div className="flex items-center justify-between text-xs text-muted-foreground border-t border-red-200 pt-2">
                                 <span>환불일: {course.refundDate}</span>
                                 <div className="flex items-center gap-2">
                                   <span className="line-through">{course.price.toLocaleString()}원</span>
