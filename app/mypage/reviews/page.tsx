@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { Star, X, Pencil, CheckCircle, ThumbsUp } from "lucide-react"
+import { Star, X, Pencil, CheckCircle, ThumbsUp, ChevronLeft, ChevronRight } from "lucide-react"
 import { MypageLayout } from "@/components/mypage-layout"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -68,6 +68,106 @@ const allReviews = [
     createdAt: "2026.02.15",
     helpful: 9,
   },
+  {
+    id: "all-review-6",
+    courseId: courses[4].id,
+    course: courses[4],
+    authorName: "한소희",
+    rating: 5,
+    content: "스마트스토어 운영 노하우를 한 번에 배울 수 있어서 좋았습니다. 실제 매출이 올랐어요!",
+    createdAt: "2026.02.14",
+    helpful: 22,
+  },
+  {
+    id: "all-review-7",
+    courseId: courses[0].id,
+    course: courses[0],
+    authorName: "강동원",
+    rating: 5,
+    content: "ChatGPT 활용법이 정말 실용적입니다. 업무 시간이 절반으로 줄었어요.",
+    createdAt: "2026.02.12",
+    helpful: 17,
+  },
+  {
+    id: "all-review-8",
+    courseId: courses[1].id,
+    course: courses[1],
+    authorName: "송지효",
+    rating: 4,
+    content: "주식 초보자에게 딱 맞는 강의입니다. 기초부터 차근차근 설명해주셔서 이해하기 쉬웠어요.",
+    createdAt: "2026.02.10",
+    helpful: 14,
+  },
+  {
+    id: "all-review-9",
+    courseId: courses[2].id,
+    course: courses[2],
+    authorName: "유재석",
+    rating: 5,
+    content: "영어 회화 강의 중 최고입니다. 발음 교정 파트가 특히 도움이 많이 됐어요.",
+    createdAt: "2026.02.08",
+    helpful: 28,
+  },
+  {
+    id: "all-review-10",
+    courseId: courses[3].id,
+    course: courses[3],
+    authorName: "이광수",
+    rating: 4,
+    content: "부동산 경매 파트가 인상적이었습니다. 실전 사례가 많아서 좋았어요.",
+    createdAt: "2026.02.06",
+    helpful: 11,
+  },
+  {
+    id: "all-review-11",
+    courseId: courses[4].id,
+    course: courses[4],
+    authorName: "전소민",
+    rating: 5,
+    content: "쿠팡 입점 가이드가 정말 상세합니다. 덕분에 첫 달 매출 500만원 달성했어요!",
+    createdAt: "2026.02.04",
+    helpful: 35,
+  },
+  {
+    id: "all-review-12",
+    courseId: courses[0].id,
+    course: courses[0],
+    authorName: "김종국",
+    rating: 5,
+    content: "AI 자동화 강의 중 가장 실용적입니다. 바로 업무에 적용할 수 있어서 좋아요.",
+    createdAt: "2026.02.02",
+    helpful: 19,
+  },
+  {
+    id: "all-review-13",
+    courseId: courses[1].id,
+    course: courses[1],
+    authorName: "하하",
+    rating: 4,
+    content: "차트 분석 능력이 확실히 향상됐습니다. 다만 실시간 분석 예제가 더 있었으면 좋겠어요.",
+    createdAt: "2026.01.30",
+    helpful: 8,
+  },
+  {
+    id: "all-review-14",
+    courseId: courses[2].id,
+    course: courses[2],
+    authorName: "양세찬",
+    rating: 5,
+    content: "원어민 표현 정리가 정말 유용합니다. 매일 듣고 있어요!",
+    createdAt: "2026.01.28",
+    helpful: 21,
+  },
+  {
+    id: "all-review-15",
+    courseId: courses[3].id,
+    course: courses[3],
+    authorName: "지석진",
+    rating: 4,
+    content: "부동산 투자 기초를 다지기에 좋은 강의입니다. 초보자에게 추천해요.",
+    createdAt: "2026.01.26",
+    helpful: 13,
+  },
 ]
 
 // 내가 작성한 수강평
@@ -104,6 +204,8 @@ export default function ReviewsPage() {
   const [hoverRating, setHoverRating] = useState(0)
   const [reviewContent, setReviewContent] = useState("")
   const [helpfulReviews, setHelpfulReviews] = useState<string[]>(["all-review-1"])
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 10
 
   const handleHelpful = (reviewId: string) => {
     if (helpfulReviews.includes(reviewId)) {
@@ -146,6 +248,18 @@ export default function ReviewsPage() {
 
   // 수강평 작성이 가능한 강의 (아직 리뷰를 작성하지 않은 강의)
   const coursesWithoutReview = myPurchasedCourses.filter((item) => !item.hasReview)
+
+  // 페이지네이션 계산
+  const totalPages = Math.ceil(allReviews.length / itemsPerPage)
+  const paginatedReviews = allReviews.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  )
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }
 
   return (
     <MypageLayout activeMenu="수강평 목록">
@@ -195,7 +309,8 @@ export default function ReviewsPage() {
                 <p className="text-muted-foreground">아직 작성된 수강평이 없습니다.</p>
               </div>
             ) : (
-              allReviews.map((review) => (
+              <>
+              {paginatedReviews.map((review) => (
                 <div
                   key={review.id}
                   className="rounded-lg border border-border bg-card"
@@ -266,7 +381,43 @@ export default function ReviewsPage() {
                     </div>
                   </div>
                 </div>
-              ))
+              ))}
+
+              {/* 페이지네이션 */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-center gap-1 mt-6">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <Button
+                      key={page}
+                      variant={currentPage === page ? "default" : "outline"}
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => handlePageChange(page)}
+                    >
+                      {page}
+                    </Button>
+                  ))}
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
+              </>
             )}
           </div>
         ) : activeTab === "my-reviews" ? (
