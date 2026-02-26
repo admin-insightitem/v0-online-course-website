@@ -51,9 +51,10 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
   const course = getCourseById(id)
   
   const [openSections, setOpenSections] = useState<number[]>([0, 1, 2, 3])
-  const [activeTab, setActiveTab] = useState<"materials" | "qna" | null>(null)
+  const [activeTab, setActiveTab] = useState<"materials" | "qna" | null>("materials")
   const [newQuestion, setNewQuestion] = useState("")
   const [questions, setQuestions] = useState(mockQuestions)
+  const [qnaFilter, setQnaFilter] = useState<"all" | "my">("all")
   
   // Review modal state
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
@@ -252,7 +253,7 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                Q&A
+                Q&A ({questions.length})
                 {activeTab === "qna" && (
                   <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent" />
                 )}
@@ -318,10 +319,36 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
                   </div>
                 </div>
 
-                {/* Questions List */}
+                {/* Questions List with Filter Tabs */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-foreground">질문 목록</h3>
-                  {questions.map((question) => (
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold text-foreground">질문 목록</h3>
+                    <div className="flex rounded-lg border border-border bg-secondary/30 p-0.5">
+                      <button
+                        onClick={() => setQnaFilter("all")}
+                        className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+                          qnaFilter === "all"
+                            ? "bg-card text-foreground shadow-sm"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        전체 질문
+                      </button>
+                      <button
+                        onClick={() => setQnaFilter("my")}
+                        className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+                          qnaFilter === "my"
+                            ? "bg-card text-foreground shadow-sm"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        내 질문
+                      </button>
+                    </div>
+                  </div>
+                  {questions
+                    .filter((q) => qnaFilter === "all" || q.author === "나")
+                    .map((question) => (
                     <div key={question.id} className="rounded-lg border border-border bg-card p-4">
                       <div className="flex items-start gap-3">
                         <Avatar className="h-8 w-8">
@@ -374,6 +401,11 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
                       </div>
                     </div>
                   ))}
+                  {qnaFilter === "my" && questions.filter((q) => q.author === "나").length === 0 && (
+                    <div className="rounded-lg border border-dashed border-border p-8 text-center">
+                      <p className="text-sm text-muted-foreground">아직 작성한 질문이 없습니다.</p>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
