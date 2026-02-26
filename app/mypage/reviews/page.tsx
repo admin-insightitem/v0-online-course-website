@@ -205,7 +205,27 @@ export default function ReviewsPage() {
   const [reviewContent, setReviewContent] = useState("")
   const [helpfulReviews, setHelpfulReviews] = useState<string[]>(["all-review-1"])
   const [currentPage, setCurrentPage] = useState(1)
+  const [sortBy, setSortBy] = useState<"latest" | "rating" | "helpful">("latest")
   const itemsPerPage = 10
+
+  const handleSortChange = (value: string) => {
+    setSortBy(value as "latest" | "rating" | "helpful")
+    setCurrentPage(1)
+  }
+
+  // 정렬된 리뷰
+  const sortedReviews = [...allReviews].sort((a, b) => {
+    switch (sortBy) {
+      case "latest":
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      case "rating":
+        return b.rating - a.rating
+      case "helpful":
+        return b.helpful - a.helpful
+      default:
+        return 0
+    }
+  })
 
   const handleHelpful = (reviewId: string) => {
     if (helpfulReviews.includes(reviewId)) {
@@ -250,8 +270,8 @@ export default function ReviewsPage() {
   const coursesWithoutReview = myPurchasedCourses.filter((item) => !item.hasReview)
 
   // 페이지네이션 계산
-  const totalPages = Math.ceil(allReviews.length / itemsPerPage)
-  const paginatedReviews = allReviews.slice(
+  const totalPages = Math.ceil(sortedReviews.length / itemsPerPage)
+  const paginatedReviews = sortedReviews.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   )
@@ -304,6 +324,30 @@ export default function ReviewsPage() {
         {activeTab === "all-reviews" ? (
           // 전체 수강평 목록
           <div className="flex flex-col gap-4">
+            {/* 정렬 옵션 */}
+            <div className="flex items-center gap-4">
+              {[
+                { value: "latest", label: "최신순" },
+                { value: "rating", label: "별점 순" },
+                { value: "helpful", label: "도움이 됨 순" },
+              ].map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => handleSortChange(option.value)}
+                  className={`flex items-center gap-1.5 text-sm transition-colors ${
+                    sortBy === option.value
+                      ? "text-primary font-medium"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <span className={`h-1.5 w-1.5 rounded-full ${
+                    sortBy === option.value ? "bg-primary" : "bg-muted-foreground/50"
+                  }`} />
+                  {option.label}
+                </button>
+              ))}
+            </div>
+
             {allReviews.length === 0 ? (
               <div className="rounded-lg border border-border bg-card px-6 py-12 text-center">
                 <p className="text-muted-foreground">아직 작성된 수강평이 없습니다.</p>
