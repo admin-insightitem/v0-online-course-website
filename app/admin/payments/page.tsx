@@ -594,45 +594,45 @@ export default function PaymentsPage() {
           {/* Refunds Tab */}
           <TabsContent value="refunds" className="space-y-4">
             <Card>
-              <CardContent className="pt-6">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                  <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                    <Input
-                      placeholder="이름 또는 환불번호로 검색"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10"
-                    />
+              <CardHeader className="pb-4">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <CardTitle>환불 요청 목록</CardTitle>
+                    <CardDescription>총 {filteredRefunds.length}건의 환불 요청</CardDescription>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Filter className="h-4 w-4 text-muted-foreground" />
-                    <Select value={statusFilter} onValueChange={setStatusFilter}>
-                      <SelectTrigger className="w-[140px]">
-                        <SelectValue placeholder="상태 필터" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">전체</SelectItem>
-                        <SelectItem value="pending">대기중</SelectItem>
-                        <SelectItem value="approved">승인됨</SelectItem>
-                        <SelectItem value="rejected">거절됨</SelectItem>
-                      </SelectContent>
-                    </Select>
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
+                      <Filter className="h-4 w-4 text-muted-foreground" />
+                      <Select value={statusFilter} onValueChange={setStatusFilter}>
+                        <SelectTrigger className="w-[140px]">
+                          <SelectValue placeholder="상태 필터" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">전체</SelectItem>
+                          <SelectItem value="pending">대기중</SelectItem>
+                          <SelectItem value="approved">승인됨</SelectItem>
+                          <SelectItem value="rejected">거절됨</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                      <Input
+                        placeholder="이름 또는 주문번호로 검색"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="pl-10 w-[220px]"
+                      />
+                    </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>환불 요청 목록</CardTitle>
-                <CardDescription>총 {filteredRefunds.length}건의 환불 요청</CardDescription>
               </CardHeader>
               <CardContent>
                 <Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead>환불번호</TableHead>
+                      <TableHead>주문번호</TableHead>
                       <TableHead>신청자</TableHead>
                       <TableHead>강좌</TableHead>
                       <TableHead>진도율</TableHead>
@@ -646,6 +646,7 @@ export default function PaymentsPage() {
                     {paginatedRefunds.map((refund) => (
                       <TableRow key={refund.id}>
                         <TableCell className="font-mono text-sm">{refund.id}</TableCell>
+                        <TableCell className="font-mono text-sm text-muted-foreground">{refund.paymentId}</TableCell>
                         <TableCell>
                           <div>
                             <p className="font-medium">{refund.studentName}</p>
