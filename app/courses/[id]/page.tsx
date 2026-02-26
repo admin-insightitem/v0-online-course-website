@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const course = getCourseById(id)
   if (!course) return { title: "강의를 찾을 수 없습니다" }
   return {
-    title: `${course.title} | TitanClass`,
+    title: `${course.title} | Route01`,
     description: course.description,
   }
 }

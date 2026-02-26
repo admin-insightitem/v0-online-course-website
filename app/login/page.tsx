@@ -18,10 +18,10 @@ export default function LoginPage() {
         <div className="mx-auto flex h-16 max-w-7xl items-center px-4 lg:px-8">
           <Link href="/" className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-              <span className="text-sm font-bold text-primary-foreground">T</span>
+              <span className="text-sm font-bold text-primary-foreground">R</span>
             </div>
             <span className="text-lg font-bold tracking-tight text-foreground">
-              TITAN<span className="text-primary">CLASS</span>
+              Route<span className="text-primary">01</span>
             </span>
           </Link>
         </div>

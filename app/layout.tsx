@@ -16,7 +16,7 @@ const spaceGrotesk = Space_Grotesk({
 })
 
 export const metadata: Metadata = {
-  title: 'TitanClass - No.1 온라인 수익화 플랫폼',
+  title: 'Route01 - No.1 온라인 수익화 플랫폼',
   description: '당신의 인생을 바꾸는 프리미엄 온라인 강의 플랫폼. AI, 유튜브, 마케팅, 디자인, 커머스 분야 전문가의 실전 강의를 만나보세요.',
   icons: {
     icon: [

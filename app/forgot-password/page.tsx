@@ -26,16 +26,16 @@ export default function ForgotPasswordPage() {
               <div className="mb-8">
                 <Link href="/" className="flex items-center gap-2 mb-4">
                   <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
-                    <span className="text-xs font-bold text-primary-foreground">T</span>
+                    <span className="text-xs font-bold text-primary-foreground">R</span>
                   </div>
                   <span className="text-base font-bold tracking-tight text-foreground">
-                    TITAN<span className="text-primary">CLASS</span>
+                    Route<span className="text-primary">01</span>
                   </span>
                 </Link>
                 <h1 className="text-2xl font-semibold leading-snug text-foreground">
                   당신의 성장을 위한 교육,
                   <br />
-                  타이탄클래스.
+                  Route01.
                 </h1>
               </div>
 
@@ -92,10 +92,10 @@ export default function ForgotPasswordPage() {
               <div className="mb-8">
                 <Link href="/" className="flex items-center gap-2 mb-4">
                   <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
-                    <span className="text-xs font-bold text-primary-foreground">T</span>
+                    <span className="text-xs font-bold text-primary-foreground">R</span>
                   </div>
                   <span className="text-base font-bold tracking-tight text-foreground">
-                    TITAN<span className="text-primary">CLASS</span>
+                    Route<span className="text-primary">01</span>
                   </span>
                 </Link>
                 <h1 className="text-2xl font-semibold leading-snug text-foreground">
