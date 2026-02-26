@@ -5,12 +5,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
   BookOpen,
-  Bell,
-  PlayCircle,
-  BookMarked,
-  MonitorPlay,
   Ticket,
-  Heart,
   CreditCard,
   Settings,
   LogOut,
@@ -20,14 +15,9 @@ import { Footer } from "@/components/footer"
 
 const sideMenu = [
   { icon: BookOpen, label: "내 강의실", href: "/mypage" },
-  { icon: Bell, label: "오픈알림", href: "/mypage" },
-  { icon: PlayCircle, label: "무료강의", href: "/mypage" },
-  { icon: BookMarked, label: "전자책", href: "/mypage" },
-  { icon: MonitorPlay, label: "VOD 강의", href: "/mypage" },
-  { icon: Ticket, label: "쿠폰목록", href: "/mypage" },
-  { icon: Heart, label: "위시리스트", href: "/mypage" },
-  { icon: CreditCard, label: "구매내역", href: "/mypage/orders" },
   { icon: Settings, label: "회원정보관리", href: "/mypage/profile" },
+  { icon: Ticket, label: "쿠폰목록", href: "/mypage/coupons" },
+  { icon: CreditCard, label: "구매내역", href: "/mypage/orders" },
   { icon: LogOut, label: "로그아웃", href: "/" },
 ]
 
