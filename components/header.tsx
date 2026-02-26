@@ -257,7 +257,7 @@ export function Header({ variant = "default" }: HeaderProps) {
             <Link href="/mypage">
               <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground hover:text-foreground">
                 <User className="h-4 w-4" />
-                마이페이지
+                {"마이페이지"}
               </Button>
             </Link>
           </div>
@@ -310,7 +310,7 @@ export function Header({ variant = "default" }: HeaderProps) {
                   <Link href="/mypage" onClick={() => setMobileOpen(false)}>
                     <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground">
                       <User className="h-4 w-4" />
-                      마이페이지
+                      {"마이페이지"}
                     </Button>
                   </Link>
                   <Link href="/mypage/notifications" onClick={() => setMobileOpen(false)}>
