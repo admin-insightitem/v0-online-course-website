@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { MypageLayout } from "@/components/mypage-layout"
@@ -17,6 +17,18 @@ export default function ProfilePage() {
   const [emailMarketingDate] = useState("2025.09.02 00:43")
   const [smsMarketingDate] = useState("2024.04.04 20:25")
   const [isMarketingTermsOpen, setIsMarketingTermsOpen] = useState(false)
+
+  // 모달 열릴 때 배경 스크롤 방지
+  useEffect(() => {
+    if (isMarketingTermsOpen) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = "unset"
+    }
+    return () => {
+      document.body.style.overflow = "unset"
+    }
+  }, [isMarketingTermsOpen])
 
   // 프로필 이미지 및 닉네임
   const [profileImage, setProfileImage] = useState<string | null>(null)
@@ -578,15 +590,15 @@ export default function ProfilePage() {
 
       {/* 마케팅 수신 동의 약관 모달 */}
       {isMarketingTermsOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden">
           {/* 어두운 배경 오버레이 */}
           <div 
-            className="absolute inset-0 bg-black/60"
+            className="absolute inset-0 bg-black/50"
             onClick={() => setIsMarketingTermsOpen(false)}
           />
           
           {/* 모달 컨텐츠 */}
-          <div className="relative z-10 w-full max-w-3xl mx-4 bg-background rounded-lg shadow-lg">
+          <div className="relative z-10 w-full max-w-3xl mx-4 bg-white rounded-lg shadow-lg">
             {/* 모달 헤더 */}
             <div className="flex items-center justify-between p-6 border-b border-border">
               <h3 className="text-lg font-semibold text-foreground">마케팅 수신 동의</h3>
