@@ -184,6 +184,7 @@ export default function PaymentsPage() {
   const [rejectReason, setRejectReason] = useState("")
   const [startDate, setStartDate] = useState("")
   const [endDate, setEndDate] = useState("")
+  const [dateRangeType, setDateRangeType] = useState<"all" | "week" | "month" | "3months" | "custom">("all")
 
   const formatDate = (date: Date) => {
     const year = date.getFullYear()
@@ -192,7 +193,15 @@ export default function PaymentsPage() {
     return `${year}-${month}-${day}`
   }
 
-  const setDateRange = (range: "week" | "month" | "3months") => {
+  const setDateRange = (range: "all" | "week" | "month" | "3months") => {
+    setDateRangeType(range)
+    
+    if (range === "all") {
+      setStartDate("")
+      setEndDate("")
+      return
+    }
+
     const today = new Date()
     const end = formatDate(today)
     let start: Date
@@ -216,6 +225,15 @@ export default function PaymentsPage() {
 
     setStartDate(formatDate(start))
     setEndDate(end)
+  }
+
+  const handleDateInputChange = (type: "start" | "end", value: string) => {
+    if (type === "start") {
+      setStartDate(value)
+    } else {
+      setEndDate(value)
+    }
+    setDateRangeType("custom")
   }
 
   const filteredPayments = paymentsData.filter((payment) => {
@@ -294,42 +312,46 @@ export default function PaymentsPage() {
               <Input
                 type="date"
                 value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
+                onChange={(e) => handleDateInputChange("start", e.target.value)}
                 className="w-36"
               />
               <span className="text-muted-foreground">~</span>
               <Input
                 type="date"
                 value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
+                onChange={(e) => handleDateInputChange("end", e.target.value)}
                 className="w-36"
               />
             </div>
             {/* 빠른 선택 버튼 */}
             <div className="flex items-center gap-1">
               <Button
-                variant="outline"
+                variant={dateRangeType === "week" ? "default" : "outline"}
                 size="sm"
                 onClick={() => setDateRange("week")}
-                className={startDate && endDate ? "text-muted-foreground" : ""}
               >
                 이번주
               </Button>
               <Button
-                variant="outline"
+                variant={dateRangeType === "month" ? "default" : "outline"}
                 size="sm"
                 onClick={() => setDateRange("month")}
-                className={startDate && endDate ? "text-muted-foreground" : ""}
               >
                 이번달
               </Button>
               <Button
-                variant="outline"
+                variant={dateRangeType === "3months" ? "default" : "outline"}
                 size="sm"
                 onClick={() => setDateRange("3months")}
-                className={startDate && endDate ? "text-muted-foreground" : ""}
               >
                 최근 3달
+              </Button>
+              <Button
+                variant={dateRangeType === "all" ? "default" : "outline"}
+                size="sm"
+                onClick={() => setDateRange("all")}
+              >
+                전체
               </Button>
             </div>
             <Button variant="outline">
