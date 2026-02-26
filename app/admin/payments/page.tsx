@@ -471,7 +471,7 @@ export default function PaymentsPage() {
           <TabsContent value="payments" className="space-y-4">
             <Card>
               <CardHeader className="pb-4">
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <CardTitle>결제 내역</CardTitle>
                     <CardDescription>총 {filteredPayments.length}건의 결제</CardDescription>
@@ -483,7 +483,7 @@ export default function PaymentsPage() {
                       placeholder="이름, 주문번호, 이메일로 검색"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10"
+                      className="pl-10 w-[280px]"
                     />
                   </div>
                 </div>
