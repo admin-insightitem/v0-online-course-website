@@ -135,6 +135,12 @@ export default function ClassesPage() {
     ))
   }
 
+  const handleBadgeChange = (id: string, value: string) => {
+    setClasses(classes.map((cls) =>
+      cls.id === id ? { ...cls, badge: value === "none" ? null : value } : cls
+    ))
+  }
+
   return (
     <AdminLayout>
       <div className="space-y-6">
@@ -206,6 +212,7 @@ export default function ClassesPage() {
                   <TableHead className="text-right">가격</TableHead>
                   <TableHead className="text-center">수강생</TableHead>
                   <TableHead className="text-center">강의 수</TableHead>
+                  <TableHead className="text-center">배지</TableHead>
                   <TableHead className="text-center">노출</TableHead>
                   <TableHead className="text-center">액션</TableHead>
                 </TableRow>
@@ -225,28 +232,12 @@ export default function ClassesPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-2">
-                          <Link 
-                            href={`/courses/${cls.id}`} 
-                            className="font-medium line-clamp-1 hover:text-primary hover:underline cursor-pointer"
-                          >
-                            {cls.title}
-                          </Link>
-                          {cls.badge && (
-                            <Badge
-                              variant={cls.badge === "NEW" ? "default" : "secondary"}
-                              className={
-                                cls.badge === "BEST"
-                                  ? "bg-red-500 text-white hover:bg-red-600"
-                                  : cls.badge === "HOT"
-                                  ? "bg-orange-500 text-white hover:bg-orange-600"
-                                  : ""
-                              }
-                            >
-                              {cls.badge}
-                            </Badge>
-                          )}
-                        </div>
+                        <Link 
+                          href={`/courses/${cls.id}`} 
+                          className="font-medium line-clamp-1 hover:text-primary hover:underline cursor-pointer"
+                        >
+                          {cls.title}
+                        </Link>
                         <span className="text-xs text-muted-foreground">등록일: {cls.createdAt}</span>
                       </div>
                     </TableCell>
@@ -264,6 +255,28 @@ export default function ClassesPage() {
                     </TableCell>
                     <TableCell className="text-center">{cls.students.toLocaleString()}명</TableCell>
                     <TableCell className="text-center">{cls.lectures}개</TableCell>
+                    <TableCell className="text-center">
+                      <Select
+                        value={cls.badge || "none"}
+                        onValueChange={(value) => handleBadgeChange(cls.id, value)}
+                      >
+                        <SelectTrigger className="w-[100px] h-8">
+                          <SelectValue placeholder="배지 선택" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="none">없음</SelectItem>
+                          <SelectItem value="BEST">
+                            <span className="text-red-500 font-medium">BEST</span>
+                          </SelectItem>
+                          <SelectItem value="NEW">
+                            <span className="text-blue-500 font-medium">NEW</span>
+                          </SelectItem>
+                          <SelectItem value="HOT">
+                            <span className="text-orange-500 font-medium">HOT</span>
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </TableCell>
                     <TableCell className="text-center">
                       <Button
                         variant="ghost"
