@@ -188,6 +188,7 @@ export default function PaymentsPage() {
   const [endDate, setEndDate] = useState("")
   const [dateRangeType, setDateRangeType] = useState<"all" | "week" | "month" | "3months" | "custom">("all")
   const [currentPage, setCurrentPage] = useState(1)
+  const [refundCurrentPage, setRefundCurrentPage] = useState(1)
   const itemsPerPage = 30
 
   const formatDate = (date: Date) => {
@@ -262,6 +263,13 @@ export default function PaymentsPage() {
     const matchesStatus = statusFilter === "all" || refund.status === statusFilter
     return matchesSearch && matchesStatus
   })
+
+  // 환불 페이징 계산
+  const refundTotalPages = Math.ceil(filteredRefunds.length / itemsPerPage)
+  const paginatedRefunds = filteredRefunds.slice(
+    (refundCurrentPage - 1) * itemsPerPage,
+    refundCurrentPage * itemsPerPage
+  )
 
   const pendingRefunds = refundsData.filter((r) => r.status === "pending").length
   const totalRefundAmount = refundsData
@@ -626,7 +634,7 @@ export default function PaymentsPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredRefunds.map((refund) => (
+                    {paginatedRefunds.map((refund) => (
                       <TableRow key={refund.id}>
                         <TableCell className="font-mono text-sm">{refund.id}</TableCell>
                         <TableCell>
@@ -665,6 +673,60 @@ export default function PaymentsPage() {
                     ))}
                   </TableBody>
                 </Table>
+
+                {/* Pagination */}
+                {refundTotalPages > 1 && (
+                  <div className="mt-6 flex items-center justify-between border-t border-border pt-4">
+                    <p className="text-sm text-muted-foreground">
+                      총 {filteredRefunds.length}건 중 {(refundCurrentPage - 1) * itemsPerPage + 1}-
+                      {Math.min(refundCurrentPage * itemsPerPage, filteredRefunds.length)}건 표시
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setRefundCurrentPage((prev) => Math.max(prev - 1, 1))}
+                        disabled={refundCurrentPage === 1}
+                      >
+                        <ChevronLeft className="h-4 w-4" />
+                        이전
+                      </Button>
+                      <div className="flex items-center gap-1">
+                        {Array.from({ length: refundTotalPages }, (_, i) => i + 1)
+                          .filter((page) => {
+                            if (refundTotalPages <= 5) return true
+                            if (page === 1 || page === refundTotalPages) return true
+                            if (Math.abs(page - refundCurrentPage) <= 1) return true
+                            return false
+                          })
+                          .map((page, idx, arr) => (
+                            <span key={page}>
+                              {idx > 0 && arr[idx - 1] !== page - 1 && (
+                                <span className="px-2 text-muted-foreground">...</span>
+                              )}
+                              <Button
+                                variant={refundCurrentPage === page ? "default" : "outline"}
+                                size="sm"
+                                className="w-9"
+                                onClick={() => setRefundCurrentPage(page)}
+                              >
+                                {page}
+                              </Button>
+                            </span>
+                          ))}
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setRefundCurrentPage((prev) => Math.min(prev + 1, refundTotalPages))}
+                        disabled={refundCurrentPage === refundTotalPages}
+                      >
+                        다음
+                        <ChevronRight className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
