@@ -529,6 +529,12 @@ export default function ProfilePage() {
               <span className="flex h-5 w-5 items-center justify-center rounded bg-yellow-400 text-[10px] font-bold text-black">Ch</span>
               채널 추가
             </Button>
+            <button className="mt-3 ml-3 inline-flex items-center gap-2 h-10 px-6 rounded-md bg-yellow-400 text-black text-sm font-medium hover:bg-yellow-500 transition-colors">
+              <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current">
+                <path d="M12 3C6.48 3 2 6.58 2 11c0 2.83 1.89 5.29 4.68 6.68-.21.78-.77 2.64-.88 3.06-.14.54.2.53.42.39.17-.11 2.73-1.85 3.84-2.6.62.09 1.26.14 1.94.14 5.52 0 10-3.58 10-8S17.52 3 12 3z"/>
+              </svg>
+              카카오 연결 해제
+            </button>
           </div>
 
           {/* 마케팅 수신 동의 */}
