@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { Star, X, Pencil, CheckCircle } from "lucide-react"
+import { Star, X, Pencil, CheckCircle, ThumbsUp } from "lucide-react"
 import { MypageLayout } from "@/components/mypage-layout"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -14,6 +14,60 @@ const myPurchasedCourses = [
   { course: courses[0], purchaseDate: "2026.02.15", hasReview: true },
   { course: courses[1], purchaseDate: "2026.01.28", hasReview: false },
   { course: courses[4], purchaseDate: "2025.12.20", hasReview: true },
+]
+
+// 전체 수강평 (모든 사용자)
+const allReviews = [
+  {
+    id: "all-review-1",
+    courseId: courses[0].id,
+    course: courses[0],
+    authorName: "김민수",
+    rating: 5,
+    content: "정말 좋은 강의입니다. AI를 처음 접하는 분들에게 강력 추천합니다. 실습 위주라서 바로 적용할 수 있어요!",
+    createdAt: "2026.02.24",
+    helpful: 24,
+  },
+  {
+    id: "all-review-2",
+    courseId: courses[1].id,
+    course: courses[1],
+    authorName: "이지은",
+    rating: 5,
+    content: "주식 투자에 대한 막연한 두려움이 있었는데, 이 강의를 듣고 자신감이 생겼습니다. 차트 분석 파트가 특히 좋았어요.",
+    createdAt: "2026.02.22",
+    helpful: 18,
+  },
+  {
+    id: "all-review-3",
+    courseId: courses[2].id,
+    course: courses[2],
+    authorName: "박준혁",
+    rating: 4,
+    content: "영어 회화 실력이 확실히 늘었습니다. 원어민 표현들을 많이 배울 수 있어서 좋았어요. 매일 꾸준히 듣는 것이 중요한 것 같습니다.",
+    createdAt: "2026.02.20",
+    helpful: 15,
+  },
+  {
+    id: "all-review-4",
+    courseId: courses[0].id,
+    course: courses[0],
+    authorName: "최서연",
+    rating: 5,
+    content: "AI 자동화로 업무 효율이 3배 이상 올랐습니다. 특히 ChatGPT API 활용법이 실무에 바로 적용 가능해서 좋았습니다.",
+    createdAt: "2026.02.18",
+    helpful: 31,
+  },
+  {
+    id: "all-review-5",
+    courseId: courses[3].id,
+    course: courses[3],
+    authorName: "정현우",
+    rating: 4,
+    content: "부동산 투자의 기초부터 실전까지 체계적으로 배울 수 있었습니다. 다만 최신 규제 내용이 더 업데이트되면 좋겠어요.",
+    createdAt: "2026.02.15",
+    helpful: 9,
+  },
 ]
 
 // 내가 작성한 수강평
@@ -39,7 +93,7 @@ const myReviews = [
 ]
 
 export default function ReviewsPage() {
-  const [activeTab, setActiveTab] = useState<"my-reviews" | "write-review">("my-reviews")
+  const [activeTab, setActiveTab] = useState<"all-reviews" | "my-reviews" | "write-review">("all-reviews")
   const [isWriteModalOpen, setIsWriteModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [showThankYouModal, setShowThankYouModal] = useState(false)
@@ -49,6 +103,15 @@ export default function ReviewsPage() {
   const [rating, setRating] = useState(0)
   const [hoverRating, setHoverRating] = useState(0)
   const [reviewContent, setReviewContent] = useState("")
+  const [helpfulReviews, setHelpfulReviews] = useState<string[]>([])
+
+  const handleHelpful = (reviewId: string) => {
+    if (helpfulReviews.includes(reviewId)) {
+      setHelpfulReviews(helpfulReviews.filter((id) => id !== reviewId))
+    } else {
+      setHelpfulReviews([...helpfulReviews, reviewId])
+    }
+  }
 
   const handleOpenWriteModal = (course: typeof courses[0]) => {
     setSelectedCourse(course)
@@ -91,6 +154,16 @@ export default function ReviewsPage() {
       {/* Tabs */}
       <div className="mt-6 flex gap-1 border-b border-border">
         <button
+          onClick={() => setActiveTab("all-reviews")}
+          className={`px-4 py-2.5 text-sm font-medium transition-colors ${
+            activeTab === "all-reviews"
+              ? "border-b-2 border-accent text-accent"
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          전체 수강평 ({allReviews.length})
+        </button>
+        <button
           onClick={() => setActiveTab("my-reviews")}
           className={`px-4 py-2.5 text-sm font-medium transition-colors ${
             activeTab === "my-reviews"
@@ -114,7 +187,89 @@ export default function ReviewsPage() {
 
       {/* Content */}
       <div className="mt-6">
-        {activeTab === "my-reviews" ? (
+        {activeTab === "all-reviews" ? (
+          // 전체 수강평 목록
+          <div className="flex flex-col gap-4">
+            {allReviews.length === 0 ? (
+              <div className="rounded-lg border border-border bg-card px-6 py-12 text-center">
+                <p className="text-muted-foreground">아직 작성된 수강평이 없습니다.</p>
+              </div>
+            ) : (
+              allReviews.map((review) => (
+                <div
+                  key={review.id}
+                  className="rounded-lg border border-border bg-card"
+                >
+                  {/* Course Info */}
+                  <div className="flex flex-col gap-4 border-b border-border p-5 sm:flex-row sm:items-start sm:gap-5">
+                    <Link
+                      href={`/courses/${review.course.id}`}
+                      className="relative block aspect-[16/10] w-full shrink-0 overflow-hidden rounded-md sm:w-36"
+                    >
+                      <Image
+                        src={review.course.image}
+                        alt={review.course.title}
+                        fill
+                        className="object-cover"
+                      />
+                    </Link>
+                    <div className="flex flex-1 flex-col gap-1">
+                      <Link
+                        href={`/courses/${review.course.id}`}
+                        className="text-sm font-semibold leading-snug text-foreground hover:underline sm:text-base"
+                      >
+                        {review.course.title}
+                      </Link>
+                      <p className="text-xs text-muted-foreground">
+                        {review.course.instructor} | {review.course.category}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Review Content */}
+                  <div className="p-5">
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm font-medium text-foreground">{review.authorName}</span>
+                        <div className="flex items-center gap-1">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <Star
+                              key={star}
+                              className={`h-3.5 w-3.5 ${
+                                star <= review.rating
+                                  ? "fill-yellow-400 text-yellow-400"
+                                  : "text-muted-foreground/30"
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <span className="text-xs text-muted-foreground">{review.createdAt}</span>
+                    </div>
+                    <p className="mt-3 text-sm leading-relaxed text-foreground">
+                      {review.content}
+                    </p>
+                    <div className="mt-4 flex items-center justify-between">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className={`h-8 gap-1.5 text-xs ${
+                          helpfulReviews.includes(review.id)
+                            ? "border-accent bg-accent/10 text-accent"
+                            : ""
+                        }`}
+                        onClick={() => handleHelpful(review.id)}
+                      >
+                        <ThumbsUp className={`h-3.5 w-3.5 ${helpfulReviews.includes(review.id) ? "fill-current" : ""}`} />
+                        도움이 됨 {review.helpful + (helpfulReviews.includes(review.id) ? 1 : 0)}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        ) : activeTab === "my-reviews" ? (
           // 내가 작성한 수강평 목록
           <div className="flex flex-col gap-4">
             {myReviews.length === 0 ? (
