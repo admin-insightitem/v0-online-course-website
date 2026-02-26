@@ -285,14 +285,14 @@ export default function OrderPage() {
                   {/* 마케팅 수신 동의 */}
                   <div className="flex flex-col gap-2">
                     <span className="text-xs leading-relaxed text-card-foreground">
-                      {"마케팅 수신 동의"}
+                      {"마케팅 수신 동의(선택)"}
                     </span>
                     
-                    <p className="text-xs leading-relaxed text-card-foreground">
-                      {"할인 이벤트와 쿠폰 발급 등의 알림을 받으시고 혜택을 놓치지 마세요."}
+                    <p className="ml-6 text-[11px] leading-relaxed text-muted-foreground">
+                      {"할인 이벤트, 쿠폰 발급 등의 혜택 알림을 받습니다."}
                     </p>
                     
-                    <div className="flex items-center justify-between">
+                    <div className="ml-6 flex items-center justify-between">
                       <label className="flex cursor-pointer items-center gap-2">
                         <Checkbox
                           checked={agreedToEmail}
@@ -306,7 +306,7 @@ export default function OrderPage() {
                       </span>
                     </div>
                     
-                    <div className="flex items-center justify-between">
+                    <div className="ml-6 flex items-center justify-between">
                       <label className="flex cursor-pointer items-center gap-2">
                         <Checkbox
                           checked={agreedToSms}

@@ -549,7 +549,7 @@ export default function ProfilePage() {
                 onClick={() => setIsMarketingTermsOpen(true)}
                 className="text-sm text-muted-foreground border border-border rounded px-3 py-1 hover:bg-muted/50"
               >
-                ��관보기
+                {"약관보기"}
               </button>
             </div>
             <p className="mt-2 text-xs text-muted-foreground">
