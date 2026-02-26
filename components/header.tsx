@@ -18,6 +18,7 @@ interface HeaderProps {
 
 export function Header({ variant = "default" }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
+  console.log("[v0] Header variant:", variant)
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
