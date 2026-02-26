@@ -4,122 +4,408 @@ import { useState } from "react"
 import Link from "next/link"
 import { MypageLayout } from "@/components/mypage-layout"
 import { Button } from "@/components/ui/button"
-import { CheckCircle } from "lucide-react"
+import { Eye, EyeOff } from "lucide-react"
 
 export default function ProfilePage() {
+  // 기본 데이터
   const [name, setName] = useState("김경민")
-  const [email] = useState("k1k1m1@naver.com")
+  const [email, setEmail] = useState("k1k1m1@naver.com")
   const [phone, setPhone] = useState("01028153911")
   const [marketing, setMarketing] = useState(true)
-  const [saved, setSaved] = useState(false)
 
-  const handleSave = () => {
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2000)
+  // 편집 모드 상태
+  const [editingField, setEditingField] = useState<"name" | "email" | "phone" | "password" | null>(null)
+
+  // 편집 중 임시 값
+  const [tempName, setTempName] = useState("")
+  const [tempEmail, setTempEmail] = useState("")
+  const [tempPhone, setTempPhone] = useState("")
+  const [newPassword, setNewPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+
+  // 비밀번호 보기 상태
+  const [showNewPassword, setShowNewPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+  // 유효성 검사 오류
+  const [emailError, setEmailError] = useState("")
+
+  const startEditing = (field: "name" | "email" | "phone" | "password") => {
+    setEditingField(field)
+    if (field === "name") setTempName(name)
+    if (field === "email") setTempEmail("")
+    if (field === "phone") setTempPhone("")
+    if (field === "password") {
+      setNewPassword("")
+      setConfirmPassword("")
+    }
+    setEmailError("")
+  }
+
+  const cancelEditing = () => {
+    setEditingField(null)
+    setEmailError("")
+  }
+
+  const handleNameChange = () => {
+    if (tempName.trim()) {
+      setName(tempName)
+      setEditingField(null)
+    }
+  }
+
+  const handleEmailVerify = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(tempEmail)) {
+      setEmailError("규칙에 맞는 이메일 주소를 입력해주세요.")
+      return
+    }
+    setEmailError("")
+    // 인증 메일 전송 로직
+    alert("인증 메일이 전송되었습니다.")
+  }
+
+  const handlePhoneVerify = () => {
+    if (tempPhone.length >= 10) {
+      // 인증번호 전송 로직
+      alert("인증번호가 전송되었습니다.")
+    }
+  }
+
+  const handlePasswordChange = () => {
+    if (newPassword && newPassword === confirmPassword) {
+      alert("비밀번호가 변경되었습니다.")
+      setEditingField(null)
+      setNewPassword("")
+      setConfirmPassword("")
+    }
   }
 
   return (
     <MypageLayout activeMenu="회원정보관리">
-      <h2 className="text-xl font-bold text-foreground">회원정보</h2>
+      <h2 className="text-xl font-bold text-foreground">회원 정보 수정</h2>
 
-      <div className="mt-8 flex flex-col gap-6">
-        {/* Name */}
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-6">
-          <label className="w-28 shrink-0 text-sm font-semibold text-foreground">
-            이름
-          </label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="flex h-11 w-full rounded-md border border-border bg-card px-4 text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-1 focus:ring-ring"
-          />
-        </div>
+      <div className="mt-8 rounded-lg border border-border bg-card p-6">
+        <h3 className="text-base font-semibold text-foreground mb-6">기본 정보</h3>
 
-        {/* Email */}
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-6">
-          <label className="w-28 shrink-0 text-sm font-semibold text-foreground">
-            이메일
-          </label>
-          <input
-            type="email"
-            value={email}
-            readOnly
-            className="flex h-11 w-full cursor-not-allowed rounded-md border border-border bg-muted px-4 text-sm text-muted-foreground outline-none"
-          />
-        </div>
-
-        {/* Phone */}
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-6">
-          <label className="w-28 shrink-0 text-sm font-semibold text-foreground">
-            휴대폰번호
-          </label>
-          <input
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            className="flex h-11 w-full rounded-md border border-border bg-card px-4 text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-1 focus:ring-ring"
-          />
-        </div>
-
-        {/* Marketing consent */}
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:gap-6">
-          <label className="w-28 shrink-0 text-sm font-semibold text-foreground">
-            마케팅 수신 설정
-          </label>
-          <div className="w-full rounded-lg border border-border bg-muted/30 px-5 py-4">
-            <label className="flex cursor-pointer items-start gap-3">
-              <div className="relative mt-0.5 flex">
-                <input
-                  type="checkbox"
-                  checked={marketing}
-                  onChange={(e) => setMarketing(e.target.checked)}
-                  className="peer sr-only"
-                />
-                <div className={`flex h-5 w-5 items-center justify-center rounded border-2 transition-colors ${
-                  marketing
-                    ? "border-accent bg-accent"
-                    : "border-border bg-card"
-                }`}>
-                  {marketing && (
-                    <svg className="h-3.5 w-3.5 text-accent-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                    </svg>
-                  )}
+        <div className="flex flex-col gap-6">
+          {/* 이름 */}
+          <div className="flex flex-col gap-2">
+            <label className="text-sm text-muted-foreground">이름</label>
+            {editingField === "name" ? (
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={tempName}
+                    onChange={(e) => setTempName(e.target.value)}
+                    className="flex h-11 w-full max-w-xs rounded-md border border-amber-400 bg-amber-50 px-4 text-sm text-foreground outline-none"
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={cancelEditing}
+                    className="h-11 px-6"
+                  >
+                    취소
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={handleNameChange}
+                    className="h-11 px-6 bg-foreground text-background hover:bg-foreground/90"
+                  >
+                    변경
+                  </Button>
                 </div>
               </div>
-              <div>
-                <p className="text-sm font-medium text-foreground">
-                  이벤트/쿠폰 등 혜택 수신 동의
-                </p>
-                <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
-                  체크하지 않으면 무료특강 혜택을 받으실 수 없습니다.
-                </p>
+            ) : (
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={name}
+                  readOnly
+                  className="flex h-11 w-full max-w-xs rounded-md border border-border bg-muted/30 px-4 text-sm text-muted-foreground outline-none cursor-default"
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => startEditing("name")}
+                  className="h-11 px-6"
+                >
+                  변경
+                </Button>
               </div>
-            </label>
+            )}
+          </div>
+
+          {/* 이메일 */}
+          <div className="flex flex-col gap-2">
+            <label className="text-sm text-muted-foreground">이메일 (인증완료)</label>
+            {editingField === "email" ? (
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="email"
+                    value={email}
+                    readOnly
+                    className="flex h-11 w-full max-w-sm rounded-md border border-border bg-muted/30 px-4 text-sm text-muted-foreground outline-none cursor-default"
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={cancelEditing}
+                    className="h-11 px-6"
+                  >
+                    취소
+                  </Button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="email"
+                    value={tempEmail}
+                    onChange={(e) => {
+                      setTempEmail(e.target.value)
+                      setEmailError("")
+                    }}
+                    placeholder="실제 사용하는 이메일 주소를 입력해주세요."
+                    className={`flex h-11 w-full max-w-sm rounded-md border px-4 text-sm text-foreground outline-none ${
+                      emailError ? "border-red-400 bg-red-50" : "border-amber-400 bg-amber-50"
+                    }`}
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleEmailVerify}
+                    className="h-11 px-4 text-amber-600 border-amber-300 hover:bg-amber-50"
+                  >
+                    인증메일 전송
+                  </Button>
+                </div>
+                {emailError && (
+                  <p className="text-sm text-red-500">{emailError}</p>
+                )}
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <input
+                  type="email"
+                  value={email}
+                  readOnly
+                  className="flex h-11 w-full max-w-sm rounded-md border border-border bg-muted/30 px-4 text-sm text-muted-foreground outline-none cursor-default"
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => startEditing("email")}
+                  className="h-11 px-6"
+                >
+                  변경
+                </Button>
+              </div>
+            )}
+          </div>
+
+          {/* 휴대전화 */}
+          <div className="flex flex-col gap-2">
+            <label className="text-sm text-muted-foreground">휴대전화 (인증완료)</label>
+            {editingField === "phone" ? (
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="tel"
+                    value={phone}
+                    readOnly
+                    className="flex h-11 w-full max-w-sm rounded-md border border-border bg-muted/30 px-4 text-sm text-muted-foreground outline-none cursor-default"
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={cancelEditing}
+                    className="h-11 px-6"
+                  >
+                    취소
+                  </Button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="tel"
+                    value={tempPhone}
+                    onChange={(e) => setTempPhone(e.target.value.replace(/[^0-9]/g, ""))}
+                    placeholder="- 없이 입력해주세요."
+                    className="flex h-11 w-full max-w-sm rounded-md border border-amber-400 bg-amber-50 px-4 text-sm text-foreground outline-none"
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handlePhoneVerify}
+                    className="h-11 px-4 text-amber-600 border-amber-300 hover:bg-amber-50"
+                  >
+                    인증번호 전송
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <input
+                  type="tel"
+                  value={phone}
+                  readOnly
+                  className="flex h-11 w-full max-w-sm rounded-md border border-border bg-muted/30 px-4 text-sm text-muted-foreground outline-none cursor-default"
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => startEditing("phone")}
+                  className="h-11 px-6"
+                >
+                  변경
+                </Button>
+              </div>
+            )}
+          </div>
+
+          {/* 비밀번호 */}
+          <div className="flex flex-col gap-2">
+            <label className="text-sm text-muted-foreground">비밀번호</label>
+            {editingField === "password" ? (
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="password"
+                    value="••••••••"
+                    readOnly
+                    className="flex h-11 w-full max-w-sm rounded-md border border-border bg-muted/30 px-4 text-sm text-muted-foreground outline-none cursor-default"
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={cancelEditing}
+                    className="h-11 px-6"
+                  >
+                    취소
+                  </Button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="relative w-full max-w-sm">
+                    <input
+                      type={showNewPassword ? "text" : "password"}
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      placeholder="비밀번호를 입력해주세요."
+                      className="flex h-11 w-full rounded-md border border-amber-400 bg-amber-50 px-4 pr-10 text-sm text-foreground outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowNewPassword(!showNewPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    >
+                      {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="relative w-full max-w-sm">
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="비밀번호를 입력해주세요."
+                      className="flex h-11 w-full rounded-md border border-amber-400 bg-amber-50 px-4 pr-10 text-sm text-foreground outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    >
+                      {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                  <Button
+                    size="sm"
+                    onClick={handlePasswordChange}
+                    disabled={!newPassword || newPassword !== confirmPassword}
+                    className="h-11 px-6"
+                  >
+                    확인
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <input
+                  type="password"
+                  value="••••••••"
+                  readOnly
+                  className="flex h-11 w-full max-w-sm rounded-md border border-border bg-muted/30 px-4 text-sm text-muted-foreground outline-none cursor-default"
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => startEditing("password")}
+                  className="h-11 px-6"
+                >
+                  변경
+                </Button>
+              </div>
+            )}
+          </div>
+
+          {/* 카카오톡 채널 */}
+          <div className="mt-4 pt-4 border-t border-border">
+            <h4 className="text-sm font-semibold text-foreground">카카오톡 채널</h4>
+            <p className="mt-1 text-xs text-muted-foreground">
+              채널을 추가하면 유익하고 맞춤화된 정보를 받아볼 수 있습니다.
+            </p>
+            <Button
+              variant="outline"
+              size="sm"
+              className="mt-3 h-10 px-4 gap-2"
+            >
+              <span className="flex h-5 w-5 items-center justify-center rounded bg-yellow-400 text-[10px] font-bold text-black">Ch</span>
+              채널 추가
+            </Button>
+          </div>
+
+          {/* 마케팅 수신 설정 */}
+          <div className="mt-4 pt-4 border-t border-border">
+            <label className="text-sm font-semibold text-foreground">마케팅 수신 설정</label>
+            <div className="mt-3 rounded-lg border border-border bg-muted/30 px-5 py-4">
+              <label className="flex cursor-pointer items-start gap-3">
+                <div className="relative mt-0.5 flex">
+                  <input
+                    type="checkbox"
+                    checked={marketing}
+                    onChange={(e) => setMarketing(e.target.checked)}
+                    className="peer sr-only"
+                  />
+                  <div className={`flex h-5 w-5 items-center justify-center rounded border-2 transition-colors ${
+                    marketing
+                      ? "border-accent bg-accent"
+                      : "border-border bg-card"
+                  }`}>
+                    {marketing && (
+                      <svg className="h-3.5 w-3.5 text-accent-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                  </div>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-foreground">
+                    이벤트/쿠폰 등 혜택 수신 동의
+                  </p>
+                  <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
+                    체크하지 않으면 무료특강 혜택을 받으실 수 없습니다.
+                  </p>
+                </div>
+              </label>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Save button */}
-      <div className="mt-8 flex justify-end">
-        <Button
-          onClick={handleSave}
-          className="h-11 min-w-[120px] bg-accent text-accent-foreground hover:bg-accent/90"
-        >
-          {saved ? (
-            <span className="flex items-center gap-1.5">
-              <CheckCircle className="h-4 w-4" />
-              수정 완료
-            </span>
-          ) : (
-            "수정하기"
-          )}
-        </Button>
-      </div>
-
       {/* 회원탈퇴 링크 */}
-      <div className="mt-12">
+      <div className="mt-8">
         <Link
           href="/mypage/withdraw"
           className="text-xs text-muted-foreground underline hover:text-foreground"
