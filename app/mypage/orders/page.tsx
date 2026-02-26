@@ -43,6 +43,7 @@ const orderHistory = [
 
 export default function OrdersPage() {
   const [isRefundModalOpen, setIsRefundModalOpen] = useState(false)
+  const [selectedOrder, setSelectedOrder] = useState<typeof orderHistory[0] | null>(null)
 
   return (
     <MypageLayout activeMenu="구매내역">
@@ -116,7 +117,10 @@ export default function OrdersPage() {
                 </Button>
                 <div className="flex-1" />
                 <button
-                  onClick={() => setIsRefundModalOpen(true)}
+                  onClick={() => {
+                    setSelectedOrder(order)
+                    setIsRefundModalOpen(true)
+                  }}
                   className="self-end text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground"
                 >
                   환불 신청서 작성
@@ -166,7 +170,9 @@ export default function OrdersPage() {
               >
                 닫기
               </Button>
-              <Link href="/mypage/support?tab=inquiry&type=payment">
+              <Link 
+                href={`/mypage/support?tab=inquiry&type=payment&title=${encodeURIComponent(selectedOrder ? `${selectedOrder.course.title}[${selectedOrder.orderId}] 환불 문의` : '')}`}
+              >
                 <Button
                   className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                   onClick={() => setIsRefundModalOpen(false)}

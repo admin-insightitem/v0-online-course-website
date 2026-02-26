@@ -110,10 +110,11 @@ export default function SupportPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showSuccessMessage, setShowSuccessMessage] = useState(false)
 
-  // 쿼리 파라미터로 탭과 문의 유형 설정
+  // 쿼리 파라미터로 탭과 문의 유형, 제목 설정
   useEffect(() => {
     const tab = searchParams.get("tab")
     const type = searchParams.get("type")
+    const title = searchParams.get("title")
     
     if (tab === "inquiry") {
       setActiveTab("inquiry")
@@ -121,6 +122,10 @@ export default function SupportPage() {
     
     if (type === "payment") {
       setInquiryType("payment")
+    }
+
+    if (title) {
+      setInquiryTitle(title)
     }
   }, [searchParams])
 
@@ -289,7 +294,7 @@ export default function SupportPage() {
             {showSuccessMessage && (
               <div className="mb-6 rounded-lg bg-green-50 border border-green-200 p-4">
                 <p className="text-sm font-medium text-green-800">
-                  문의가 성공적으로 등록되었습니다. 빠른 시일 내에 답변 드리겠습니다.
+                  문의가 성공적으로 등��되었습니다. 빠른 시일 내에 답변 드리겠습니다.
                 </p>
               </div>
             )}
