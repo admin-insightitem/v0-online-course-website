@@ -114,9 +114,10 @@ export default function OrdersPage() {
                 <Button variant="outline" size="sm" className="w-full text-xs sm:w-auto">
                   영수증 보기
                 </Button>
+                <div className="flex-1" />
                 <button
                   onClick={() => setIsRefundModalOpen(true)}
-                  className="w-fit text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground"
+                  className="self-end text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground"
                 >
                   환불 신청서 작성
                 </button>
@@ -165,16 +166,14 @@ export default function OrdersPage() {
               >
                 닫기
               </Button>
-              <Button
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                onClick={() => {
-                  // Navigate to 1:1 inquiry page
-                  setIsRefundModalOpen(false)
-                  window.location.href = "/support/inquiry"
-                }}
-              >
-                1:1 문의 등록
-              </Button>
+              <Link href="/mypage/support?tab=inquiry&type=payment">
+                <Button
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  onClick={() => setIsRefundModalOpen(false)}
+                >
+                  1:1 문의 등록
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

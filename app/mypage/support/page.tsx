@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
 import { ChevronDown, ChevronUp, Send, MessageSquare } from "lucide-react"
 import { MypageLayout } from "@/components/mypage-layout"
 import { Button } from "@/components/ui/button"
@@ -96,6 +97,7 @@ const inquiryTypes = [
 ]
 
 export default function SupportPage() {
+  const searchParams = useSearchParams()
   const [activeTab, setActiveTab] = useState<"faq" | "inquiry">("faq")
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null)
@@ -107,6 +109,20 @@ export default function SupportPage() {
   const [inquiryContent, setInquiryContent] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showSuccessMessage, setShowSuccessMessage] = useState(false)
+
+  // 쿼리 파라미터로 탭과 문의 유형 설정
+  useEffect(() => {
+    const tab = searchParams.get("tab")
+    const type = searchParams.get("type")
+    
+    if (tab === "inquiry") {
+      setActiveTab("inquiry")
+    }
+    
+    if (type === "payment") {
+      setInquiryType("payment")
+    }
+  }, [searchParams])
 
   // FAQ 필터링
   const filteredFaq = faqData.filter((faq) => {
