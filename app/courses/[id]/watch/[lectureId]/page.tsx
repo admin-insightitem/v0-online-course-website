@@ -2,7 +2,7 @@
 
 import { useState, use } from "react"
 import Link from "next/link"
-import { ChevronLeft, ChevronDown, PlayCircle, CheckCircle, Lock, Clock, Download, FileText, Code, MessageSquare, ThumbsUp, Send, ArrowLeft } from "lucide-react"
+import { ChevronLeft, ChevronDown, PlayCircle, CheckCircle, Lock, Clock, Download, FileText, Code, MessageSquare, ThumbsUp, Send, ArrowLeft, Star, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -54,6 +54,13 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
   const [activeTab, setActiveTab] = useState<"materials" | "qna">("materials")
   const [newQuestion, setNewQuestion] = useState("")
   const [questions, setQuestions] = useState(mockQuestions)
+  
+  // Review modal state
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
+  const [reviewRating, setReviewRating] = useState(0)
+  const [reviewHoverRating, setReviewHoverRating] = useState(0)
+  const [reviewContent, setReviewContent] = useState("")
+  const [showThankYouModal, setShowThankYouModal] = useState(false)
 
   if (!course) {
     return (
@@ -101,6 +108,18 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
     }
     setQuestions([newQ, ...questions])
     setNewQuestion("")
+  }
+
+  const handleSubmitReview = () => {
+    if (reviewRating === 0 || !reviewContent.trim()) return
+    
+    // Here you would submit to the backend
+    setIsReviewModalOpen(false)
+    setShowThankYouModal(true)
+    
+    // Reset form
+    setReviewRating(0)
+    setReviewContent("")
   }
 
   // Calculate lecture number for navigation
@@ -359,7 +378,15 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
         <aside className="w-full shrink-0 border-t border-border bg-card lg:w-[380px] lg:border-l lg:border-t-0">
           <div className="sticky top-14 max-h-[calc(100vh-3.5rem)] overflow-y-auto">
             <div className="border-b border-border p-4">
-              <h2 className="font-semibold text-foreground">커리큘럼</h2>
+              <div className="flex items-center justify-between">
+                <h2 className="font-semibold text-foreground">커리큘럼</h2>
+                <button 
+                  onClick={() => setIsReviewModalOpen(true)}
+                  className="text-xs text-accent hover:underline"
+                >
+                  수강평 작성하기
+                </button>
+              </div>
               <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">{course.title}</p>
               <p className="mt-0.5 text-xs text-muted-foreground">수강 기한 무제한</p>
               
@@ -400,7 +427,7 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
                         <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${isOpen ? "rotate-0" : "-rotate-90"}`} />
                         <span className="text-sm font-medium text-foreground">{section.title}</span>
                       </div>
-                      <span className="text-xs text-muted-foreground">{section.lessons.length}강 · {getSectionDuration(sIdx)}</span>
+                      <span className="text-xs text-muted-foreground">{section.lessons.length}강 ({getSectionDuration(sIdx)})</span>
                     </button>
 
                     {isOpen && (
@@ -469,6 +496,99 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
           </div>
         </aside>
       </div>
+
+      {/* Review Modal */}
+      {isReviewModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-md rounded-xl bg-card p-6 shadow-lg">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-foreground">수강평 작성</h3>
+              <button 
+                onClick={() => setIsReviewModalOpen(false)}
+                className="rounded-full p-1 hover:bg-secondary"
+              >
+                <X className="h-5 w-5 text-muted-foreground" />
+              </button>
+            </div>
+            
+            <div className="mt-6">
+              {/* Star Rating */}
+              <div className="text-center">
+                <p className="text-sm text-muted-foreground">이 강의는 어땠나요?</p>
+                <div className="mt-3 flex items-center justify-center gap-1">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      onClick={() => setReviewRating(star)}
+                      onMouseEnter={() => setReviewHoverRating(star)}
+                      onMouseLeave={() => setReviewHoverRating(0)}
+                      className="p-1 transition-transform hover:scale-110"
+                    >
+                      <Star 
+                        className={`h-8 w-8 ${
+                          star <= (reviewHoverRating || reviewRating)
+                            ? "fill-yellow-400 text-yellow-400"
+                            : "text-muted-foreground/30"
+                        }`}
+                      />
+                    </button>
+                  ))}
+                </div>
+                {reviewRating > 0 && (
+                  <p className="mt-2 text-sm font-medium text-foreground">
+                    {reviewRating === 1 && "별로예요"}
+                    {reviewRating === 2 && "그저 그래요"}
+                    {reviewRating === 3 && "보통이에요"}
+                    {reviewRating === 4 && "좋아요"}
+                    {reviewRating === 5 && "최고예요!"}
+                  </p>
+                )}
+              </div>
+
+              {/* Review Content */}
+              <div className="mt-6">
+                <Textarea
+                  placeholder="수강 후기를 작성해주세요..."
+                  value={reviewContent}
+                  onChange={(e) => setReviewContent(e.target.value)}
+                  className="min-h-[120px] resize-none"
+                />
+              </div>
+
+              {/* Submit Button */}
+              <Button
+                onClick={handleSubmitReview}
+                disabled={reviewRating === 0 || !reviewContent.trim()}
+                className="mt-4 w-full bg-accent text-accent-foreground hover:bg-accent/90"
+              >
+                수강평 등록
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Thank You Modal */}
+      {showThankYouModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-sm rounded-xl bg-card p-6 text-center shadow-lg">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+              <CheckCircle className="h-6 w-6 text-green-600" />
+            </div>
+            <h3 className="mt-4 text-lg font-semibold text-foreground">감사합니다!</h3>
+            <p className="mt-2 text-sm text-muted-foreground">
+              수강평을 남겨주셔서 감사합니다.<br />
+              앞으로 더 좋은 지식을 전달하도록 노력하겠습니다.
+            </p>
+            <Button
+              onClick={() => setShowThankYouModal(false)}
+              className="mt-6 w-full bg-accent text-accent-foreground hover:bg-accent/90"
+            >
+              확인
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
