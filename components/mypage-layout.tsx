@@ -9,6 +9,7 @@ import {
   CreditCard,
   Settings,
   LogOut,
+  Star,
 } from "lucide-react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
@@ -18,6 +19,7 @@ const sideMenu = [
   { icon: Settings, label: "회원정보관리", href: "/mypage/profile" },
   { icon: Ticket, label: "쿠폰목록", href: "/mypage/coupons" },
   { icon: CreditCard, label: "구매내역", href: "/mypage/orders" },
+  { icon: Star, label: "수강평 목록", href: "/mypage/reviews" },
   { icon: LogOut, label: "로그아웃", href: "/" },
 ]
 
