@@ -191,7 +191,7 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
         {/* Main Content */}
         <div className="flex-1 overflow-y-auto">
           {/* Video Player - Maximized to fill viewport minus header and tab bar */}
-          <div className="relative w-full bg-foreground" style={{ height: 'calc(100vh - 3.5rem - 45px)' }}
+          <div className="relative w-full bg-foreground" style={{ height: 'calc(100vh - 3.5rem - 45px)' }}>
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center text-background">
                 <PlayCircle className="mx-auto h-16 w-16 opacity-80" />
