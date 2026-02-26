@@ -12,7 +12,10 @@ export default function ProfilePage() {
   const [name, setName] = useState("김경민")
   const [email, setEmail] = useState("k1k1m1@naver.com")
   const [phone, setPhone] = useState("01028153911")
-  const [marketing, setMarketing] = useState(true)
+  const [emailMarketing, setEmailMarketing] = useState(true)
+  const [smsMarketing, setSmsMarketing] = useState(false)
+  const [emailMarketingDate] = useState("2025.09.02 00:43")
+  const [smsMarketingDate] = useState("2024.04.04 20:25")
 
   // 프로필 이미지 및 닉네임
   const [profileImage, setProfileImage] = useState<string | null>(null)
@@ -121,7 +124,7 @@ export default function ProfilePage() {
 
         <div className="flex flex-col gap-6">
           {/* 프로필 이미지 */}
-          <div className="flex flex-col gap-2 pb-6 border-b border-border">
+          <div className="flex flex-col gap-2">
             <label className="text-sm text-muted-foreground">프로필 이미지</label>
             <div className="relative w-fit">
               <div className="h-20 w-20 rounded-full bg-amber-100 overflow-hidden flex items-center justify-center">
@@ -512,37 +515,48 @@ export default function ProfilePage() {
 
           {/* 마케팅 수신 설정 */}
           <div className="mt-4 pt-4 border-t border-border">
-            <label className="text-sm font-semibold text-foreground">마케팅 수신 설정</label>
-            <div className="mt-3 rounded-lg border border-border bg-muted/30 px-5 py-4">
-              <label className="flex cursor-pointer items-start gap-3">
-                <div className="relative mt-0.5 flex">
+            <div className="flex items-center justify-between">
+              <h4 className="text-sm font-semibold text-foreground">마케팅 정보 수신에 동의합니다.</h4>
+              <button className="text-sm text-muted-foreground hover:text-foreground hover:underline">
+                약관보기
+              </button>
+            </div>
+            <p className="mt-2 text-xs text-muted-foreground">
+              할인 이벤트와 쿠폰 발급 등의 알림을 받으시고 혜택을 놓치지 마세요.
+            </p>
+            
+            <div className="mt-4 space-y-3">
+              {/* 이메일 수신 */}
+              <div className="flex items-center justify-between">
+                <label className="flex cursor-pointer items-center gap-2">
                   <input
                     type="checkbox"
-                    checked={marketing}
-                    onChange={(e) => setMarketing(e.target.checked)}
-                    className="peer sr-only"
+                    checked={emailMarketing}
+                    onChange={(e) => setEmailMarketing(e.target.checked)}
+                    className="h-4 w-4 rounded border-border accent-sky-500"
                   />
-                  <div className={`flex h-5 w-5 items-center justify-center rounded border-2 transition-colors ${
-                    marketing
-                      ? "border-accent bg-accent"
-                      : "border-border bg-card"
-                  }`}>
-                    {marketing && (
-                      <svg className="h-3.5 w-3.5 text-accent-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                      </svg>
-                    )}
-                  </div>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-foreground">
-                    이벤트/쿠폰 등 혜택 수신 동의
-                  </p>
-                  <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
-                    체크하지 않으면 무료특강 혜택을 받으실 수 없습니다.
-                  </p>
-                </div>
-              </label>
+                  <span className="text-sm text-foreground">이메일 수신</span>
+                </label>
+                <span className="text-xs text-muted-foreground">
+                  {emailMarketing ? "동의" : "미동의"} 일자: {emailMarketingDate}
+                </span>
+              </div>
+              
+              {/* 문자메시지 수신 */}
+              <div className="flex items-center justify-between">
+                <label className="flex cursor-pointer items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={smsMarketing}
+                    onChange={(e) => setSmsMarketing(e.target.checked)}
+                    className="h-4 w-4 rounded border-border accent-sky-500"
+                  />
+                  <span className="text-sm text-foreground">문자메시지 수신</span>
+                </label>
+                <span className="text-xs text-muted-foreground">
+                  {smsMarketing ? "동의" : "미동의"} 일자: {smsMarketingDate}
+                </span>
+              </div>
             </div>
           </div>
         </div>
