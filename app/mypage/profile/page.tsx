@@ -119,7 +119,7 @@ export default function ProfilePage() {
       </div>
 
       {/* 회원탈퇴 링크 */}
-      <div className="mt-12 flex justify-center">
+      <div className="mt-12">
         <Link
           href="/mypage/withdraw"
           className="text-xs text-muted-foreground underline hover:text-foreground"
