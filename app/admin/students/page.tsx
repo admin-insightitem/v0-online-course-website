@@ -43,6 +43,11 @@ import {
   Bell,
   MessageSquare,
   Download,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react"
 
 // 수강생 데이터
@@ -140,12 +145,38 @@ const courseFilters = [
   "인스타그램 & 틱톡 SNS 수익화",
 ]
 
+type SortKey = "name" | "email" | "joinMethod" | "courses" | "joinDate" | "progress" | "totalSpent" | "status"
+type SortOrder = "asc" | "desc"
+
 export default function StudentsPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCourse, setSelectedCourse] = useState("전체")
   const [statusFilter, setStatusFilter] = useState("all")
   const [selectedStudent, setSelectedStudent] = useState<typeof studentsData[0] | null>(null)
   const [isDetailOpen, setIsDetailOpen] = useState(false)
+  const [sortKey, setSortKey] = useState<SortKey>("joinDate")
+  const [sortOrder, setSortOrder] = useState<SortOrder>("desc")
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 30
+
+  const handleSort = (key: SortKey) => {
+    if (sortKey === key) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc")
+    } else {
+      setSortKey(key)
+      setSortOrder("desc")
+    }
+    setCurrentPage(1)
+  }
+
+  const getSortIcon = (key: SortKey) => {
+    if (sortKey !== key) {
+      return <ArrowUpDown className="h-4 w-4 ml-1 text-muted-foreground" />
+    }
+    return sortOrder === "asc" 
+      ? <ArrowUp className="h-4 w-4 ml-1 text-primary" />
+      : <ArrowDown className="h-4 w-4 ml-1 text-primary" />
+  }
 
   const filteredStudents = studentsData.filter((student) => {
     const matchesSearch =
@@ -160,6 +191,47 @@ export default function StudentsPage() {
       (statusFilter === "inactive" && student.status === "inactive")
     return matchesSearch && matchesCourse && matchesStatus
   })
+
+  // 정렬 로직
+  const sortedStudents = [...filteredStudents].sort((a, b) => {
+    let comparison = 0
+    switch (sortKey) {
+      case "name":
+        comparison = a.name.localeCompare(b.name)
+        break
+      case "email":
+        comparison = a.email.localeCompare(b.email)
+        break
+      case "joinMethod":
+        comparison = a.joinMethod.localeCompare(b.joinMethod)
+        break
+      case "courses":
+        comparison = a.courses.length - b.courses.length
+        break
+      case "joinDate":
+        comparison = new Date(a.joinDate.replace(/\./g, "-")).getTime() - new Date(b.joinDate.replace(/\./g, "-")).getTime()
+        break
+      case "progress":
+        const avgA = a.courses.reduce((acc, c) => acc + c.progress, 0) / a.courses.length
+        const avgB = b.courses.reduce((acc, c) => acc + c.progress, 0) / b.courses.length
+        comparison = avgA - avgB
+        break
+      case "totalSpent":
+        comparison = a.totalSpent - b.totalSpent
+        break
+      case "status":
+        comparison = a.status.localeCompare(b.status)
+        break
+    }
+    return sortOrder === "asc" ? comparison : -comparison
+  })
+
+  // 페이징
+  const totalPages = Math.ceil(sortedStudents.length / itemsPerPage)
+  const paginatedStudents = sortedStudents.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  )
 
   const openStudentDetail = (student: typeof studentsData[0]) => {
     setSelectedStudent(student)
@@ -313,26 +385,58 @@ export default function StudentsPage() {
               수강생 목록
             </CardTitle>
             <CardDescription>
-              총 {filteredStudents.length}명의 수강생
+              총 {sortedStudents.length}명의 수강생 (30명씩 표시)
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>수강생</TableHead>
-                  <TableHead>연락처</TableHead>
-                  <TableHead>가입 방법</TableHead>
-                  <TableHead>수강 강좌</TableHead>
-                  <TableHead>가입일</TableHead>
-                  <TableHead>평균 진도율</TableHead>
-                  <TableHead>총 결제액</TableHead>
-                  <TableHead className="text-center">상태</TableHead>
+                  <TableHead>
+                    <button onClick={() => handleSort("name")} className="flex items-center hover:text-foreground">
+                      이름 {getSortIcon("name")}
+                    </button>
+                  </TableHead>
+                  <TableHead>
+                    <button onClick={() => handleSort("email")} className="flex items-center hover:text-foreground">
+                      연락처 {getSortIcon("email")}
+                    </button>
+                  </TableHead>
+                  <TableHead>
+                    <button onClick={() => handleSort("joinMethod")} className="flex items-center hover:text-foreground">
+                      가입 방법 {getSortIcon("joinMethod")}
+                    </button>
+                  </TableHead>
+                  <TableHead>
+                    <button onClick={() => handleSort("courses")} className="flex items-center hover:text-foreground">
+                      수강 강좌 {getSortIcon("courses")}
+                    </button>
+                  </TableHead>
+                  <TableHead>
+                    <button onClick={() => handleSort("joinDate")} className="flex items-center hover:text-foreground">
+                      가입일 {getSortIcon("joinDate")}
+                    </button>
+                  </TableHead>
+                  <TableHead>
+                    <button onClick={() => handleSort("progress")} className="flex items-center hover:text-foreground">
+                      평균 진도율 {getSortIcon("progress")}
+                    </button>
+                  </TableHead>
+                  <TableHead>
+                    <button onClick={() => handleSort("totalSpent")} className="flex items-center hover:text-foreground">
+                      총 결제액 {getSortIcon("totalSpent")}
+                    </button>
+                  </TableHead>
+                  <TableHead className="text-center">
+                    <button onClick={() => handleSort("status")} className="flex items-center justify-center hover:text-foreground w-full">
+                      상태 {getSortIcon("status")}
+                    </button>
+                  </TableHead>
                   <TableHead className="text-center">액션</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredStudents.map((student) => {
+                {paginatedStudents.map((student) => {
                   const avgProgress = Math.round(
                     student.courses.reduce((acc, c) => acc + c.progress, 0) /
                       student.courses.length
@@ -424,6 +528,60 @@ export default function StudentsPage() {
                 })}
               </TableBody>
             </Table>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="mt-6 flex items-center justify-between border-t border-border pt-4">
+                <p className="text-sm text-muted-foreground">
+                  총 {sortedStudents.length}명 중 {(currentPage - 1) * itemsPerPage + 1}-
+                  {Math.min(currentPage * itemsPerPage, sortedStudents.length)}명 표시
+                </p>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                    disabled={currentPage === 1}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                    이전
+                  </Button>
+                  <div className="flex items-center gap-1">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1)
+                      .filter((page) => {
+                        if (totalPages <= 5) return true
+                        if (page === 1 || page === totalPages) return true
+                        if (Math.abs(page - currentPage) <= 1) return true
+                        return false
+                      })
+                      .map((page, idx, arr) => (
+                        <span key={page}>
+                          {idx > 0 && arr[idx - 1] !== page - 1 && (
+                            <span className="px-2 text-muted-foreground">...</span>
+                          )}
+                          <Button
+                            variant={currentPage === page ? "default" : "outline"}
+                            size="sm"
+                            className="w-9"
+                            onClick={() => setCurrentPage(page)}
+                          >
+                            {page}
+                          </Button>
+                        </span>
+                      ))}
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                    disabled={currentPage === totalPages}
+                  >
+                    다음
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -435,7 +593,7 @@ export default function StudentsPage() {
                 <DialogHeader>
                   <DialogTitle>수강생 상세 정보</DialogTitle>
                   <DialogDescription>
-                    수강생의 정보와 학습 현황을 확인합니다.
+                    수강생의 정보와 학습 현��을 확인합니다.
                   </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-6 py-4">
