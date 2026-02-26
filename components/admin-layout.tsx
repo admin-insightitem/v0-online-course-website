@@ -82,7 +82,9 @@ export function AdminLayout({ children }: AdminLayoutProps) {
         <nav className="flex-1 overflow-y-auto p-4">
           <ul className="space-y-1">
             {adminMenu.map((item) => {
-              const isActive = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(item.href))
+              const isActive = pathname === item.href || 
+                (item.href !== "/admin" && pathname.startsWith(item.href)) ||
+                (item.href === "/admin/classes" && pathname.startsWith("/admin/lectures"))
               return (
                 <li key={item.href}>
                   <Link

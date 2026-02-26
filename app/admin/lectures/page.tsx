@@ -31,7 +31,9 @@ import {
   Clock,
   FolderOpen,
   File,
+  ChevronRight,
 } from "lucide-react"
+import Link from "next/link"
 
 // 강좌 및 커리큘럼 데이터
 const coursesWithCurriculum = [
@@ -115,10 +117,19 @@ export default function LecturesPage() {
   return (
     <AdminLayout>
       <div className="space-y-6">
+        {/* Breadcrumb */}
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Link href="/admin/classes" className="hover:text-foreground transition-colors">
+            클래스 관리
+          </Link>
+          <ChevronRight className="h-4 w-4" />
+          <span className="text-foreground font-medium">강의 등록</span>
+        </div>
+
         {/* Page Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight">강의 등록</h2>
+            <h2 className="text-2xl font-bold tracking-tight">{currentCourse?.title}</h2>
             <p className="text-muted-foreground">커리큘럼을 구성하고 강의 콘텐츠를 관리합니다.</p>
           </div>
         </div>
