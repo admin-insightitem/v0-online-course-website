@@ -303,12 +303,13 @@ export default function QnAPage() {
       {/* 필터 영역 */}
       <div className="mt-6 space-y-4">
         {/* 강좌 선택 */}
-        <div>
+        <div className="flex items-center gap-3">
+          <span className="text-sm font-medium text-foreground whitespace-nowrap">강좌명 :</span>
           <Select value={selectedCourse} onValueChange={handleCourseChange}>
-            <SelectTrigger className="w-full sm:w-80">
+            <SelectTrigger className="w-full max-w-2xl">
               <SelectValue placeholder="강좌를 선택하세요" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="max-w-2xl">
               {myCourses.map((course) => (
                 <SelectItem key={course.id} value={course.id}>
                   {course.title}
@@ -318,43 +319,55 @@ export default function QnAPage() {
           </Select>
         </div>
 
-        {/* 전체 질문 / 내 질문 + 정렬 */}
+        {/* 정렬 옵션 + 전체 질문 / 내 질문 */}
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          {/* 전체 질문 | 내 질문 */}
-          <div className="inline-flex rounded-lg bg-muted p-1">
+          {/* 정렬 옵션 - 왼쪽 정렬 */}
+          <div className="flex items-center gap-4">
+            {[
+              { value: "latest", label: "최신순" },
+              { value: "lecture", label: "강의 목차 순" },
+              { value: "replies", label: "답변 많은 순" },
+            ].map((option) => (
+              <button
+                key={option.value}
+                onClick={() => handleSortChange(option.value)}
+                className={`flex items-center gap-1.5 text-sm transition-colors ${
+                  sortBy === option.value
+                    ? "text-primary font-medium"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <span className={`h-1.5 w-1.5 rounded-full ${
+                  sortBy === option.value ? "bg-primary" : "bg-muted-foreground/50"
+                }`} />
+                {option.label}
+              </button>
+            ))}
+          </div>
+
+          {/* 전체 질문 | 내 질문 - 우측 정렬 */}
+          <div className="inline-flex rounded-lg border border-border overflow-hidden">
             <button
               onClick={() => handleFilterChange("all")}
-              className={`rounded-md px-4 py-2 text-sm font-medium transition-all ${
+              className={`px-4 py-2 text-sm font-medium transition-all ${
                 questionFilter === "all"
-                  ? "bg-background text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-background text-muted-foreground hover:text-foreground"
               }`}
             >
               전체 질문
             </button>
             <button
               onClick={() => handleFilterChange("my")}
-              className={`rounded-md px-4 py-2 text-sm font-medium transition-all ${
+              className={`px-4 py-2 text-sm font-medium transition-all border-l border-border ${
                 questionFilter === "my"
-                  ? "bg-background text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-background text-muted-foreground hover:text-foreground"
               }`}
             >
               내 질문
             </button>
           </div>
-
-          {/* 정렬 */}
-          <Select value={sortBy} onValueChange={handleSortChange}>
-            <SelectTrigger className="w-full sm:w-44">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="latest">최신순</SelectItem>
-              <SelectItem value="lecture">강의 목차 순</SelectItem>
-              <SelectItem value="replies">답변 많은 순</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
       </div>
 
