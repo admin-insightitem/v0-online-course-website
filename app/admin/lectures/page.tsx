@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Checkbox } from "@/components/ui/checkbox"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
   Accordion,
   AccordionContent,
@@ -150,6 +152,8 @@ export default function LecturesPage() {
   const [editingLecture, setEditingLecture] = useState<Lecture | null>(null)
   const [lectureTitle, setLectureTitle] = useState("")
   const [lectureMaterials, setLectureMaterials] = useState<Material[]>([])
+  const [lectureIsFree, setLectureIsFree] = useState(false)
+  const [lectureIsPublished, setLectureIsPublished] = useState(true)
 
   // 섹션 수정 상태 (Section 2는 기본적으로 수정 중)
   const [editingSectionId, setEditingSectionId] = useState<string | null>("s2")
@@ -160,6 +164,8 @@ export default function LecturesPage() {
     setEditingLecture(null)
     setLectureTitle("")
     setLectureMaterials([])
+    setLectureIsFree(false)
+    setLectureIsPublished(true)
     setIsLectureDialogOpen(true)
   }
 
@@ -168,6 +174,8 @@ export default function LecturesPage() {
     setEditingLecture(lecture)
     setLectureTitle(lecture.title)
     setLectureMaterials([...lecture.materials])
+    setLectureIsFree(lecture.isFree)
+    setLectureIsPublished(lecture.isPublished)
     setIsLectureDialogOpen(true)
   }
 
@@ -401,7 +409,7 @@ export default function LecturesPage() {
             <DialogHeader>
               <DialogTitle>{editingLecture ? "강의 수정" : "강의 추가"}</DialogTitle>
               <DialogDescription>
-                강의 제목과 학습 자료를 입력��세요.
+                강의 제목과 학습 자료를 입력하세요.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-6 py-4">
@@ -455,6 +463,37 @@ export default function LecturesPage() {
                   <p className="text-sm text-muted-foreground">클릭하여 파일을 업로드하세요</p>
                   <p className="text-xs text-muted-foreground mt-1">PDF, ZIP, 이미지 등</p>
                 </div>
+              </div>
+
+              {/* 무료 체크박스 */}
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="isFree" 
+                  checked={lectureIsFree}
+                  onCheckedChange={(checked) => setLectureIsFree(checked as boolean)}
+                />
+                <Label htmlFor="isFree" className="text-sm font-normal cursor-pointer">
+                  무료 강의로 설정
+                </Label>
+              </div>
+
+              {/* 공개/비공개 선택 */}
+              <div className="grid gap-2">
+                <Label>공개 설정</Label>
+                <RadioGroup 
+                  value={lectureIsPublished ? "public" : "private"}
+                  onValueChange={(value) => setLectureIsPublished(value === "public")}
+                  className="flex gap-4"
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="public" id="public" />
+                    <Label htmlFor="public" className="text-sm font-normal cursor-pointer">공개</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="private" id="private" />
+                    <Label htmlFor="private" className="text-sm font-normal cursor-pointer">비공개</Label>
+                  </div>
+                </RadioGroup>
               </div>
             </div>
             <DialogFooter>
