@@ -262,18 +262,18 @@ export default function LecturesPage() {
                       <div className="flex items-center gap-3">
                         <GripVertical className="h-4 w-4 text-muted-foreground cursor-grab" />
                         {editingSectionId === section.id ? (
-                          <div className="flex items-center gap-2 flex-1" onClick={(e) => e.stopPropagation()}>
-                            <FolderOpen className="h-4 w-4 text-primary" />
+                          <div className="flex items-center gap-2 flex-1 pr-4" onClick={(e) => e.stopPropagation()}>
+                            <FolderOpen className="h-4 w-4 text-primary flex-shrink-0" />
                             <Input
                               value={editingSectionTitle}
                               onChange={(e) => setEditingSectionTitle(e.target.value)}
-                              className="h-8 max-w-md"
+                              className="h-8 flex-1"
                               autoFocus
                             />
-                            <Button size="sm" variant="ghost" className="h-8 px-2" onClick={handleSaveSection}>
+                            <Button size="sm" variant="ghost" className="h-8 px-2 flex-shrink-0" onClick={handleSaveSection}>
                               <Check className="h-4 w-4 text-green-600" />
                             </Button>
-                            <Button size="sm" variant="ghost" className="h-8 px-2" onClick={handleCancelSectionEdit}>
+                            <Button size="sm" variant="ghost" className="h-8 px-2 flex-shrink-0" onClick={handleCancelSectionEdit}>
                               <X className="h-4 w-4 text-muted-foreground" />
                             </Button>
                           </div>
