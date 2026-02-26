@@ -442,9 +442,14 @@ export default function PaymentsPage() {
           {/* Payments Tab */}
           <TabsContent value="payments" className="space-y-4">
             <Card>
-              <CardContent className="pt-6">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                  <div className="relative flex-1">
+              <CardHeader className="pb-4">
+                <div className="flex flex-col gap-4">
+                  <div>
+                    <CardTitle>결제 내역</CardTitle>
+                    <CardDescription>총 {filteredPayments.length}건의 결제</CardDescription>
+                  </div>
+                  {/* 검색 */}
+                  <div className="relative">
                     <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
                       placeholder="이름, 주문번호, 이메일로 검색"
@@ -454,13 +459,6 @@ export default function PaymentsPage() {
                     />
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>결제 내역</CardTitle>
-                <CardDescription>총 {filteredPayments.length}건의 결제</CardDescription>
               </CardHeader>
               <CardContent>
                 <Table>
