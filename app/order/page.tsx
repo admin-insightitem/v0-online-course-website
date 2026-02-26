@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -62,6 +62,18 @@ export default function OrderPage() {
   const [isMarketingTermsOpen, setIsMarketingTermsOpen] = useState(false)
   const emailMarketingDate = "2025.09.02 00:43"
   const smsMarketingDate = "2024.04.04 20:25"
+
+  // 모달이 열릴 때 배경 스크롤 방지
+  useEffect(() => {
+    if (isMarketingTermsOpen) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = ""
+    }
+    return () => {
+      document.body.style.overflow = ""
+    }
+  }, [isMarketingTermsOpen])
 
   const totalOriginalPrice = orderItems.reduce((sum, item) => sum + parsePrice(item.originalPrice), 0)
   const totalPrice = orderItems.reduce((sum, item) => sum + parsePrice(item.price), 0)
@@ -245,7 +257,7 @@ export default function OrderPage() {
                   <h4 className="text-base font-semibold text-foreground mb-4">{"마케팅 수신 동의"}</h4>
                   
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-amber-600">{"마케팅 정보 수신에 동의합니다."}</span>
+                    <span className="text-sm text-foreground">{"마케팅 정보 수신에 동의합니다."}</span>
                     <button 
                       onClick={() => setIsMarketingTermsOpen(true)}
                       className="text-sm text-muted-foreground border border-border rounded px-3 py-1 hover:bg-muted/50"
@@ -261,11 +273,10 @@ export default function OrderPage() {
                     {/* 이메일 수신 */}
                     <div className="flex items-center justify-between">
                       <label className="flex cursor-pointer items-center gap-2">
-                        <input
-                          type="checkbox"
+                        <Checkbox
                           checked={agreedToEmail}
-                          onChange={(e) => setAgreedToEmail(e.target.checked)}
-                          className="h-4 w-4 rounded border-border accent-sky-500"
+                          onCheckedChange={(checked) => setAgreedToEmail(checked === true)}
+                          className="h-4 w-4 border-border data-[state=checked]:border-accent data-[state=checked]:bg-accent"
                         />
                         <span className="text-sm text-foreground">{"이메일 수신"}</span>
                       </label>
@@ -277,11 +288,10 @@ export default function OrderPage() {
                     {/* 문자메시지 수신 */}
                     <div className="flex items-center justify-between">
                       <label className="flex cursor-pointer items-center gap-2">
-                        <input
-                          type="checkbox"
+                        <Checkbox
                           checked={agreedToSms}
-                          onChange={(e) => setAgreedToSms(e.target.checked)}
-                          className="h-4 w-4 rounded border-border accent-sky-500"
+                          onCheckedChange={(checked) => setAgreedToSms(checked === true)}
+                          className="h-4 w-4 border-border data-[state=checked]:border-accent data-[state=checked]:bg-accent"
                         />
                         <span className="text-sm text-foreground">{"문자메시지 수신"}</span>
                       </label>
