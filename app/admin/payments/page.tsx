@@ -54,6 +54,7 @@ import {
   DollarSign,
   TrendingUp,
   AlertTriangle,
+  Calendar,
 } from "lucide-react"
 
 // 결제 데이터
@@ -181,6 +182,41 @@ export default function PaymentsPage() {
   const [isApproveDialogOpen, setIsApproveDialogOpen] = useState(false)
   const [isRejectDialogOpen, setIsRejectDialogOpen] = useState(false)
   const [rejectReason, setRejectReason] = useState("")
+  const [startDate, setStartDate] = useState("")
+  const [endDate, setEndDate] = useState("")
+
+  const formatDate = (date: Date) => {
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, "0")
+    const day = String(date.getDate()).padStart(2, "0")
+    return `${year}-${month}-${day}`
+  }
+
+  const setDateRange = (range: "week" | "month" | "3months") => {
+    const today = new Date()
+    const end = formatDate(today)
+    let start: Date
+
+    switch (range) {
+      case "week":
+        start = new Date(today)
+        start.setDate(today.getDate() - 6)
+        break
+      case "month":
+        start = new Date(today)
+        start.setMonth(today.getMonth() - 1)
+        start.setDate(start.getDate() + 1)
+        break
+      case "3months":
+        start = new Date(today)
+        start.setMonth(today.getMonth() - 3)
+        start.setDate(start.getDate() + 1)
+        break
+    }
+
+    setStartDate(formatDate(start))
+    setEndDate(end)
+  }
 
   const filteredPayments = paymentsData.filter((payment) => {
     const matchesSearch =
@@ -252,10 +288,55 @@ export default function PaymentsPage() {
             <h2 className="text-2xl font-bold tracking-tight">결제/환불 관리</h2>
             <p className="text-muted-foreground">결제 내역과 환불 요청을 관리합니다.</p>
           </div>
-          <Button variant="outline">
-            <Download className="mr-2 h-4 w-4" />
-            내역 다운로드
-          </Button>
+          <div className="flex flex-wrap items-center gap-3">
+            {/* 날짜 범위 입력 */}
+            <div className="flex items-center gap-2">
+              <Input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="w-36"
+              />
+              <span className="text-muted-foreground">~</span>
+              <Input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="w-36"
+              />
+            </div>
+            {/* 빠른 선택 버튼 */}
+            <div className="flex items-center gap-1">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setDateRange("week")}
+                className={startDate && endDate ? "text-muted-foreground" : ""}
+              >
+                이번주
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setDateRange("month")}
+                className={startDate && endDate ? "text-muted-foreground" : ""}
+              >
+                이번달
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setDateRange("3months")}
+                className={startDate && endDate ? "text-muted-foreground" : ""}
+              >
+                최근 3달
+              </Button>
+            </div>
+            <Button variant="outline">
+              <Download className="mr-2 h-4 w-4" />
+              내역 다운로드
+            </Button>
+          </div>
         </div>
 
         {/* Stats */}
