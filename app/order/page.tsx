@@ -452,7 +452,7 @@ export default function OrderPage() {
           <div className="relative z-10 w-full max-w-lg mx-4 bg-white rounded-lg shadow-lg text-black max-h-[80vh] flex flex-col">
             {/* 모달 헤더 */}
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">{"결제/혜택 안내"}</h3>
+              <h3 className="text-lg font-semibold text-gray-900">{"신용카드 무이자 할부 안내"}</h3>
               <button
                 onClick={() => setIsInstallmentInfoOpen(false)}
                 className="text-gray-500 hover:text-gray-700"
