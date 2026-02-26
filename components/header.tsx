@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Menu, X, ShoppingCart, User } from "lucide-react"
+import { Menu, X, ShoppingCart, User, Bell } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 const navItems = [
@@ -60,6 +60,15 @@ export function Header({ variant = "default" }: HeaderProps) {
                 마이페이지
               </Button>
             </Link>
+            <Link href="/mypage/notifications">
+              <Button variant="ghost" size="icon" className="relative text-muted-foreground hover:text-foreground">
+                <Bell className="h-5 w-5" />
+                <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-accent-foreground">
+                  3
+                </span>
+                <span className="sr-only">알림</span>
+              </Button>
+            </Link>
           </div>
         ) : (
           <div className="hidden items-center gap-3 lg:flex">
@@ -111,6 +120,15 @@ export function Header({ variant = "default" }: HeaderProps) {
                     <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground">
                       <User className="h-4 w-4" />
                       마이페이지
+                    </Button>
+                  </Link>
+                  <Link href="/mypage/notifications" onClick={() => setMobileOpen(false)}>
+                    <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground">
+                      <Bell className="h-4 w-4" />
+                      알림
+                      <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-accent-foreground">
+                        3
+                      </span>
                     </Button>
                   </Link>
                 </>
