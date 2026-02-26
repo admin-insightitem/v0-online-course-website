@@ -408,7 +408,7 @@ export default function StudentsPage() {
                       이름 {getSortIcon("name")}
                     </button>
                   </TableHead>
-<TableHead>
+                  <TableHead>
                     <button onClick={() => handleSort("joinDate")} className="flex items-center hover:text-foreground">
                       가입일 {getSortIcon("joinDate")}
                     </button>
@@ -424,18 +424,8 @@ export default function StudentsPage() {
                     </button>
                   </TableHead>
                   <TableHead>
-                    <button onClick={() => handleSort("email")} className="flex items-center hover:text-foreground">
-                      연락처 {getSortIcon("email")}
-                    </button>
-                  </TableHead>
-                  <TableHead>
-                    <button onClick={() => handleSort("joinMethod")} className="flex items-center hover:text-foreground">
-                      가��� 방법 {getSortIcon("joinMethod")}
-                    </button>
-                  </TableHead>
-                  <TableHead>
                     <button onClick={() => handleSort("courses")} className="flex items-center hover:text-foreground">
-                      ���강 강좌 {getSortIcon("courses")}
+                      수강 강좌 {getSortIcon("courses")}
                     </button>
                   </TableHead>
                   <TableHead>환불 강좌</TableHead>
