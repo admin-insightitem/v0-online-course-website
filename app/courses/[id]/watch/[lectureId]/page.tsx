@@ -123,6 +123,30 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
   const prevLecture = currentLectureGlobalIndex > 0 ? allLectures[currentLectureGlobalIndex - 1] : null
   const nextLecture = currentLectureGlobalIndex < allLectures.length - 1 ? allLectures[currentLectureGlobalIndex + 1] : null
 
+  // Calculate completed lectures (mock: lectures before current are completed)
+  const completedLecturesCount = currentLectureGlobalIndex
+  const progressPercent = Math.round((completedLecturesCount / allLectures.length) * 100)
+
+  // Calculate section duration
+  const getSectionDuration = (sectionIndex: number) => {
+    const section = course.curriculum[sectionIndex]
+    let totalMinutes = 0
+    section.lessons.forEach(lesson => {
+      const parts = lesson.duration.split(":")
+      if (parts.length === 2) {
+        totalMinutes += parseInt(parts[0]) * 60 + parseInt(parts[1])
+      } else if (parts.length === 1) {
+        totalMinutes += parseInt(parts[0])
+      }
+    })
+    const hours = Math.floor(totalMinutes / 60)
+    const minutes = totalMinutes % 60
+    if (hours > 0) {
+      return `${hours}시간 ${minutes}분`
+    }
+    return `${minutes}분`
+  }
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       {/* Compact Header */}
@@ -147,8 +171,8 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
       <div className="flex flex-1 flex-col lg:flex-row">
         {/* Main Content */}
         <div className="flex-1 overflow-y-auto">
-          {/* Video Player */}
-          <div className="relative aspect-video w-full bg-foreground">
+          {/* Video Player - Reduced height for 1920x1080 to show content below */}
+          <div className="relative aspect-[21/9] w-full bg-foreground">
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center text-background">
                 <PlayCircle className="mx-auto h-16 w-16 opacity-80" />
@@ -332,13 +356,29 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
         </div>
 
         {/* Curriculum Sidebar */}
-        <aside className="w-full shrink-0 border-t border-border bg-card lg:w-[360px] lg:border-l lg:border-t-0">
+        <aside className="w-full shrink-0 border-t border-border bg-card lg:w-[380px] lg:border-l lg:border-t-0">
           <div className="sticky top-14 max-h-[calc(100vh-3.5rem)] overflow-y-auto">
             <div className="border-b border-border p-4">
               <h2 className="font-semibold text-foreground">커리큘럼</h2>
-              <p className="mt-1 text-xs text-muted-foreground">
-                {course.curriculum.length}개 섹션 · {allLectures.length}개 강의
-              </p>
+              <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">{course.title}</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">수강 기한 무제한</p>
+              
+              {/* Progress Bar */}
+              <div className="mt-3">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="flex items-center gap-1 text-green-600">
+                    <PlayCircle className="h-3.5 w-3.5" />
+                    진도율 <span className="font-semibold">{completedLecturesCount}/{allLectures.length}</span>
+                  </span>
+                  <span className="font-medium text-foreground">{progressPercent}%</span>
+                </div>
+                <div className="mt-1.5 h-2 w-full overflow-hidden rounded-full bg-muted">
+                  <div 
+                    className="h-full rounded-full bg-green-500 transition-all duration-300"
+                    style={{ width: `${progressPercent}%` }}
+                  />
+                </div>
+              </div>
             </div>
 
             <div>
@@ -360,7 +400,7 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
                         <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${isOpen ? "rotate-0" : "-rotate-90"}`} />
                         <span className="text-sm font-medium text-foreground">{section.title}</span>
                       </div>
-                      <span className="text-xs text-muted-foreground">{section.lessons.length}개</span>
+                      <span className="text-xs text-muted-foreground">{section.lessons.length}강 · {getSectionDuration(sIdx)}</span>
                     </button>
 
                     {isOpen && (
@@ -372,40 +412,51 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
 
                           return (
                             <li key={lesson.title}>
-                              <Link
-                                href={`/courses/${id}/watch/${thisLectureId}`}
-                                className={`flex items-center gap-3 px-4 py-3 text-left transition-colors ${
-                                  isActive 
-                                    ? "bg-accent/10 border-l-2 border-accent" 
-                                    : "hover:bg-secondary/30"
-                                }`}
-                              >
-                                {isCompleted ? (
-                                  <CheckCircle className="h-4 w-4 shrink-0 text-green-500" />
-                                ) : isActive ? (
-                                  <PlayCircle className="h-4 w-4 shrink-0 text-accent" />
-                                ) : lesson.isFree ? (
-                                  <PlayCircle className="h-4 w-4 shrink-0 text-muted-foreground" />
-                                ) : (
+                              {/* 4 states: completed, active, preview (free), locked */}
+                              {lesson.isFree || isCompleted || isActive ? (
+                                <Link
+                                  href={`/courses/${id}/watch/${thisLectureId}`}
+                                  className={`flex items-center gap-3 px-4 py-3 text-left transition-colors ${
+                                    isActive 
+                                      ? "bg-accent/10 border-l-2 border-accent" 
+                                      : "hover:bg-secondary/30"
+                                  }`}
+                                >
+                                  {isCompleted ? (
+                                    <CheckCircle className="h-4 w-4 shrink-0 text-green-500" />
+                                  ) : isActive ? (
+                                    <PlayCircle className="h-4 w-4 shrink-0 text-accent" />
+                                  ) : (
+                                    <PlayCircle className="h-4 w-4 shrink-0 text-muted-foreground" />
+                                  )}
+                                  <div className="flex-1 min-w-0">
+                                    <p className={`text-sm truncate ${isActive ? "font-medium text-accent" : isCompleted ? "text-muted-foreground" : "text-foreground"}`}>
+                                      {lesson.title}
+                                    </p>
+                                    <div className="flex items-center gap-2 mt-0.5">
+                                      <span className="text-xs text-muted-foreground">
+                                        {lesson.duration}
+                                      </span>
+                                      {isCompleted && (
+                                        <span className="text-xs text-green-500">수강완료</span>
+                                      )}
+                                      {lesson.isFree && !isCompleted && !isActive && (
+                                        <Badge variant="secondary" className="text-[10px] text-accent">
+                                          미리보기
+                                        </Badge>
+                                      )}
+                                    </div>
+                                  </div>
+                                </Link>
+                              ) : (
+                                <div className="flex items-center gap-3 px-4 py-3 opacity-60">
                                   <Lock className="h-4 w-4 shrink-0 text-muted-foreground/50" />
-                                )}
-                                <div className="flex-1 min-w-0">
-                                  <p className={`text-sm truncate ${isActive ? "font-medium text-accent" : "text-foreground"}`}>
-                                    {lesson.title}
-                                  </p>
-                                  <div className="flex items-center gap-2 mt-0.5">
-                                    <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                                      <Clock className="h-3 w-3" />
-                                      {lesson.duration}
-                                    </span>
-                                    {lesson.isFree && (
-                                      <Badge variant="secondary" className="text-[10px] text-accent">
-                                        미리보기
-                                      </Badge>
-                                    )}
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-sm truncate text-muted-foreground">{lesson.title}</p>
+                                    <span className="text-xs text-muted-foreground">{lesson.duration}</span>
                                   </div>
                                 </div>
-                              </Link>
+                              )}
                             </li>
                           )
                         })}
