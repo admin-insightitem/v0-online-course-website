@@ -55,8 +55,8 @@ const studentsData = [
     joinDate: "2025.08.15",
     joinMethod: "email" as const,
     courses: [
-      { id: "1", title: "ChatGPT & AI 자동화", progress: 75, lastAccess: "2026.02.27" },
-      { id: "2", title: "유튜브 수익화 가이드", progress: 30, lastAccess: "2026.02.25" },
+      { id: "1", title: "ChatGPT & AI 자동화", progress: 75, lastAccess: "2026.02.27", enrollDate: "2025.08.15", price: 149000 },
+      { id: "2", title: "유튜브 수익화 가이드", progress: 30, lastAccess: "2026.02.25", enrollDate: "2025.09.20", price: 129000 },
     ],
     totalSpent: 278000,
     status: "active",
@@ -69,7 +69,7 @@ const studentsData = [
     joinDate: "2025.10.20",
     joinMethod: "kakao" as const,
     courses: [
-      { id: "3", title: "퍼포먼스 마케팅 마스터클래스", progress: 100, lastAccess: "2026.02.20" },
+      { id: "3", title: "퍼포먼스 마케팅 마스터클래스", progress: 100, lastAccess: "2026.02.20", enrollDate: "2025.10.20", price: 169000 },
     ],
     totalSpent: 169000,
     status: "active",
@@ -82,9 +82,9 @@ const studentsData = [
     joinDate: "2025.12.01",
     joinMethod: "kakao" as const,
     courses: [
-      { id: "1", title: "ChatGPT & AI 자동화", progress: 45, lastAccess: "2026.02.26" },
-      { id: "4", title: "프리미어 프로 & 포토샵", progress: 20, lastAccess: "2026.02.22" },
-      { id: "5", title: "스마트스토어 + 쿠팡", progress: 60, lastAccess: "2026.02.27" },
+      { id: "1", title: "ChatGPT & AI 자동화", progress: 45, lastAccess: "2026.02.26", enrollDate: "2025.12.01", price: 149000 },
+      { id: "4", title: "프리미어 프로 & 포토샵", progress: 20, lastAccess: "2026.02.22", enrollDate: "2026.01.10", price: 149000 },
+      { id: "5", title: "스마트스토어 + 쿠팡", progress: 60, lastAccess: "2026.02.27", enrollDate: "2026.02.01", price: 149000 },
     ],
     totalSpent: 447000,
     status: "active",
@@ -97,7 +97,7 @@ const studentsData = [
     joinDate: "2026.01.05",
     joinMethod: "email" as const,
     courses: [
-      { id: "6", title: "인스타그램 & 틱톡 SNS 수익화", progress: 85, lastAccess: "2026.02.27" },
+      { id: "6", title: "인스타그램 & 틱톡 SNS 수익화", progress: 85, lastAccess: "2026.02.27", enrollDate: "2026.01.05", price: 119000 },
     ],
     totalSpent: 119000,
     status: "active",
@@ -110,7 +110,7 @@ const studentsData = [
     joinDate: "2025.09.10",
     joinMethod: "email" as const,
     courses: [
-      { id: "2", title: "유튜브 수익화 가이드", progress: 10, lastAccess: "2026.01.15" },
+      { id: "2", title: "유튜브 수익화 가이드", progress: 10, lastAccess: "2026.01.15", enrollDate: "2025.09.10", price: 129000 },
     ],
     totalSpent: 129000,
     status: "inactive",
@@ -123,7 +123,7 @@ const studentsData = [
     joinDate: "2026.02.01",
     joinMethod: "kakao" as const,
     courses: [
-      { id: "1", title: "ChatGPT & AI 자동화", progress: 5, lastAccess: "2026.02.27" },
+      { id: "1", title: "ChatGPT & AI 자동화", progress: 5, lastAccess: "2026.02.27", enrollDate: "2026.02.01", price: 149000 },
     ],
     totalSpent: 149000,
     status: "active",
@@ -522,7 +522,7 @@ export default function StudentsPage() {
                             </span>
                           </div>
                           <Progress value={course.progress} className="h-2 mb-2" />
-                          <div className="flex items-center justify-between text-xs text-muted-foreground">
+                          <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
                             <span>마지막 학습: {course.lastAccess}</span>
                             {course.progress < 50 && (
                               <Badge variant="outline" className="text-yellow-600 border-yellow-600">
@@ -534,6 +534,10 @@ export default function StudentsPage() {
                                 완료
                               </Badge>
                             )}
+                          </div>
+                          <div className="flex items-center justify-between text-xs text-muted-foreground border-t border-border pt-2">
+                            <span>수강 신청일: {course.enrollDate}</span>
+                            <span className="font-medium text-foreground">{course.price.toLocaleString()}원</span>
                           </div>
                         </div>
                       ))}
