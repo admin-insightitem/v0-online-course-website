@@ -685,6 +685,7 @@ export default function PaymentsPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
+                      <TableHead className="w-16 text-center">No.</TableHead>
                       <TableHead>환불번호</TableHead>
                       <TableHead>주문번호</TableHead>
                       <TableHead>신청자</TableHead>
@@ -697,8 +698,11 @@ export default function PaymentsPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {paginatedRefunds.map((refund) => (
+                    {paginatedRefunds.map((refund, index) => (
                       <TableRow key={refund.id}>
+                        <TableCell className="text-center font-medium">
+                          {(currentPage - 1) * itemsPerPage + index + 1}
+                        </TableCell>
                         <TableCell className="font-mono text-sm">{refund.id}</TableCell>
                         <TableCell className="font-mono text-sm text-muted-foreground">{refund.paymentId}</TableCell>
                         <TableCell>
