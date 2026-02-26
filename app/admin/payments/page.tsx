@@ -361,20 +361,23 @@ export default function PaymentsPage() {
               </CardHeader>
               <CardContent>
                 <Table>
-                  <TableHeader>
+<TableHeader>
                     <TableRow>
+                      <TableHead>결제일시</TableHead>
                       <TableHead>주문번호</TableHead>
                       <TableHead>구매자</TableHead>
                       <TableHead>강좌</TableHead>
                       <TableHead>결제수단</TableHead>
                       <TableHead className="text-right">결제금액</TableHead>
                       <TableHead className="text-center">상태</TableHead>
-                      <TableHead>결제일시</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {filteredPayments.map((payment) => (
                       <TableRow key={payment.id}>
+                        <TableCell className="text-sm text-muted-foreground">
+                          {payment.date}
+                        </TableCell>
                         <TableCell className="font-mono text-sm">{payment.id}</TableCell>
                         <TableCell>
                           <div>
@@ -396,9 +399,6 @@ export default function PaymentsPage() {
                         </TableCell>
                         <TableCell className="text-center">
                           {getStatusBadge(payment.status)}
-                        </TableCell>
-                        <TableCell className="text-sm text-muted-foreground">
-                          {payment.date}
                         </TableCell>
                       </TableRow>
                     ))}
