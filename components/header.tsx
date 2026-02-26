@@ -123,12 +123,6 @@ export function Header({ variant = "default" }: HeaderProps) {
                 <span className="sr-only">장바구니</span>
               </Button>
             </Link>
-            <Link href="/mypage">
-              <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground hover:text-foreground">
-                <User className="h-4 w-4" />
-                마이페이지
-              </Button>
-            </Link>
             <div className="relative" ref={notificationRef}>
               <Button 
                 variant="ghost" 
@@ -260,6 +254,12 @@ export function Header({ variant = "default" }: HeaderProps) {
                 </div>
               )}
             </div>
+            <Link href="/mypage">
+              <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground hover:text-foreground">
+                <User className="h-4 w-4" />
+                마이페이지
+              </Button>
+            </Link>
           </div>
         ) : (
           <div className="hidden items-center gap-3 lg:flex">
