@@ -190,8 +190,8 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
       <div className="flex flex-1 flex-col lg:flex-row">
         {/* Main Content */}
         <div className="flex-1 overflow-y-auto">
-          {/* Video Player - Reduced height for 1920x1080 to show content below */}
-          <div className="relative aspect-[21/9] w-full bg-foreground">
+          {/* Video Player - Maximized to fill viewport minus header and tab bar */}
+          <div className="relative w-full bg-foreground" style={{ height: 'calc(100vh - 3.5rem - 45px)' }}
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center text-background">
                 <PlayCircle className="mx-auto h-16 w-16 opacity-80" />
@@ -228,34 +228,40 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
             </div>
           </div>
 
-          {/* Content Tabs */}
-          <div className="border-b border-border">
-            <div className="flex">
+          {/* Content Tabs - Minimal tab bar like reference */}
+          <div className="border-t border-border bg-card">
+            <div className="flex items-center justify-center gap-8">
               <button
                 onClick={() => setActiveTab(activeTab === "materials" ? null : "materials")}
-                className={`px-6 py-3 text-sm font-medium transition-colors border-b-2 ${
+                className={`relative px-4 py-3 text-sm font-medium transition-colors ${
                   activeTab === "materials"
-                    ? "border-accent text-accent"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
+                    ? "text-accent"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                학습 자료
+                강의자료
+                {activeTab === "materials" && (
+                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent" />
+                )}
               </button>
               <button
                 onClick={() => setActiveTab(activeTab === "qna" ? null : "qna")}
-                className={`px-6 py-3 text-sm font-medium transition-colors border-b-2 ${
+                className={`relative px-4 py-3 text-sm font-medium transition-colors ${
                   activeTab === "qna"
-                    ? "border-accent text-accent"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
+                    ? "text-accent"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                Q&A ({questions.length})
+                Q&A
+                {activeTab === "qna" && (
+                  <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent" />
+                )}
               </button>
             </div>
           </div>
 
-          {/* Tab Content - Collapsible */}
-          {activeTab && <div className="p-4 lg:p-6">
+          {/* Tab Content - Collapsible, appears as overlay or below */}
+          {activeTab && <div className="border-t border-border bg-background p-4 lg:p-6">
             {activeTab === "materials" && (
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-foreground">학습 자료 다운로드</h3>
