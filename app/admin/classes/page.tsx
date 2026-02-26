@@ -214,6 +214,7 @@ export default function ClassesPage() {
                   <TableHead className="text-center">강의 수</TableHead>
                   <TableHead className="text-center">배지</TableHead>
                   <TableHead className="text-center">노출</TableHead>
+                  <TableHead className="text-center">강의 등록</TableHead>
                   <TableHead className="text-center">액션</TableHead>
                 </TableRow>
               </TableHeader>
@@ -289,6 +290,14 @@ export default function ClassesPage() {
                           <EyeOff className="h-4 w-4 text-muted-foreground" />
                         )}
                       </Button>
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <Link href={`/admin/lectures?classId=${cls.id}`}>
+                        <Button variant="outline" size="sm">
+                          <Plus className="mr-1 h-3 w-3" />
+                          강의 등록
+                        </Button>
+                      </Link>
                     </TableCell>
                     <TableCell className="text-center">
                       <DropdownMenu>
