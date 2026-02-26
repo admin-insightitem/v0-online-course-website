@@ -283,15 +283,12 @@ export default function OrderPage() {
                   </label>
 
                   {/* 마케팅 수신 동의 */}
-                  <div className="flex flex-col gap-3">
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-sm font-semibold text-foreground">{"마케팅 수신 동의"}</h3>
-                      <Button variant="outline" size="sm" className="h-7 gap-1 border-border bg-white text-xs font-normal text-foreground hover:bg-muted">
-                        {"◆◆관보기"}
-                      </Button>
-                    </div>
+                  <div className="flex flex-col gap-2">
+                    <span className="text-xs leading-relaxed text-card-foreground">
+                      {"마케팅 수신 동의"}
+                    </span>
                     
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs leading-relaxed text-card-foreground">
                       {"할인 이벤트와 쿠폰 발급 등의 알림을 받으시고 혜택을 놓치지 마세요."}
                     </p>
                     
@@ -302,7 +299,7 @@ export default function OrderPage() {
                           onCheckedChange={(checked) => setAgreedToEmail(checked === true)}
                           className="h-4 w-4 border-border data-[state=checked]:border-accent data-[state=checked]:bg-accent"
                         />
-                        <span className="text-sm text-foreground">{"이메일 수신"}</span>
+                        <span className="text-xs leading-relaxed text-card-foreground">{"이메일 수신"}</span>
                       </label>
                       <span className="text-xs text-muted-foreground">
                         {"동의 일자 : 2025.09.02 00:43"}
@@ -316,7 +313,7 @@ export default function OrderPage() {
                           onCheckedChange={(checked) => setAgreedToSms(checked === true)}
                           className="h-4 w-4 border-border data-[state=checked]:border-accent data-[state=checked]:bg-accent"
                         />
-                        <span className="text-sm text-foreground">{"문자메시지 수신"}</span>
+                        <span className="text-xs leading-relaxed text-card-foreground">{"문자메시지 수신"}</span>
                       </label>
                       <span className="text-xs text-muted-foreground">
                         {"미동의 일자 : 2024.04.04 20:25"}
