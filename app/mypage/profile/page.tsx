@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { MypageLayout } from "@/components/mypage-layout"
 import { Button } from "@/components/ui/button"
 import { CheckCircle } from "lucide-react"
@@ -109,12 +110,22 @@ export default function ProfilePage() {
           {saved ? (
             <span className="flex items-center gap-1.5">
               <CheckCircle className="h-4 w-4" />
-              저장 완료
+              수정 완료
             </span>
           ) : (
-            "저장하기"
+            "수정하기"
           )}
         </Button>
+      </div>
+
+      {/* 회원탈퇴 링크 */}
+      <div className="mt-12 flex justify-center">
+        <Link
+          href="/mypage/withdraw"
+          className="text-xs text-muted-foreground underline hover:text-foreground"
+        >
+          회원탈퇴
+        </Link>
       </div>
     </MypageLayout>
   )
