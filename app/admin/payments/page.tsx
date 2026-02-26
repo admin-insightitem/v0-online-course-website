@@ -71,6 +71,7 @@ const paymentsData = [
     cardInfo: "신한카드 **** 1234",
     status: "completed",
     date: "2026.02.27 14:32",
+    refundDate: "",
   },
   {
     id: "PAY-2026022702",
@@ -80,8 +81,9 @@ const paymentsData = [
     amount: 129000,
     paymentMethod: "카카오페이",
     cardInfo: "",
-    status: "completed",
+    status: "refunded",
     date: "2026.02.27 13:15",
+    refundDate: "2026.02.27 16:45",
   },
   {
     id: "PAY-2026022703",
@@ -93,6 +95,7 @@ const paymentsData = [
     cardInfo: "삼성카드 **** 5678",
     status: "completed",
     date: "2026.02.27 11:45",
+    refundDate: "",
   },
   {
     id: "PAY-2026022601",
@@ -104,6 +107,7 @@ const paymentsData = [
     cardInfo: "",
     status: "completed",
     date: "2026.02.26 16:20",
+    refundDate: "",
   },
   {
     id: "PAY-2026022602",
@@ -115,6 +119,7 @@ const paymentsData = [
     cardInfo: "현대카드 **** 9012",
     status: "completed",
     date: "2026.02.26 10:08",
+    refundDate: "",
   },
 ]
 
@@ -297,6 +302,13 @@ export default function PaymentsPage() {
           <Badge className="bg-green-100 text-green-700 hover:bg-green-200">
             <CheckCircle className="mr-1 h-3 w-3" />
             결제완료
+          </Badge>
+        )
+      case "refunded":
+        return (
+          <Badge className="bg-purple-100 text-purple-700 hover:bg-purple-200">
+            <RefreshCw className="mr-1 h-3 w-3" />
+            환불완료
           </Badge>
         )
       case "pending":
@@ -492,8 +504,10 @@ export default function PaymentsPage() {
                 <Table>
 <TableHeader>
                     <TableRow>
+                      <TableHead className="w-16 text-center">No.</TableHead>
                       <TableHead>결제일시</TableHead>
                       <TableHead>주문번호</TableHead>
+                      <TableHead>환불일시</TableHead>
                       <TableHead>구매자</TableHead>
                       <TableHead>강좌</TableHead>
                       <TableHead>결제수단</TableHead>
@@ -502,12 +516,18 @@ export default function PaymentsPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {paginatedPayments.map((payment) => (
+                    {paginatedPayments.map((payment, index) => (
                       <TableRow key={payment.id}>
+                        <TableCell className="text-center font-medium">
+                          {(currentPage - 1) * itemsPerPage + index + 1}
+                        </TableCell>
                         <TableCell className="text-sm text-muted-foreground">
                           {payment.date}
                         </TableCell>
                         <TableCell className="font-mono text-sm">{payment.id}</TableCell>
+                        <TableCell className="text-sm text-muted-foreground">
+                          {payment.refundDate || "-"}
+                        </TableCell>
                         <TableCell>
                           <div>
                             <p className="font-medium">{payment.studentName}</p>
