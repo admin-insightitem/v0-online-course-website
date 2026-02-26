@@ -836,6 +836,7 @@ export default function PaymentsPage() {
                         setIsRefundDetailOpen(false)
                         setIsRejectDialogOpen(true)
                       }}
+                      disabled={!approveReply.trim()}
                     >
                       <XCircle className="mr-2 h-4 w-4" />
                       거절
@@ -885,22 +886,15 @@ export default function PaymentsPage() {
             <AlertDialogHeader>
               <AlertDialogTitle>환불 거절</AlertDialogTitle>
               <AlertDialogDescription>
-                환불 요청을 거절하시겠습니까? 거절 사유를 입력해 주세요.
+                환불 요청을 거절하시겠습니까?
               </AlertDialogDescription>
             </AlertDialogHeader>
-            <div className="py-4">
-              <Textarea
-                placeholder="거절 사유를 입력하세요"
-                value={rejectReason}
-                onChange={(e) => setRejectReason(e.target.value)}
-              />
-            </div>
             <AlertDialogFooter>
               <AlertDialogCancel>취소</AlertDialogCancel>
               <AlertDialogAction
                 onClick={() => {
                   setIsRejectDialogOpen(false)
-                  setRejectReason("")
+                  setApproveReply("")
                 }}
                 className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               >
