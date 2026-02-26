@@ -829,18 +829,20 @@ export default function PaymentsPage() {
                       <p className="font-medium">{selectedRefund.course}</p>
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-3 gap-4">
                     <div>
                       <p className="text-sm text-muted-foreground">{"결제 금액"}</p>
                       <p className="font-medium">{selectedRefund.amount.toLocaleString()}{"원"}</p>
-                      <p className="text-sm text-muted-foreground mt-2">{"환불 금액"}</p>
-                      <p className="text-lg font-bold text-primary">
-                        {selectedRefund.refundAmount.toLocaleString()}{"원"}
-                      </p>
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">{"쿠폰 할인"}</p>
                       <p className="font-medium text-red-500">{"-10,000원"}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">{"환불 금액"}</p>
+                      <p className="text-lg font-bold text-primary">
+                        {selectedRefund.refundAmount.toLocaleString()}{"원"}
+                      </p>
                     </div>
                   </div>
                   <div>
