@@ -388,8 +388,8 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
                   수강평 작성
                 </button>
               </div>
-              <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">{course.title}</p>
-              <p className="mt-0.5 text-xs text-muted-foreground">수강 기한 무제한</p>
+              <p className="mt-2 line-clamp-2 text-sm font-medium text-foreground">{course.title}</p>
+              <p className="mt-1 text-xs text-muted-foreground">수강 기한 무제한</p>
               
               {/* Progress Bar */}
               <div className="mt-3">
