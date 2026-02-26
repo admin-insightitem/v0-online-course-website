@@ -1,6 +1,7 @@
 "use client"
 
 import { useSearchParams } from "next/navigation"
+import Image from "next/image"
 import { AdminLayout } from "@/components/admin-layout"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -127,10 +128,24 @@ export default function LecturesPage() {
         </div>
 
         {/* Page Header */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
+        <div className="flex items-start gap-4">
+          <div className="relative h-20 w-36 overflow-hidden rounded-lg border border-border flex-shrink-0">
+            {currentCourse?.thumbnail ? (
+              <Image
+                src={currentCourse.thumbnail}
+                alt={currentCourse.title || ""}
+                fill
+                className="object-cover"
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center bg-muted">
+                <Video className="h-8 w-8 text-muted-foreground" />
+              </div>
+            )}
+          </div>
+          <div className="flex-1">
             <h2 className="text-2xl font-bold tracking-tight">{currentCourse?.title}</h2>
-            <p className="text-muted-foreground">커리큘럼을 구성하고 강의 콘텐츠를 관리합니다.</p>
+            <p className="text-sm text-muted-foreground mt-2">커리큘럼을 구성하고 강의 콘텐츠를 관리합니다.</p>
           </div>
         </div>
 
