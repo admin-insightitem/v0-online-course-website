@@ -129,6 +129,8 @@ const refundsData = [
     amount: 149000,
     refundAmount: 149000,
     reason: "개인 사정으로 인한 환불 요청",
+    inquiryTitle: "[환불 요청] ChatGPT & AI 자동화 강좌 환불 문의드립니다",
+    inquiryContent: "안녕하세요. 개인 사정으로 인해 더 이상 강의를 수강하기 어려워졌습니다. 아직 강의를 거의 듣지 못했는데, 환불 처리가 가능할까요? 빠른 답변 부탁드립니다.",
     status: "pending",
     requestDate: "2026.02.27 09:30",
     progress: 5,
@@ -142,6 +144,8 @@ const refundsData = [
     amount: 129000,
     refundAmount: 103200,
     reason: "강의 내용이 기대와 다름",
+    inquiryTitle: "[환불 요청] 유튜브 수익화 가이드 환불 부탁드립니다",
+    inquiryContent: "강의 설명과 실제 내용이 다른 것 같습니다. 초보자를 위한 가이드라고 했는데, 너무 기초적인 내용만 다루고 있어 기대와 많이 달랐습니다. 환불 요청드립니다.",
     status: "pending",
     requestDate: "2026.02.26 15:20",
     progress: 20,
@@ -155,6 +159,8 @@ const refundsData = [
     amount: 169000,
     refundAmount: 169000,
     reason: "중복 결제",
+    inquiryTitle: "[환불 요청] 중복 결제되어 환불 요청합니다",
+    inquiryContent: "결제 오류로 인해 같은 강좌가 두 번 결제되었습니다. 한 건에 대해 환불 처리 부탁드립니다.",
     status: "approved",
     requestDate: "2026.02.25 11:45",
     processedDate: "2026.02.25 14:30",
@@ -169,6 +175,8 @@ const refundsData = [
     amount: 159000,
     refundAmount: 0,
     reason: "진도율 50% 초과로 환불 불가 요청",
+    inquiryTitle: "[환불 요청] 스마트스토어 + 쿠팡 강좌 환불 문의",
+    inquiryContent: "강의를 듣다가 개인 사정으로 더 이상 수강이 어렵게 되었습니다. 환불이 가능할지 문의드립니다.",
     status: "rejected",
     requestDate: "2026.02.24 16:00",
     processedDate: "2026.02.24 17:45",
@@ -184,6 +192,7 @@ export default function PaymentsPage() {
   const [isApproveDialogOpen, setIsApproveDialogOpen] = useState(false)
   const [isRejectDialogOpen, setIsRejectDialogOpen] = useState(false)
   const [rejectReason, setRejectReason] = useState("")
+  const [approveReply, setApproveReply] = useState("")
   const [startDate, setStartDate] = useState("")
   const [endDate, setEndDate] = useState("")
   const [dateRangeType, setDateRangeType] = useState<"all" | "week" | "month" | "3months" | "custom">("all")
@@ -792,10 +801,13 @@ export default function PaymentsPage() {
                     )}
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">환불 사유</p>
-                    <p className="mt-1 rounded-lg bg-muted p-3 text-sm">
-                      {selectedRefund.reason}
-                    </p>
+                    <p className="text-sm text-muted-foreground mb-2">1:1 문의 내용 (환불 사유)</p>
+                    <div className="rounded-lg border border-border bg-muted/30 p-4">
+                      <p className="font-medium text-sm mb-2">{selectedRefund.inquiryTitle}</p>
+                      <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                        {selectedRefund.inquiryContent}
+                      </p>
+                    </div>
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
@@ -804,6 +816,17 @@ export default function PaymentsPage() {
                     </div>
                     <div>{getStatusBadge(selectedRefund.status)}</div>
                   </div>
+                  {selectedRefund.status === "pending" && (
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-2">답변 내용</p>
+                      <Textarea
+                        placeholder="답변 내용을 입력하세요"
+                        value={approveReply}
+                        onChange={(e) => setApproveReply(e.target.value)}
+                        className="min-h-[100px]"
+                      />
+                    </div>
+                  )}
                 </div>
                 {selectedRefund.status === "pending" && (
                   <DialogFooter>
@@ -822,6 +845,7 @@ export default function PaymentsPage() {
                         setIsRefundDetailOpen(false)
                         setIsApproveDialogOpen(true)
                       }}
+                      disabled={!approveReply.trim()}
                     >
                       <CheckCircle className="mr-2 h-4 w-4" />
                       승인
@@ -845,7 +869,10 @@ export default function PaymentsPage() {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>취소</AlertDialogCancel>
-              <AlertDialogAction onClick={() => setIsApproveDialogOpen(false)}>
+              <AlertDialogAction onClick={() => {
+                  setIsApproveDialogOpen(false)
+                  setApproveReply("")
+                }}>
                 승인하기
               </AlertDialogAction>
             </AlertDialogFooter>
