@@ -26,7 +26,7 @@ const sideMenu = [
   { icon: MonitorPlay, label: "VOD 강의", href: "/mypage" },
   { icon: Ticket, label: "쿠폰목록", href: "/mypage" },
   { icon: Heart, label: "위시리스트", href: "/mypage" },
-  { icon: CreditCard, label: "주문결제내역", href: "/mypage/orders" },
+  { icon: CreditCard, label: "구매내역", href: "/mypage/orders" },
   { icon: Settings, label: "회원정보관리", href: "/mypage/profile" },
   { icon: LogOut, label: "로그아웃", href: "/" },
 ]

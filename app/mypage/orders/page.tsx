@@ -1,7 +1,9 @@
 "use client"
 
+import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
+import { X } from "lucide-react"
 import { MypageLayout } from "@/components/mypage-layout"
 import { Button } from "@/components/ui/button"
 import { courses } from "@/lib/courses"
@@ -40,8 +42,10 @@ const orderHistory = [
 ]
 
 export default function OrdersPage() {
+  const [isRefundModalOpen, setIsRefundModalOpen] = useState(false)
+
   return (
-    <MypageLayout activeMenu="주문결제내역">
+    <MypageLayout activeMenu="구매내역">
       <h2 className="text-xl font-bold text-foreground">구매내역</h2>
 
       <div className="mt-6 flex flex-col gap-4">
@@ -98,6 +102,13 @@ export default function OrdersPage() {
                 <p className="text-xs text-muted-foreground">
                   결제수단: {order.paymentMethod}
                 </p>
+                
+                <button
+                  onClick={() => setIsRefundModalOpen(true)}
+                  className="mt-1 w-fit text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground"
+                >
+                  환불 신청서 작성
+                </button>
               </div>
 
               {/* Actions */}
@@ -115,6 +126,60 @@ export default function OrdersPage() {
           </div>
         ))}
       </div>
+
+      {/* Refund Application Modal */}
+      {isRefundModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-md rounded-lg bg-card shadow-lg">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between border-b border-border px-5 py-4">
+              <h3 className="text-lg font-bold text-destructive">환불 신청서 작성</h3>
+              <button
+                onClick={() => setIsRefundModalOpen(false)}
+                className="rounded-full p-1 hover:bg-secondary"
+              >
+                <X className="h-5 w-5 text-muted-foreground" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="px-5 py-4">
+              <p className="text-sm text-foreground">
+                환불 신청 또는 환불 금액 관련 문의는
+              </p>
+              <p className="mt-2 text-sm text-foreground">
+                <span className="font-semibold text-destructive">1:1 문의 등록</span>(하단 클릭)을 통해 제출해 주시면
+              </p>
+              <p className="mt-2 text-sm text-foreground">
+                접수 시 기재하신 메일로 답변 드리오니 꼭 확인 바랍니다.
+              </p>
+              <p className="mt-3 text-sm text-muted-foreground">
+                • <Link href="/faq" className="text-accent hover:underline">FAQ 참고</Link>
+              </p>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex items-center justify-end gap-3 border-t border-border px-5 py-4">
+              <Button
+                variant="outline"
+                onClick={() => setIsRefundModalOpen(false)}
+              >
+                닫기
+              </Button>
+              <Button
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                onClick={() => {
+                  // Navigate to 1:1 inquiry page
+                  setIsRefundModalOpen(false)
+                  window.location.href = "/support/inquiry"
+                }}
+              >
+                1:1 문의 등록
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </MypageLayout>
   )
 }
