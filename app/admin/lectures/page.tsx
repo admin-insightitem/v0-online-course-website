@@ -267,7 +267,7 @@ export default function LecturesPage() {
                             <Input
                               value={editingSectionTitle}
                               onChange={(e) => setEditingSectionTitle(e.target.value)}
-                              className="h-8 flex-1"
+                              className="h-8 min-w-[600px]"
                               autoFocus
                             />
                             <Button size="sm" variant="ghost" className="h-8 px-2 flex-shrink-0" onClick={handleSaveSection}>
