@@ -564,7 +564,7 @@ export default function ProfilePage() {
                     type="checkbox"
                     checked={emailMarketing}
                     onChange={(e) => setEmailMarketing(e.target.checked)}
-                    className="h-4 w-4 rounded border-border accent-sky-500"
+                    className="h-4 w-4 rounded border-border accent-amber-600"
                   />
                   <span className="text-sm text-foreground">이메일 수신</span>
                 </label>
@@ -580,7 +580,7 @@ export default function ProfilePage() {
                     type="checkbox"
                     checked={smsMarketing}
                     onChange={(e) => setSmsMarketing(e.target.checked)}
-                    className="h-4 w-4 rounded border-border accent-sky-500"
+                    className="h-4 w-4 rounded border-border accent-amber-600"
                   />
                   <span className="text-sm text-foreground">문자메시지 수신</span>
                 </label>
