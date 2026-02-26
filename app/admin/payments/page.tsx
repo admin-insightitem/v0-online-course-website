@@ -868,13 +868,6 @@ export default function PaymentsPage() {
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-muted-foreground">신청일</p>
-                      <p className="text-sm">{selectedRefund.requestDate}</p>
-                    </div>
-                    <div>{getStatusBadge(selectedRefund.status)}</div>
-                  </div>
                   {(selectedRefund.status === "pending" || selectedRefund.status === "rejected") && (
                     <div>
                       <p className="text-sm text-muted-foreground mb-2">{"답변 내용"}</p>
@@ -894,6 +887,13 @@ export default function PaymentsPage() {
                       </div>
                     </div>
                   )}
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-muted-foreground">{"신청일"}</p>
+                      <p className="text-sm">{selectedRefund.requestDate}</p>
+                    </div>
+                    <div>{getStatusBadge(selectedRefund.status)}</div>
+                  </div>
                 </div>
                 {selectedRefund.status === "pending" && (
                   <DialogFooter>
