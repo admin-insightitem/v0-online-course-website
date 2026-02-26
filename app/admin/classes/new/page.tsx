@@ -102,6 +102,7 @@ interface FormData {
   // 설정
   isVisible: boolean
   thumbnail: string
+  headerImage: string
 }
 
 const categories = ["AI / 자동화", "유튜브", "마케팅", "디자인", "커머스", "SNS"]
@@ -155,6 +156,7 @@ export default function NewClassPage() {
     curriculum: [],
     isVisible: true,
     thumbnail: "",
+    headerImage: "",
   })
 
   // 강사 선택시 자동 입력
@@ -471,14 +473,19 @@ export default function NewClassPage() {
               </CardContent>
             </Card>
 
-            {/* 썸네일 */}
+            {/* 이미지 업로드 */}
             <Card>
               <CardHeader>
-                <CardTitle>썸네일 이미지</CardTitle>
-                <CardDescription>강좌 목록에 표시될 이미지입니다.</CardDescription>
+                <CardTitle>이미지 설정</CardTitle>
+                <CardDescription>강좌에 사용될 이미지를 업로드하세요.</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="flex flex-col items-center gap-4">
+              <CardContent className="space-y-6">
+                {/* 목록 썸네일 */}
+                <div className="space-y-3">
+                  <div>
+                    <Label className="text-sm font-medium">목록 썸네일</Label>
+                    <p className="text-xs text-muted-foreground">강좌 목록, 카드에 표시되는 이미지</p>
+                  </div>
                   <div className="relative aspect-video w-full overflow-hidden rounded-lg border-2 border-dashed border-border bg-muted">
                     {formData.thumbnail ? (
                       <Image
@@ -489,15 +496,43 @@ export default function NewClassPage() {
                       />
                     ) : (
                       <div className="flex h-full flex-col items-center justify-center gap-2 text-muted-foreground">
-                        <ImageIcon className="h-10 w-10" />
-                        <span className="text-sm">이미지 업로드</span>
+                        <ImageIcon className="h-8 w-8" />
                         <span className="text-xs">권장: 1280 x 720px</span>
                       </div>
                     )}
                   </div>
-                  <Button variant="outline" className="w-full">
+                  <Button variant="outline" size="sm" className="w-full">
                     <Upload className="mr-2 h-4 w-4" />
-                    파일 선택
+                    썸네일 업로드
+                  </Button>
+                </div>
+
+                <Separator />
+
+                {/* 상세 페이지 타이틀 이미지 */}
+                <div className="space-y-3">
+                  <div>
+                    <Label className="text-sm font-medium">상세 페이지 헤더 이미지</Label>
+                    <p className="text-xs text-muted-foreground">상세 페이지 상단 배경 이미지</p>
+                  </div>
+                  <div className="relative aspect-[21/9] w-full overflow-hidden rounded-lg border-2 border-dashed border-border bg-muted">
+                    {formData.headerImage ? (
+                      <Image
+                        src={formData.headerImage}
+                        alt="헤더 이미지 미리보기"
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-full flex-col items-center justify-center gap-2 text-muted-foreground">
+                        <ImageIcon className="h-8 w-8" />
+                        <span className="text-xs">권장: 1920 x 600px</span>
+                      </div>
+                    )}
+                  </div>
+                  <Button variant="outline" size="sm" className="w-full">
+                    <Upload className="mr-2 h-4 w-4" />
+                    헤더 이미지 업로드
                   </Button>
                 </div>
               </CardContent>
@@ -983,7 +1018,16 @@ export default function NewClassPage() {
           </DialogHeader>
           <div className="space-y-6">
             {/* Hero Section Preview */}
-            <div className="relative rounded-lg bg-zinc-900 p-6 text-white">
+            <div className="relative rounded-lg bg-zinc-900 p-6 text-white overflow-hidden">
+              {formData.headerImage && (
+                <Image
+                  src={formData.headerImage}
+                  alt="헤더 배경"
+                  fill
+                  className="object-cover opacity-40"
+                />
+              )}
+              <div className="relative z-10">
               <div className="flex items-center gap-2 text-sm text-zinc-400 mb-4">
                 <span>홈</span>
                 <span>/</span>
@@ -1024,6 +1068,7 @@ export default function NewClassPage() {
                   <Video className="h-4 w-4" />
                   <span>{totalLectures}개 강의</span>
                 </div>
+              </div>
               </div>
             </div>
 
