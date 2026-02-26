@@ -175,6 +175,7 @@ const refundsData = [
     requestDate: "2026.02.25 11:45",
     processedDate: "2026.02.25 14:30",
     progress: 0,
+    reply: "안녕하세요. 중복 결제 확인되어 환불 처리 완료되었습니다. 감사합니다.",
   },
   {
     id: "REF-2026022401",
@@ -191,6 +192,7 @@ const refundsData = [
     requestDate: "2026.02.24 16:00",
     processedDate: "2026.02.24 17:45",
     progress: 55,
+    reply: "안녕하세요. 진도율이 50%를 초과하여 환불 규정에 따라 환불이 불가합니다. 양해 부탁드립니다.",
   },
 ]
 
@@ -880,6 +882,14 @@ export default function PaymentsPage() {
                         onChange={(e) => setApproveReply(e.target.value)}
                         className="min-h-[100px]"
                       />
+                    </div>
+                  )}
+                  {selectedRefund.status === "approved" && selectedRefund.reply && (
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-2">{"답변"}</p>
+                      <div className="rounded-lg bg-muted p-4">
+                        <p className="text-sm leading-relaxed">{selectedRefund.reply}</p>
+                      </div>
                     </div>
                   )}
                 </div>
