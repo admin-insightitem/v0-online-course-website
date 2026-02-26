@@ -46,8 +46,8 @@ const coursesWithCurriculum = [
         order: 1,
         lectures: [
           { id: "l1", title: "강의 소개 및 로드맵 안내", duration: "12:30", type: "video", isFree: true, isPublished: true, materials: [] },
-          { id: "l2", title: "AI 시대, 왜 지금 시작해야 하는가", duration: "18:45", type: "video", isFree: true, isPublished: true, materials: [{ name: "AI 트렌드 요약.pdf" }] },
-          { id: "l3", title: "수익화 가능한 AI 비즈니스 모델 10가지", duration: "25:10", type: "video", isFree: false, isPublished: true, materials: [{ name: "비즈니스 모델 템플릿.xlsx" }, { name: "사례 분석 자료.pdf" }] },
+          { id: "l2", title: "AI 시대, 왜 지금 시작해야 하는가", duration: "18:45", type: "video", isFree: true, isPublished: true, materials: [{ name: "강의 노트.pdf", size: "2.4MB" }] },
+          { id: "l3", title: "수익화 가능한 AI 비즈니스 모델 10가지", duration: "25:10", type: "video", isFree: false, isPublished: true, materials: [{ name: "소스코드.zip", size: "15.2MB" }, { name: "이미지자료.jpg", size: "1.8MB" }] },
           { id: "l4", title: "Section 1 학습자료", duration: "", type: "file", isFree: false, isPublished: true, materials: [] },
         ],
       },
@@ -170,10 +170,14 @@ export default function LecturesPage() {
                             <div className="flex flex-col">
                               <span className="font-medium">{lecture.title}</span>
                               {lecture.materials && lecture.materials.length > 0 && (
-                                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                                  <FileText className="h-3 w-3" />
-                                  학습자료 {lecture.materials.length}개
-                                </span>
+                                <div className="flex items-center gap-2 mt-0.5">
+                                  {lecture.materials.map((material, idx) => (
+                                    <span key={idx} className="text-xs text-muted-foreground flex items-center gap-1">
+                                      <FileText className="h-3 w-3" />
+                                      {material.name} {material.size && `(${material.size})`}
+                                    </span>
+                                  ))}
+                                </div>
                               )}
                             </div>
                             {lecture.isFree && (
