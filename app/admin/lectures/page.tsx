@@ -188,6 +188,7 @@ export default function LecturesPage() {
   const [lectureMaterials, setLectureMaterials] = useState<Material[]>([])
   const [lectureIsFree, setLectureIsFree] = useState(false)
   const [lectureIsPublished, setLectureIsPublished] = useState(true)
+  const [lectureVideo, setLectureVideo] = useState<{ name: string; size: string; duration: string } | null>(null)
 
   // 섹션 수정 상태 (Section 2는 기본적으로 수정 중)
   const [editingSectionId, setEditingSectionId] = useState<string | null>("s2")
@@ -200,6 +201,7 @@ export default function LecturesPage() {
     setLectureMaterials([])
     setLectureIsFree(false)
     setLectureIsPublished(true)
+    setLectureVideo(null)
     setIsLectureDialogOpen(true)
   }
 
@@ -210,6 +212,16 @@ export default function LecturesPage() {
     setLectureMaterials([...lecture.materials])
     setLectureIsFree(lecture.isFree)
     setLectureIsPublished(lecture.isPublished)
+    // 수정 시 영상이 등록된 예시 데이터
+    if (lecture.duration) {
+      setLectureVideo({
+        name: `${lecture.title}.mp4`,
+        size: "245MB",
+        duration: lecture.duration
+      })
+    } else {
+      setLectureVideo(null)
+    }
     setIsLectureDialogOpen(true)
   }
 
@@ -493,13 +505,38 @@ export default function LecturesPage() {
               {/* 강의 영상 업로드 */}
               <div className="grid gap-3">
                 <Label>강의 영상</Label>
-                <div
-                  className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-border bg-muted/30 p-8 cursor-pointer hover:bg-muted/50 transition-colors"
-                >
-                  <Video className="h-10 w-10 text-muted-foreground mb-3" />
-                  <p className="text-sm font-medium">클릭하여 영상을 업로드하세요</p>
-                  <p className="text-xs text-muted-foreground mt-1">MP4, MOV, WebM (최대 2GB)</p>
-                </div>
+                {lectureVideo ? (
+                  <div className="flex items-center justify-between rounded-lg border border-border bg-muted/50 p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                        <Video className="h-6 w-6 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium">{lectureVideo.name}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {lectureVideo.size} / {lectureVideo.duration}
+                        </p>
+                      </div>
+                    </div>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                      onClick={() => setLectureVideo(null)}
+                    >
+                      <Trash2 className="h-4 w-4 mr-1" />
+                      삭제
+                    </Button>
+                  </div>
+                ) : (
+                  <div
+                    className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-border bg-muted/30 p-8 cursor-pointer hover:bg-muted/50 transition-colors"
+                  >
+                    <Video className="h-10 w-10 text-muted-foreground mb-3" />
+                    <p className="text-sm font-medium">클릭하여 영상을 업로드하세요</p>
+                    <p className="text-xs text-muted-foreground mt-1">MP4, MOV, WebM (최대 2GB)</p>
+                  </div>
+                )}
               </div>
 
               {/* 학습 자료 */}
