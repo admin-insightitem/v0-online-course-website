@@ -102,13 +102,6 @@ export default function OrdersPage() {
                 <p className="text-xs text-muted-foreground">
                   결제수단: {order.paymentMethod}
                 </p>
-                
-                <button
-                  onClick={() => setIsRefundModalOpen(true)}
-                  className="mt-1 w-fit text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground"
-                >
-                  환불 신청서 작성
-                </button>
               </div>
 
               {/* Actions */}
@@ -121,6 +114,12 @@ export default function OrdersPage() {
                 <Button variant="outline" size="sm" className="w-full text-xs sm:w-auto">
                   영수증 보기
                 </Button>
+                <button
+                  onClick={() => setIsRefundModalOpen(true)}
+                  className="w-fit text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground"
+                >
+                  환불 신청서 작성
+                </button>
               </div>
             </div>
           </div>
