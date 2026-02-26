@@ -543,9 +543,22 @@ export default function PaymentsPage() {
                         </TableCell>
                         <TableCell>
                           <div className="flex flex-col gap-0.5">
-                            {payment.courses.map((course, idx) => (
-                              <p key={idx} className="text-sm">{course}</p>
-                            ))}
+                            {payment.courses.length === 1 ? (
+                              <p className="text-sm">{payment.courses[0]}</p>
+                            ) : (
+                              <>
+                                <p className="text-sm font-medium text-amber-600">{payment.courses.length}개</p>
+                                <p className="text-sm">{payment.courses[0]}</p>
+                                {payment.courses.length === 2 ? (
+                                  <p className="text-sm">{payment.courses[1]}</p>
+                                ) : (
+                                  <>
+                                    <p className="text-sm">{payment.courses[1]}</p>
+                                    <p className="text-sm text-muted-foreground">외 {payment.courses.length - 2}개</p>
+                                  </>
+                                )}
+                              </>
+                            )}
                           </div>
                         </TableCell>
                         <TableCell>
