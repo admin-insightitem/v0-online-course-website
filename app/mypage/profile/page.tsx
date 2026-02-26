@@ -620,13 +620,13 @@ export default function ProfilePage() {
           />
           
           {/* 모달 컨텐츠 */}
-          <div className="relative z-10 w-full max-w-3xl mx-4 bg-white rounded-lg shadow-lg">
+          <div className="relative z-10 w-full max-w-3xl mx-4 bg-white rounded-lg shadow-lg text-black">
             {/* 모달 헤더 */}
-            <div className="flex items-center justify-between p-6 border-b border-border">
-              <h3 className="text-lg font-semibold text-foreground">마케팅 수신 동의</h3>
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900">마케팅 수신 동의</h3>
               <button
                 onClick={() => setIsMarketingTermsOpen(false)}
-                className="text-muted-foreground hover:text-foreground"
+                className="text-gray-500 hover:text-gray-700"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -635,27 +635,27 @@ export default function ProfilePage() {
             {/* 모달 본문 */}
             <div className="p-6">
               {/* 테이블 */}
-              <div className="border border-border rounded overflow-hidden">
+              <div className="border border-gray-200 rounded overflow-hidden">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-border bg-muted/30">
-                      <th className="px-4 py-3 text-center font-medium text-foreground w-24">서비스</th>
-                      <th className="px-4 py-3 text-center font-medium text-foreground">목적</th>
-                      <th className="px-4 py-3 text-center font-medium text-foreground w-40">항목</th>
-                      <th className="px-4 py-3 text-center font-medium text-foreground w-32">보유기간</th>
+                    <tr className="border-b border-gray-200 bg-gray-50">
+                      <th className="px-4 py-3 text-center font-medium text-gray-900 w-24">서비스</th>
+                      <th className="px-4 py-3 text-center font-medium text-gray-900">목적</th>
+                      <th className="px-4 py-3 text-center font-medium text-gray-900 w-40">항목</th>
+                      <th className="px-4 py-3 text-center font-medium text-gray-900 w-32">보유기간</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td className="px-4 py-4 text-center text-foreground align-top">회원가입</td>
-                      <td className="px-4 py-4 text-foreground align-top">
+                      <td className="px-4 py-4 text-center text-gray-700 align-top">회원가입</td>
+                      <td className="px-4 py-4 text-gray-700 align-top">
                         (주) 컴퍼니가 제공하는 이용자 맞춤형 서비스 및 상품 추천, 각종 경품 행사, 이벤트 등의 광고성 정보 제공(이메일, 서신우편, SMS, 카카오톡 등)
                       </td>
-                      <td className="px-4 py-4 text-center text-foreground align-top">
+                      <td className="px-4 py-4 text-center text-gray-700 align-top">
                         이름, 이메일주소,<br />
                         휴대전화번호, 마케팅 수신 동의 여부
                       </td>
-                      <td className="px-4 py-4 text-center text-foreground align-top">
+                      <td className="px-4 py-4 text-center text-gray-700 align-top">
                         회원 탈퇴 후 30일<br />
                         또는 동의 철회 시까지
                       </td>
@@ -665,8 +665,8 @@ export default function ProfilePage() {
               </div>
               
               {/* 안내 문구 */}
-              <div className="mt-6 pt-6 border-t border-border">
-                <p className="text-sm text-muted-foreground leading-relaxed">
+              <div className="mt-6 pt-6 border-t border-gray-200">
+                <p className="text-sm text-gray-600 leading-relaxed">
                   본 마케팅 정보 수신에 대한 동의를 거부하실 수 있으며, 이 경우 회원가입은 가능하나 일부 서비스 이용 및 각종 광고, 할인, 이벤트 및 이용자 맞춤형 상품 추천 등의 서비스 제공이 제한될 수 있습니다.
                 </p>
               </div>
