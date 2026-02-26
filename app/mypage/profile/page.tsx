@@ -36,10 +36,11 @@ export default function ProfilePage() {
   }
 
   // 편집 모드 상태
-  const [editingField, setEditingField] = useState<"name" | "email" | "phone" | "password" | null>(null)
+  const [editingField, setEditingField] = useState<"name" | "nickname" | "email" | "phone" | "password" | null>(null)
 
   // 편집 중 임시 값
   const [tempName, setTempName] = useState("")
+  const [tempNickname, setTempNickname] = useState("")
   const [tempEmail, setTempEmail] = useState("")
   const [tempPhone, setTempPhone] = useState("")
   const [newPassword, setNewPassword] = useState("")
@@ -52,9 +53,10 @@ export default function ProfilePage() {
   // 유효성 검사 오류
   const [emailError, setEmailError] = useState("")
 
-  const startEditing = (field: "name" | "email" | "phone" | "password") => {
+  const startEditing = (field: "name" | "nickname" | "email" | "phone" | "password") => {
     setEditingField(field)
     if (field === "name") setTempName(name)
+    if (field === "nickname") setTempNickname(nickname)
     if (field === "email") setTempEmail("")
     if (field === "phone") setTempPhone("")
     if (field === "password") {
@@ -72,6 +74,13 @@ export default function ProfilePage() {
   const handleNameChange = () => {
     if (tempName.trim()) {
       setName(tempName)
+      setEditingField(null)
+    }
+  }
+
+  const handleNicknameChange = () => {
+    if (tempNickname.trim() && tempNickname.length >= 2 && tempNickname.length <= 10) {
+      setNickname(tempNickname)
       setEditingField(null)
     }
   }
@@ -150,25 +159,78 @@ export default function ProfilePage() {
           {/* 닉네임 */}
           <div className="flex flex-col gap-2">
             <label className="text-sm text-muted-foreground">닉네임</label>
-            <input
-              type="text"
-              value={nickname}
-              onChange={(e) => setNickname(e.target.value)}
-              maxLength={10}
-              className="flex h-11 w-full max-w-sm rounded-md border border-border bg-card px-4 text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-1 focus:ring-ring"
-            />
-            <p className="text-xs text-muted-foreground">
-              특수문자, 특수기호, 공백 제외 2~10자
-            </p>
-            <label className="mt-2 flex cursor-pointer items-center gap-2">
-              <input
-                type="checkbox"
-                checked={useProfileNickname}
-                onChange={(e) => setUseProfileNickname(e.target.checked)}
-                className="h-4 w-4 rounded border-border"
-              />
-              <span className="text-sm text-muted-foreground">내 프로필 닉네임 사용</span>
-            </label>
+            {editingField === "nickname" ? (
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={tempNickname}
+                    onChange={(e) => setTempNickname(e.target.value)}
+                    maxLength={10}
+                    className="flex h-11 w-full max-w-xs rounded-md border border-amber-400 bg-amber-50 px-4 text-sm text-foreground outline-none"
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={cancelEditing}
+                    className="h-11 px-6"
+                  >
+                    취소
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={handleNicknameChange}
+                    disabled={!tempNickname.trim() || tempNickname.length < 2}
+                    className="h-11 px-6 bg-foreground text-background hover:bg-foreground/90"
+                  >
+                    변경
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  특수문자, 특수기호, 공백 제외 2~10자
+                </p>
+                <label className="mt-1 flex cursor-pointer items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={useProfileNickname}
+                    onChange={(e) => setUseProfileNickname(e.target.checked)}
+                    className="h-4 w-4 rounded border-border"
+                  />
+                  <span className="text-sm text-muted-foreground">내 프로필 닉네임 사용</span>
+                </label>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={nickname}
+                    readOnly
+                    className="flex h-11 w-full max-w-xs rounded-md border border-border bg-muted/30 px-4 text-sm text-muted-foreground outline-none cursor-default"
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => startEditing("nickname")}
+                    className="h-11 px-6"
+                  >
+                    변경
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  특수문자, 특수기호, 공백 제외 2~10자
+                </p>
+                <label className="mt-1 flex cursor-pointer items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={useProfileNickname}
+                    onChange={(e) => setUseProfileNickname(e.target.checked)}
+                    className="h-4 w-4 rounded border-border"
+                  />
+                  <span className="text-sm text-muted-foreground">내 프로필 닉네임 사용</span>
+                </label>
+              </div>
+            )}
           </div>
 
           {/* 이름 */}
