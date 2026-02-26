@@ -282,56 +282,46 @@ export default function OrderPage() {
                     </span>
                   </label>
 
-                  {/* 마케팅 수신 동의 섹션 */}
-                  <div className="rounded-lg border border-border bg-card p-4">
-                    <div className="mb-3 flex items-center justify-between">
-                      <h3 className="text-sm font-semibold text-foreground">마케팅 수신 동의</h3>
-                      <Button variant="outline" size="sm" className="h-7 gap-1 text-xs">
-                        <span className="text-amber-600">{"◆◆"}</span>
-                        {"관보기"}
+                  {/* 마케팅 수신 동의 */}
+                  <div className="flex flex-col gap-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-semibold text-foreground">{"마케팅 수신 동의"}</h3>
+                      <Button variant="outline" size="sm" className="h-7 gap-1 border-border bg-white text-xs font-normal text-foreground hover:bg-muted">
+                        {"◆◆관보기"}
                       </Button>
                     </div>
                     
-                    <p className="mb-1 text-sm font-medium text-amber-600">
-                      {"마케팅 정보 수신에 동의합니다."}
-                    </p>
-                    <p className="mb-4 text-xs text-muted-foreground">
+                    <p className="text-xs text-muted-foreground">
                       {"할인 이벤트와 쿠폰 발급 등의 알림을 받으시고 혜택을 놓치지 마세요."}
                     </p>
                     
-                    <div className="flex flex-col gap-3">
-                      <div className="flex items-center justify-between">
-                        <label className="flex cursor-pointer items-center gap-2">
-                          <Checkbox
-                            checked={agreedToEmail}
-                            onCheckedChange={(checked) => setAgreedToEmail(checked === true)}
-                            className="h-4 w-4 border-border data-[state=checked]:border-sky-500 data-[state=checked]:bg-sky-500"
-                          />
-                          <span className="text-sm text-foreground">{"이메일 수신"}</span>
-                        </label>
-                        <span className="text-xs text-muted-foreground">
-                          {"동의 일자 : 2025.09.02 00:43"}
-                        </span>
-                      </div>
-                      
-                      <div className="flex items-center justify-between">
-                        <label className="flex cursor-pointer items-center gap-2">
-                          <Checkbox
-                            checked={agreedToSms}
-                            onCheckedChange={(checked) => setAgreedToSms(checked === true)}
-                            className="h-4 w-4 border-border data-[state=checked]:border-sky-500 data-[state=checked]:bg-sky-500"
-                          />
-                          <span className="text-sm text-foreground">{"문자메시지 수신"}</span>
-                        </label>
-                        <span className="text-xs text-amber-600">
-                          {"미동의 일자 : 2024.04.04 20:25"}
-                        </span>
-                      </div>
+                    <div className="flex items-center justify-between">
+                      <label className="flex cursor-pointer items-center gap-2">
+                        <Checkbox
+                          checked={agreedToEmail}
+                          onCheckedChange={(checked) => setAgreedToEmail(checked === true)}
+                          className="h-4 w-4 border-border data-[state=checked]:border-accent data-[state=checked]:bg-accent"
+                        />
+                        <span className="text-sm text-foreground">{"이메일 수신"}</span>
+                      </label>
+                      <span className="text-xs text-muted-foreground">
+                        {"동의 일자 : 2025.09.02 00:43"}
+                      </span>
                     </div>
                     
-                    <Button className="mt-4 bg-amber-700 text-white hover:bg-amber-800">
-                      {"수정 완료"}
-                    </Button>
+                    <div className="flex items-center justify-between">
+                      <label className="flex cursor-pointer items-center gap-2">
+                        <Checkbox
+                          checked={agreedToSms}
+                          onCheckedChange={(checked) => setAgreedToSms(checked === true)}
+                          className="h-4 w-4 border-border data-[state=checked]:border-accent data-[state=checked]:bg-accent"
+                        />
+                        <span className="text-sm text-foreground">{"문자메시지 수신"}</span>
+                      </label>
+                      <span className="text-xs text-muted-foreground">
+                        {"미동의 일자 : 2024.04.04 20:25"}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
