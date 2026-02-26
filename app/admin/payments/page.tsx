@@ -541,20 +541,20 @@ export default function PaymentsPage() {
                             <p className="text-xs text-muted-foreground">{payment.email}</p>
                           </div>
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="max-w-[200px]">
                           <div className="flex flex-col gap-0.5">
                             {payment.courses.length === 1 ? (
-                              <p className="text-sm">{payment.courses[0]}</p>
+                              <p className="text-sm truncate">{payment.courses[0]}</p>
                             ) : (
                               <>
-                                <p className="text-sm font-medium text-amber-600">{payment.courses.length}개</p>
-                                <p className="text-sm">{payment.courses[0]}</p>
+                                <p className="text-sm font-medium text-amber-600">{payment.courses.length}{"개 묶음강좌"}</p>
+                                <p className="text-sm truncate">{payment.courses[0]}</p>
                                 {payment.courses.length === 2 ? (
-                                  <p className="text-sm">{payment.courses[1]}</p>
+                                  <p className="text-sm truncate">{payment.courses[1]}</p>
                                 ) : (
                                   <>
-                                    <p className="text-sm">{payment.courses[1]}</p>
-                                    <p className="text-sm text-muted-foreground">외 {payment.courses.length - 2}개</p>
+                                    <p className="text-sm truncate">{payment.courses[1]}</p>
+                                    <p className="text-sm text-muted-foreground">{"외 "}{payment.courses.length - 2}{"개"}</p>
                                   </>
                                 )}
                               </>
