@@ -518,6 +518,7 @@ export default function PaymentsPage() {
                       <TableHead>결제수단</TableHead>
                       <TableHead className="text-right">쿠폰 할인</TableHead>
                       <TableHead className="text-right">결제금액</TableHead>
+                      <TableHead className="text-right">환불금액</TableHead>
                       <TableHead className="text-center">상태</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -558,8 +559,11 @@ export default function PaymentsPage() {
                         <TableCell className="text-right font-medium text-red-500">
                           {payment.couponDiscount > 0 ? `-${payment.couponDiscount.toLocaleString()}원` : "-"}
                         </TableCell>
-                        <TableCell className="text-right font-medium">
+                        <TableCell className={`text-right font-medium ${payment.status === "refunded" ? "line-through text-muted-foreground" : ""}`}>
                           {payment.amount.toLocaleString()}원
+                        </TableCell>
+                        <TableCell className="text-right font-medium text-red-500">
+                          {payment.status === "refunded" ? `${payment.amount.toLocaleString()}원` : "-"}
                         </TableCell>
                         <TableCell className="text-center">
                           {getStatusBadge(payment.status)}
@@ -791,7 +795,7 @@ export default function PaymentsPage() {
                 <div className="space-y-4 py-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-muted-foreground">환불번호</p>
+                      <p className="text-sm text-muted-foreground">환���번호</p>
                       <p className="font-mono font-medium">{selectedRefund.id}</p>
                     </div>
                     <div>
