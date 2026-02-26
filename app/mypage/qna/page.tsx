@@ -432,6 +432,9 @@ export default function QnAPage() {
                           : <ChevronDown className="h-3.5 w-3.5" />
                       )}
                     </button>
+                    <button className="ml-2 text-xs text-primary hover:text-primary/80 font-medium">
+                      답글 등록
+                    </button>
                   </div>
 
                   {/* 답글 목록 */}
