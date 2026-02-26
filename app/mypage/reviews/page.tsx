@@ -41,7 +41,9 @@ const myReviews = [
 export default function ReviewsPage() {
   const [activeTab, setActiveTab] = useState<"my-reviews" | "write-review">("my-reviews")
   const [isWriteModalOpen, setIsWriteModalOpen] = useState(false)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [selectedCourse, setSelectedCourse] = useState<typeof courses[0] | null>(null)
+  const [selectedReview, setSelectedReview] = useState<typeof myReviews[0] | null>(null)
   const [rating, setRating] = useState(0)
   const [hoverRating, setHoverRating] = useState(0)
   const [reviewContent, setReviewContent] = useState("")
@@ -54,11 +56,27 @@ export default function ReviewsPage() {
     setIsWriteModalOpen(true)
   }
 
+  const handleOpenEditModal = (review: typeof myReviews[0]) => {
+    setSelectedReview(review)
+    setSelectedCourse(review.course)
+    setRating(review.rating)
+    setHoverRating(0)
+    setReviewContent(review.content)
+    setIsEditModalOpen(true)
+  }
+
   const handleSubmitReview = () => {
     if (rating === 0 || reviewContent.trim() === "") return
     // 실제로는 API 호출
     alert("수강평이 등록되었습니다!")
     setIsWriteModalOpen(false)
+  }
+
+  const handleUpdateReview = () => {
+    if (rating === 0 || reviewContent.trim() === "") return
+    // 실제로는 API 호출
+    alert("수강평이 수정되었습니다!")
+    setIsEditModalOpen(false)
   }
 
   // 수강평 작성이 가능한 강의 (아직 리뷰를 작성하지 않은 강의)
