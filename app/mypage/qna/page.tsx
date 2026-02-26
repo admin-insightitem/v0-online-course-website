@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { MessageCircle, ChevronLeft, ChevronRight, ThumbsUp } from "lucide-react"
+import { MessageCircle, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, ThumbsUp } from "lucide-react"
 import { MypageLayout } from "@/components/mypage-layout"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -420,10 +420,17 @@ export default function QnAPage() {
                     </button>
                     <button 
                       onClick={() => toggleReplies(question.id)}
-                      className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+                      className={`flex items-center gap-1 text-xs hover:text-foreground ${
+                        expandedReplies.includes(question.id) ? "text-primary" : "text-muted-foreground"
+                      }`}
                     >
                       <MessageCircle className="h-3.5 w-3.5" />
                       답글 {question.replies.length}
+                      {question.replies.length > 0 && (
+                        expandedReplies.includes(question.id) 
+                          ? <ChevronUp className="h-3.5 w-3.5" />
+                          : <ChevronDown className="h-3.5 w-3.5" />
+                      )}
                     </button>
                   </div>
 
