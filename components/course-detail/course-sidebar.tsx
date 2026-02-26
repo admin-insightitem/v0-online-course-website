@@ -1,6 +1,6 @@
 "use client"
 
-import { Clock, BookOpen, Globe, Award, Infinity, ShieldCheck, Signal } from "lucide-react"
+import { Clock, BookOpen, BarChart3, Globe, Award, Infinity, ShieldCheck } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import type { Course } from "@/lib/courses"
@@ -57,7 +57,7 @@ export function CourseSidebar({ course }: { course: Course }) {
             </li>
             <li className="flex items-center justify-between text-sm">
               <span className="flex items-center gap-2 text-muted-foreground">
-                <Signal className="h-4 w-4" /> 난이도
+                <BarChart3 className="h-4 w-4" /> 난이도
               </span>
               <span className="font-medium text-foreground">{course.level}</span>
             </li>
