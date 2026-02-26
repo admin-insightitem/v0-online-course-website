@@ -5,7 +5,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { MypageLayout } from "@/components/mypage-layout"
 import { Button } from "@/components/ui/button"
-import { Eye, EyeOff, Pencil } from "lucide-react"
+import { Eye, EyeOff, Pencil, X } from "lucide-react"
 
 export default function ProfilePage() {
   // 기본 데이터
@@ -16,6 +16,7 @@ export default function ProfilePage() {
   const [smsMarketing, setSmsMarketing] = useState(false)
   const [emailMarketingDate] = useState("2025.09.02 00:43")
   const [smsMarketingDate] = useState("2024.04.04 20:25")
+  const [isMarketingTermsOpen, setIsMarketingTermsOpen] = useState(false)
 
   // 프로필 이미지 및 닉네임
   const [profileImage, setProfileImage] = useState<string | null>(null)
@@ -190,7 +191,7 @@ export default function ProfilePage() {
                   </Button>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  특수문자, 특수기호, 공백 제외 2~10자
+                  특수문자, 특수기호, 공백 제외 2~10���
                 </p>
                 <label className="mt-1 flex cursor-pointer items-center gap-2">
                   <input
@@ -517,7 +518,10 @@ export default function ProfilePage() {
           <div className="mt-4 pt-4 border-t border-border">
             <div className="flex items-center justify-between">
               <h4 className="text-sm font-semibold text-foreground">마케팅 정보 수신에 동의합니다.</h4>
-              <button className="text-sm text-muted-foreground hover:text-foreground hover:underline">
+              <button 
+                onClick={() => setIsMarketingTermsOpen(true)}
+                className="text-sm text-muted-foreground hover:text-foreground hover:underline"
+              >
                 약관보기
               </button>
             </div>
@@ -571,6 +575,71 @@ export default function ProfilePage() {
           회원탈퇴
         </Link>
       </div>
+
+      {/* 마케팅 수신 동의 약관 모달 */}
+      {isMarketingTermsOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* 어두운 배경 오버레이 */}
+          <div 
+            className="absolute inset-0 bg-black/60"
+            onClick={() => setIsMarketingTermsOpen(false)}
+          />
+          
+          {/* 모달 컨텐츠 */}
+          <div className="relative z-10 w-full max-w-3xl mx-4 bg-background rounded-lg shadow-lg">
+            {/* 모달 헤더 */}
+            <div className="flex items-center justify-between p-6 border-b border-border">
+              <h3 className="text-lg font-semibold text-foreground">마케팅 수신 동의</h3>
+              <button
+                onClick={() => setIsMarketingTermsOpen(false)}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            
+            {/* 모달 본문 */}
+            <div className="p-6">
+              {/* 테이블 */}
+              <div className="border border-border rounded overflow-hidden">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-border bg-muted/30">
+                      <th className="px-4 py-3 text-center font-medium text-foreground w-24">서비스</th>
+                      <th className="px-4 py-3 text-center font-medium text-foreground">목적</th>
+                      <th className="px-4 py-3 text-center font-medium text-foreground w-40">항목</th>
+                      <th className="px-4 py-3 text-center font-medium text-foreground w-32">보유기간</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="px-4 py-4 text-center text-foreground align-top">회원가입</td>
+                      <td className="px-4 py-4 text-foreground align-top">
+                        (주) 컴퍼니가 제공하는 이용자 맞춤형 서비스 및 상품 추천, 각종 경품 행사, 이벤트 등의 광고성 정보 제공(이메일, 서신우편, SMS, 카카오톡 등)
+                      </td>
+                      <td className="px-4 py-4 text-center text-foreground align-top">
+                        이름, 이메일주소,<br />
+                        휴대전화번호, 마케팅 수신 동의 여부
+                      </td>
+                      <td className="px-4 py-4 text-center text-foreground align-top">
+                        회원 탈퇴 후 30일<br />
+                        또는 동의 철회 시까지
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              
+              {/* 안내 문구 */}
+              <div className="mt-6 pt-6 border-t border-border">
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  본 마케팅 정보 수신에 대한 동의를 거부하실 수 있으며, 이 경우 회원가입은 가능하나 일부 서비스 이용 및 각종 광고, 할인, 이벤트 및 이용자 맞춤형 상품 추천 등의 서비스 제공이 제한될 수 있습니다.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </MypageLayout>
   )
 }
