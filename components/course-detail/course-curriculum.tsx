@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { ChevronDown, PlayCircle, Lock, Clock } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import type { Course } from "@/lib/courses"
@@ -15,6 +16,11 @@ export function CourseCurriculum({ course }: { course: Course }) {
   }
 
   const totalLessons = course.curriculum.reduce((acc, s) => acc + s.lessons.length, 0)
+
+  // Generate lecture ID from section and lesson index
+  const getLectureId = (sectionIndex: number, lessonIndex: number) => {
+    return `section-${sectionIndex + 1}-lecture-${lessonIndex + 1}`
+  }
 
   return (
     <section className="mt-10">
@@ -48,32 +54,50 @@ export function CourseCurriculum({ course }: { course: Course }) {
               {/* Lessons */}
               {isOpen && (
                 <ul>
-                  {section.lessons.map((lesson, lIdx) => (
-                    <li
-                      key={lesson.title}
-                      className={`flex items-center justify-between px-5 py-3.5 ${
-                        lIdx > 0 ? "border-t border-border/50" : ""
-                      } bg-card`}
-                    >
-                      <div className="flex items-center gap-3">
+                  {section.lessons.map((lesson, lIdx) => {
+                    const lectureId = getLectureId(sIdx, lIdx)
+                    const lessonContent = (
+                      <>
+                        <div className="flex items-center gap-3">
+                          {lesson.isFree ? (
+                            <PlayCircle className="h-4 w-4 shrink-0 text-accent" />
+                          ) : (
+                            <Lock className="h-4 w-4 shrink-0 text-muted-foreground/50" />
+                          )}
+                          <span className="text-sm text-foreground">{lesson.title}</span>
+                          {lesson.isFree && (
+                            <Badge variant="secondary" className="text-[10px] font-semibold text-accent">
+                              미리보기
+                            </Badge>
+                          )}
+                        </div>
+                        <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                          <Clock className="h-3 w-3" />
+                          {lesson.duration}
+                        </span>
+                      </>
+                    )
+
+                    return (
+                      <li
+                        key={lesson.title}
+                        className={`${lIdx > 0 ? "border-t border-border/50" : ""} bg-card`}
+                      >
                         {lesson.isFree ? (
-                          <PlayCircle className="h-4 w-4 shrink-0 text-accent" />
+                          <Link
+                            href={`/courses/${course.id}/watch/${lectureId}`}
+                            className="flex items-center justify-between px-5 py-3.5 transition-colors hover:bg-secondary/30"
+                          >
+                            {lessonContent}
+                          </Link>
                         ) : (
-                          <Lock className="h-4 w-4 shrink-0 text-muted-foreground/50" />
+                          <div className="flex items-center justify-between px-5 py-3.5">
+                            {lessonContent}
+                          </div>
                         )}
-                        <span className="text-sm text-foreground">{lesson.title}</span>
-                        {lesson.isFree && (
-                          <Badge variant="secondary" className="text-[10px] font-semibold text-accent">
-                            미리보기
-                          </Badge>
-                        )}
-                      </div>
-                      <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <Clock className="h-3 w-3" />
-                        {lesson.duration}
-                      </span>
-                    </li>
-                  ))}
+                      </li>
+                    )
+                  })}
                 </ul>
               )}
             </div>
