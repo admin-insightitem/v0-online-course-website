@@ -177,7 +177,7 @@ export default function OrderPage() {
                 </div>
 
                 <div className="mt-6">
-                  <h3 className="mb-3 text-sm font-semibold text-foreground">결��� 방법</h3>
+                  <h3 className="mb-3 text-sm font-semibold text-foreground">결����� 방법</h3>
                   <div className="flex flex-wrap gap-2">
                     {paymentMethods.map((method) => (
                       <button
@@ -237,41 +237,6 @@ export default function OrderPage() {
                 )}
               </section>
 
-              <div className="my-8 border-t border-border" />
-
-              {/* Payment & Marketing Consent */}
-              <section>
-                <div className="flex flex-col gap-4 rounded-lg bg-secondary/50 px-6 py-5">
-                  {/* Terms Agreement */}
-                  <label className="flex cursor-pointer items-center gap-3">
-                    <Checkbox
-                      checked={agreedToTerms}
-                      onCheckedChange={(checked) => setAgreedToTerms(checked === true)}
-                      className="h-5 w-5 shrink-0 border-border data-[state=checked]:border-accent data-[state=checked]:bg-accent"
-                    />
-                    <span className="text-sm font-medium text-foreground">
-                      강의 및 결제 정보를 확인하였으며, 이에 동의합니다(필수)
-                    </span>
-                  </label>
-
-                  {/* Marketing Consent */}
-                  <div className="flex flex-col gap-1">
-                    <label className="flex cursor-pointer items-center gap-3">
-                      <Checkbox
-                        checked={agreedToMarketing}
-                        onCheckedChange={(checked) => setAgreedToMarketing(checked === true)}
-                        className="h-5 w-5 shrink-0 border-border data-[state=checked]:border-accent data-[state=checked]:bg-accent"
-                      />
-                      <span className="text-sm font-medium text-foreground">
-                        이벤트/쿠폰 등 혜택 수신 동의
-                      </span>
-                    </label>
-                    <span className="ml-8 text-xs text-muted-foreground">
-                      체크하지 않으면 무료특강 혜택을 받으실 수 없습니다.
-                    </span>
-                  </div>
-                </div>
-              </section>
             </div>
 
             {/* Right column: Payment summary */}
@@ -301,6 +266,36 @@ export default function OrderPage() {
                   <p className="text-right text-xs text-muted-foreground">
                     {'12개월 할부 시 월 '}{formatNumber(Math.ceil(totalPrice / 12))}{'원'}
                   </p>
+                </div>
+
+                {/* Payment & Marketing Consent */}
+                <div className="mt-6 flex flex-col gap-3 border-t border-border pt-5">
+                  <label className="flex cursor-pointer items-start gap-2.5">
+                    <Checkbox
+                      checked={agreedToTerms}
+                      onCheckedChange={(checked) => setAgreedToTerms(checked === true)}
+                      className="mt-0.5 h-4 w-4 shrink-0 border-border data-[state=checked]:border-accent data-[state=checked]:bg-accent"
+                    />
+                    <span className="text-xs leading-relaxed text-card-foreground">
+                      강의 및 결제 정보를 확인하였으며, 이에 동의합니다(필수)
+                    </span>
+                  </label>
+
+                  <div className="flex flex-col gap-0.5">
+                    <label className="flex cursor-pointer items-start gap-2.5">
+                      <Checkbox
+                        checked={agreedToMarketing}
+                        onCheckedChange={(checked) => setAgreedToMarketing(checked === true)}
+                        className="mt-0.5 h-4 w-4 shrink-0 border-border data-[state=checked]:border-accent data-[state=checked]:bg-accent"
+                      />
+                      <span className="text-xs leading-relaxed text-card-foreground">
+                        이벤트/쿠폰 등 혜택 수신 동의
+                      </span>
+                    </label>
+                    <span className="ml-6 text-[11px] text-muted-foreground">
+                      체크하지 않으면 무료특강 혜택을 받으실 수 없습니다.
+                    </span>
+                  </div>
                 </div>
 
                 <Button
