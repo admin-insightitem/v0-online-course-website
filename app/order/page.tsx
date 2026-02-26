@@ -60,12 +60,13 @@ export default function OrderPage() {
   const [agreedToEmail, setAgreedToEmail] = useState(true)
   const [agreedToSms, setAgreedToSms] = useState(false)
   const [isMarketingTermsOpen, setIsMarketingTermsOpen] = useState(false)
+  const [isInstallmentInfoOpen, setIsInstallmentInfoOpen] = useState(false)
   const emailMarketingDate = "2025.09.02 00:43"
   const smsMarketingDate = "2024.04.04 20:25"
 
   // 모달이 열릴 때 배경 스크롤 방지
   useEffect(() => {
-    if (isMarketingTermsOpen) {
+    if (isMarketingTermsOpen || isInstallmentInfoOpen) {
       document.body.style.overflow = "hidden"
     } else {
       document.body.style.overflow = ""
@@ -73,7 +74,7 @@ export default function OrderPage() {
     return () => {
       document.body.style.overflow = ""
     }
-  }, [isMarketingTermsOpen])
+  }, [isMarketingTermsOpen, isInstallmentInfoOpen])
 
   const totalOriginalPrice = orderItems.reduce((sum, item) => sum + parsePrice(item.originalPrice), 0)
   const totalPrice = orderItems.reduce((sum, item) => sum + parsePrice(item.price), 0)
@@ -245,9 +246,12 @@ export default function OrderPage() {
                     </div>
                     <div className="flex flex-col gap-1 text-xs text-muted-foreground">
                       <p>{'삼성 앱카드 · 150만원 이상 결제 시 5,000원 즉시할인'}</p>
-                      <Link href="#" className="text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground">
+                      <button 
+                        onClick={() => setIsInstallmentInfoOpen(true)}
+                        className="text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground text-left"
+                      >
                         {'신용카드 무이자 할부 안내 >'}
-                      </Link>
+                      </button>
                     </div>
                   </div>
                 )}
@@ -429,6 +433,62 @@ export default function OrderPage() {
                 <p className="text-sm text-gray-600 leading-relaxed">
                   {"본 마케팅 정보 수신에 대한 동의를 거부하실 수 있으며, 이 경우 회원가입은 가능하나 일부 서비스 이용 및 각종 광고, 할인, 이벤트 및 이용자 맞춤형 상품 추천 등의 서비스 제공이 제한될 수 있습니다."}
                 </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 신용카드 무이자 할부 안내 모달 */}
+      {isInstallmentInfoOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden">
+          {/* 어두운 배경 오버레이 */}
+          <div 
+            className="absolute inset-0 bg-black/50"
+            onClick={() => setIsInstallmentInfoOpen(false)}
+          />
+          
+          {/* 모달 컨텐츠 */}
+          <div className="relative z-10 w-full max-w-lg mx-4 bg-white rounded-lg shadow-lg text-black max-h-[80vh] flex flex-col">
+            {/* 모달 헤더 */}
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900">{"결제/혜택 안내"}</h3>
+              <button
+                onClick={() => setIsInstallmentInfoOpen(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            
+            {/* 모달 본문 */}
+            <div className="p-6 overflow-y-auto">
+              {/* 국민 */}
+              <div className="mb-6">
+                <h4 className="text-sm font-semibold text-gray-900 mb-2">{"국민"}</h4>
+                <ul className="text-sm text-gray-700 space-y-1 ml-4">
+                  <li className="list-disc">{"2,3개월 무이자 (5만원↑)"}</li>
+                  <li className="list-disc">{"6개월 부분무이자, "}<span className="font-semibold">{"1,2,3회차 수수료 고객부담"}</span>{" (5만원↑)"}</li>
+                  <li className="list-disc">{"10개월 부분무이자, "}<span className="font-semibold">{"1,2,3,4,5회차 수수료 고객부담"}</span>{" (5만원↑)"}</li>
+                </ul>
+              </div>
+              
+              {/* 롯데 */}
+              <div className="mb-6">
+                <h4 className="text-sm font-semibold text-gray-900 mb-2">{"롯데"}</h4>
+                <ul className="text-sm text-gray-700 space-y-1 ml-4">
+                  <li className="list-disc">{"2,3,4,5개월 무이자 (5만원↑)"}</li>
+                </ul>
+              </div>
+              
+              {/* 삼성 */}
+              <div className="mb-6">
+                <h4 className="text-sm font-semibold text-gray-900 mb-2">{"삼성"}</h4>
+                <ul className="text-sm text-gray-700 space-y-1 ml-4">
+                  <li className="list-disc">{"2,3개월 무이자 (5만원↑)"}</li>
+                  <li className="list-disc">{"7개월 부분무이자, "}<span className="font-semibold">{"1,2,3회차 수수료 고객부담"}</span>{" (5만원↑)"}</li>
+                  <li className="list-disc">{"11개월 부분무이자, "}<span className="font-semibold">{"1,2,3,4,5회차 수수료 고객부담"}</span>{" (5만원↑)"}</li>
+                </ul>
               </div>
             </div>
           </div>
