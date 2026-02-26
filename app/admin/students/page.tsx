@@ -60,9 +60,10 @@ const studentsData = [
     joinDate: "2025.08.15",
     joinMethod: "email" as const,
     courses: [
-      { id: "1", title: "ChatGPT & AI 자동화", progress: 75, lastAccess: "2026.02.27", enrollDate: "2025.08.15", price: 149000 },
-      { id: "2", title: "유튜브 수익화 가이드", progress: 30, lastAccess: "2026.02.25", enrollDate: "2025.09.20", price: 129000 },
+      { id: "1", title: "ChatGPT & AI 자동화", progress: 75, lastAccess: "2026.02.27", enrollDate: "2025.08.15", price: 149000, isRefunded: false },
+      { id: "2", title: "유튜브 수익화 가이드", progress: 30, lastAccess: "2026.02.25", enrollDate: "2025.09.20", price: 129000, isRefunded: false },
     ],
+    refundedCourses: [],
     totalSpent: 278000,
     status: "active",
   },
@@ -74,7 +75,10 @@ const studentsData = [
     joinDate: "2025.10.20",
     joinMethod: "kakao" as const,
     courses: [
-      { id: "3", title: "퍼포먼스 마케팅 마스터클래스", progress: 100, lastAccess: "2026.02.20", enrollDate: "2025.10.20", price: 169000 },
+      { id: "3", title: "퍼포먼스 마케팅 마스터클래스", progress: 100, lastAccess: "2026.02.20", enrollDate: "2025.10.20", price: 169000, isRefunded: false },
+    ],
+    refundedCourses: [
+      { id: "7", title: "ChatGPT & AI 자동화", progress: 15, lastAccess: "2025.11.05", enrollDate: "2025.10.25", price: 149000, refundDate: "2025.11.10", isRefunded: true },
     ],
     totalSpent: 169000,
     status: "active",
@@ -87,10 +91,11 @@ const studentsData = [
     joinDate: "2025.12.01",
     joinMethod: "kakao" as const,
     courses: [
-      { id: "1", title: "ChatGPT & AI 자동화", progress: 45, lastAccess: "2026.02.26", enrollDate: "2025.12.01", price: 149000 },
-      { id: "4", title: "프리미어 프로 & 포토샵", progress: 20, lastAccess: "2026.02.22", enrollDate: "2026.01.10", price: 149000 },
-      { id: "5", title: "스마트스토어 + 쿠팡", progress: 60, lastAccess: "2026.02.27", enrollDate: "2026.02.01", price: 149000 },
+      { id: "1", title: "ChatGPT & AI 자동화", progress: 45, lastAccess: "2026.02.26", enrollDate: "2025.12.01", price: 149000, isRefunded: false },
+      { id: "4", title: "프리미어 프로 & 포토샵", progress: 20, lastAccess: "2026.02.22", enrollDate: "2026.01.10", price: 149000, isRefunded: false },
+      { id: "5", title: "스마트스토어 + 쿠팡", progress: 60, lastAccess: "2026.02.27", enrollDate: "2026.02.01", price: 149000, isRefunded: false },
     ],
+    refundedCourses: [],
     totalSpent: 447000,
     status: "active",
   },
@@ -102,8 +107,9 @@ const studentsData = [
     joinDate: "2026.01.05",
     joinMethod: "email" as const,
     courses: [
-      { id: "6", title: "인스타그램 & 틱톡 SNS 수익화", progress: 85, lastAccess: "2026.02.27", enrollDate: "2026.01.05", price: 119000 },
+      { id: "6", title: "인스타그램 & 틱톡 SNS 수익화", progress: 85, lastAccess: "2026.02.27", enrollDate: "2026.01.05", price: 119000, isRefunded: false },
     ],
+    refundedCourses: [],
     totalSpent: 119000,
     status: "active",
   },
@@ -115,8 +121,9 @@ const studentsData = [
     joinDate: "2025.09.10",
     joinMethod: "email" as const,
     courses: [
-      { id: "2", title: "유튜브 수익화 가이드", progress: 10, lastAccess: "2026.01.15", enrollDate: "2025.09.10", price: 129000 },
+      { id: "2", title: "유튜브 수익화 가이드", progress: 10, lastAccess: "2026.01.15", enrollDate: "2025.09.10", price: 129000, isRefunded: false },
     ],
+    refundedCourses: [],
     totalSpent: 129000,
     status: "inactive",
   },
@@ -128,8 +135,9 @@ const studentsData = [
     joinDate: "2026.02.01",
     joinMethod: "kakao" as const,
     courses: [
-      { id: "1", title: "ChatGPT & AI 자동화", progress: 5, lastAccess: "2026.02.27", enrollDate: "2026.02.01", price: 149000 },
+      { id: "1", title: "ChatGPT & AI 자동화", progress: 5, lastAccess: "2026.02.27", enrollDate: "2026.02.01", price: 149000, isRefunded: false },
     ],
+    refundedCourses: [],
     totalSpent: 149000,
     status: "active",
   },
@@ -158,6 +166,7 @@ export default function StudentsPage() {
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc")
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 30
+  const [courseSortBy, setCourseSortBy] = useState<"enrollDate" | "lastAccess">("enrollDate")
 
   const handleSort = (key: SortKey) => {
     if (sortKey === key) {
@@ -597,7 +606,7 @@ export default function StudentsPage() {
                 <DialogHeader>
                   <DialogTitle>수강생 상세 정보</DialogTitle>
                   <DialogDescription>
-                    수강생의 정보와 학습 현��을 확인합니다.
+                    수강생의 정보와 학습 현황을 확인합니다.
                   </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-6 py-4">
@@ -670,9 +679,39 @@ export default function StudentsPage() {
 
                   {/* Course Progress */}
                   <div>
-                    <h4 className="mb-3 font-semibold">수강 현황</h4>
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="font-semibold">수강 현황</h4>
+                      <div className="flex items-center gap-3">
+                        {[
+                          { value: "enrollDate", label: "수강 신청일 순" },
+                          { value: "lastAccess", label: "마지막 학습일 순" },
+                        ].map((option) => (
+                          <button
+                            key={option.value}
+                            onClick={() => setCourseSortBy(option.value as "enrollDate" | "lastAccess")}
+                            className={`flex items-center gap-1.5 text-xs transition-colors ${
+                              courseSortBy === option.value
+                                ? "text-primary font-medium"
+                                : "text-muted-foreground hover:text-foreground"
+                            }`}
+                          >
+                            <span className={`h-1.5 w-1.5 rounded-full ${
+                              courseSortBy === option.value ? "bg-primary" : "bg-muted-foreground/50"
+                            }`} />
+                            {option.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                     <div className="space-y-3">
-                      {selectedStudent.courses.map((course) => (
+                      {/* 활성 강좌 */}
+                      {[...selectedStudent.courses]
+                        .sort((a, b) => {
+                          const dateA = new Date(a[courseSortBy].replace(/\./g, "-")).getTime()
+                          const dateB = new Date(b[courseSortBy].replace(/\./g, "-")).getTime()
+                          return dateB - dateA
+                        })
+                        .map((course) => (
                         <div
                           key={course.id}
                           className="rounded-lg border border-border p-4"
@@ -703,6 +742,37 @@ export default function StudentsPage() {
                           </div>
                         </div>
                       ))}
+
+                      {/* 환불 강좌 */}
+                      {selectedStudent.refundedCourses && selectedStudent.refundedCourses.length > 0 && (
+                        <>
+                          <div className="border-t border-border pt-3 mt-3">
+                            <p className="text-sm text-muted-foreground mb-2">환불 강좌</p>
+                          </div>
+                          {selectedStudent.refundedCourses.map((course) => (
+                            <div
+                              key={course.id}
+                              className="rounded-lg border border-red-200 bg-red-50/50 p-4"
+                            >
+                              <div className="flex items-center justify-between mb-2">
+                                <div className="flex items-center gap-2">
+                                  <span className="font-medium text-muted-foreground">{course.title}</span>
+                                  <Badge variant="outline" className="text-red-600 border-red-600 text-[10px]">
+                                    환불
+                                  </Badge>
+                                </div>
+                                <span className="text-sm text-muted-foreground line-through">
+                                  {course.progress}%
+                                </span>
+                              </div>
+                              <div className="flex items-center justify-between text-xs text-muted-foreground">
+                                <span>환불일: {course.refundDate}</span>
+                                <span className="line-through">{course.price.toLocaleString()}원</span>
+                              </div>
+                            </div>
+                          ))}
+                        </>
+                      )}
                     </div>
                   </div>
 
