@@ -55,6 +55,8 @@ import {
   TrendingUp,
   AlertTriangle,
   Calendar,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react"
 
 // 결제 데이터
@@ -185,6 +187,8 @@ export default function PaymentsPage() {
   const [startDate, setStartDate] = useState("")
   const [endDate, setEndDate] = useState("")
   const [dateRangeType, setDateRangeType] = useState<"all" | "week" | "month" | "3months" | "custom">("all")
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 30
 
   const formatDate = (date: Date) => {
     const year = date.getFullYear()
@@ -243,6 +247,13 @@ export default function PaymentsPage() {
       payment.email.toLowerCase().includes(searchQuery.toLowerCase())
     return matchesSearch
   })
+
+  // 페이징 계산
+  const totalPages = Math.ceil(filteredPayments.length / itemsPerPage)
+  const paginatedPayments = filteredPayments.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  )
 
   const filteredRefunds = refundsData.filter((refund) => {
     const matchesSearch =
@@ -474,7 +485,7 @@ export default function PaymentsPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredPayments.map((payment) => (
+                    {paginatedPayments.map((payment) => (
                       <TableRow key={payment.id}>
                         <TableCell className="text-sm text-muted-foreground">
                           {payment.date}
@@ -505,6 +516,60 @@ export default function PaymentsPage() {
                     ))}
                   </TableBody>
                 </Table>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="mt-6 flex items-center justify-between border-t border-border pt-4">
+                    <p className="text-sm text-muted-foreground">
+                      총 {filteredPayments.length}건 중 {(currentPage - 1) * itemsPerPage + 1}-
+                      {Math.min(currentPage * itemsPerPage, filteredPayments.length)}건 표시
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                        disabled={currentPage === 1}
+                      >
+                        <ChevronLeft className="h-4 w-4" />
+                        이전
+                      </Button>
+                      <div className="flex items-center gap-1">
+                        {Array.from({ length: totalPages }, (_, i) => i + 1)
+                          .filter((page) => {
+                            if (totalPages <= 5) return true
+                            if (page === 1 || page === totalPages) return true
+                            if (Math.abs(page - currentPage) <= 1) return true
+                            return false
+                          })
+                          .map((page, idx, arr) => (
+                            <span key={page}>
+                              {idx > 0 && arr[idx - 1] !== page - 1 && (
+                                <span className="px-2 text-muted-foreground">...</span>
+                              )}
+                              <Button
+                                variant={currentPage === page ? "default" : "outline"}
+                                size="sm"
+                                className="w-9"
+                                onClick={() => setCurrentPage(page)}
+                              >
+                                {page}
+                              </Button>
+                            </span>
+                          ))}
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                        disabled={currentPage === totalPages}
+                      >
+                        다음
+                        <ChevronRight className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
