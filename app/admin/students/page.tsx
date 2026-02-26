@@ -409,6 +409,11 @@ export default function StudentsPage() {
                     </button>
                   </TableHead>
                   <TableHead>
+                    <button onClick={() => handleSort("joinDate")} className="flex items-center hover:text-foreground">
+                      가입일 {getSortIcon("joinDate")}
+                    </button>
+                  </TableHead>
+                  <TableHead>
                     <button onClick={() => handleSort("email")} className="flex items-center hover:text-foreground">
                       연락처 {getSortIcon("email")}
                     </button>
@@ -424,11 +429,6 @@ export default function StudentsPage() {
                     </button>
                   </TableHead>
                   <TableHead>환불 강좌</TableHead>
-                  <TableHead>
-                    <button onClick={() => handleSort("joinDate")} className="flex items-center hover:text-foreground">
-                      가입일 {getSortIcon("joinDate")}
-                    </button>
-                  </TableHead>
                   <TableHead>
                     <button onClick={() => handleSort("progress")} className="flex items-center hover:text-foreground">
                       평균 진도율 {getSortIcon("progress")}
@@ -469,6 +469,9 @@ export default function StudentsPage() {
                                             <p className="font-medium">{student.name}</p>
                                           </div>
                                         </div>
+                                      </TableCell>
+                                      <TableCell>
+                                        <span className="text-sm">{student.joinDate}</span>
                                       </TableCell>
                                       <TableCell>
                                         <p className="text-sm">{student.email}</p>
@@ -526,9 +529,6 @@ export default function StudentsPage() {
                                         ) : (
                                           <span className="text-sm text-muted-foreground">--</span>
                                         )}
-                                      </TableCell>
-                                      <TableCell>
-                                        <span className="text-sm">{student.joinDate}</span>
                                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
@@ -710,7 +710,7 @@ export default function StudentsPage() {
                       <div className="flex items-center gap-3">
                         {[
                           { value: "enrollDate", label: "수강 신청일 순" },
-                          { value: "lastAccess", label: "마지막 학습일 순" },
+                          { value: "lastAccess", label: "마지막 학습��� 순" },
                         ].map((option) => (
                           <button
                             key={option.value}
