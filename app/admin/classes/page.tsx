@@ -5,10 +5,7 @@ import { AdminLayout } from "@/components/admin-layout"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
-import { Switch } from "@/components/ui/switch"
-import { Textarea } from "@/components/ui/textarea"
 import {
   Table,
   TableBody,
@@ -18,21 +15,13 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import Link from "next/link"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -128,12 +117,10 @@ const classesData = [
 ]
 
 const categories = ["전체", "AI / 자동화", "유튜브", "마케팅", "디자인", "커머스", "SNS"]
-const instructors = ["김도현", "박서연", "이준혁", "최예진", "정민수", "한수빈"]
 
 export default function ClassesPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("전체")
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [classes, setClasses] = useState(classesData)
 
   const filteredClasses = classes.filter((cls) => {
@@ -158,129 +145,12 @@ export default function ClassesPage() {
             <h2 className="text-2xl font-bold tracking-tight">클래스 관리</h2>
             <p className="text-muted-foreground">강좌를 등록하고 관리합니다.</p>
           </div>
-          <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-            <DialogTrigger asChild>
-              <Button>
-                <Plus className="mr-2 h-4 w-4" />
-                새 클래스 등록
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>새 클래스 등록</DialogTitle>
-                <DialogDescription>
-                  새로운 강좌 정보를 입력하세요. 강의 콘텐츠는 등록 후 추가할 수 있습니다.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="title">강좌명</Label>
-                  <Input id="title" placeholder="강좌명을 입력하세요" />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="category">카테고리</Label>
-                    <Select>
-                      <SelectTrigger id="category">
-                        <SelectValue placeholder="카테고리 선택" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categories.filter(c => c !== "전체").map((category) => (
-                          <SelectItem key={category} value={category}>
-                            {category}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="instructor">강사</Label>
-                    <Select>
-                      <SelectTrigger id="instructor">
-                        <SelectValue placeholder="강사 선택" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {instructors.map((instructor) => (
-                          <SelectItem key={instructor} value={instructor}>
-                            {instructor}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="price">판매가 (원)</Label>
-                    <Input id="price" type="number" placeholder="149000" />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="originalPrice">정가 (원)</Label>
-                    <Input id="originalPrice" type="number" placeholder="299000" />
-                  </div>
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="description">강좌 소개</Label>
-                  <Textarea
-                    id="description"
-                    placeholder="강좌에 대한 간략한 소개를 입력하세요"
-                    rows={4}
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="badge">배지</Label>
-                    <Select>
-                      <SelectTrigger id="badge">
-                        <SelectValue placeholder="배지 선택 (선택사항)" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="none">없음</SelectItem>
-                        <SelectItem value="BEST">BEST</SelectItem>
-                        <SelectItem value="NEW">NEW</SelectItem>
-                        <SelectItem value="HOT">HOT</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="level">난이도</Label>
-                    <Select>
-                      <SelectTrigger id="level">
-                        <SelectValue placeholder="난이도 선택" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="beginner">입문</SelectItem>
-                        <SelectItem value="basic">초급</SelectItem>
-                        <SelectItem value="intermediate">중급</SelectItem>
-                        <SelectItem value="advanced">고급</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="thumbnail">썸네일 이미지</Label>
-                  <div className="flex items-center gap-4">
-                    <div className="flex h-24 w-40 items-center justify-center rounded-lg border-2 border-dashed border-border bg-muted">
-                      <span className="text-sm text-muted-foreground">이미지 업로드</span>
-                    </div>
-                    <Button variant="outline">파일 선택</Button>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Switch id="visible" defaultChecked />
-                  <Label htmlFor="visible">사이트에 노출</Label>
-                </div>
-              </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
-                  취소
-                </Button>
-                <Button onClick={() => setIsCreateDialogOpen(false)}>
-                  등록하기
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          <Link href="/admin/classes/new">
+            <Button>
+              <Plus className="mr-2 h-4 w-4" />
+              새 클래스 등록
+            </Button>
+          </Link>
         </div>
 
         {/* Filters */}
