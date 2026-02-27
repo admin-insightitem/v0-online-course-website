@@ -1,46 +1,26 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
-import Link from "next/link"
+import { useState, useRef } from "react"
 import Image from "next/image"
 import { TeacherLayout } from "@/components/teacher-layout"
 import { Button } from "@/components/ui/button"
-import { Eye, EyeOff, Pencil, X } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Camera } from "lucide-react"
 
 export default function TeacherProfilePage() {
-  // 기본 데이터
-  const [name, setName] = useState("김도현")
-  const [email, setEmail] = useState("instructor@richclass.com")
-  const [phone, setPhone] = useState("01012345678")
-  const [emailMarketing, setEmailMarketing] = useState(true)
-  const [smsMarketing, setSmsMarketing] = useState(false)
-  const [emailMarketingDate] = useState("2025.09.02 00:43")
-  const [smsMarketingDate] = useState("2024.04.04 20:25")
-  const [isMarketingTermsOpen, setIsMarketingTermsOpen] = useState(false)
-
-  // 강사 전용 필드
-  const [introduction, setIntroduction] = useState("AI 및 자동화 전문가로 10년 이상의 경력을 보유하고 있습니다. ChatGPT, AI 비즈니스 자동화 분야에서 다수의 기업 컨설팅을 진행했습니다.")
-  const [career, setCareer] = useState("- 전) ABC 테크 AI 솔루션 팀장\n- 현) AI 비즈니스 컨설턴트\n- ChatGPT 공식 교육자")
-  const [expertise, setExpertise] = useState("AI 자동화, ChatGPT, 비즈니스 전략")
-
-  // 모달 열릴 때 배경 스크롤 방지
-  useEffect(() => {
-    if (isMarketingTermsOpen) {
-      document.body.style.overflow = "hidden"
-    } else {
-      document.body.style.overflow = "unset"
-    }
-    return () => {
-      document.body.style.overflow = "unset"
-    }
-  }, [isMarketingTermsOpen])
-
-  // 프로필 이미지 및 닉네임
+  // 프로필 이미지
   const [profileImage, setProfileImage] = useState<string | null>(null)
-  const [nickname, setNickname] = useState("김도현 강사")
-  const [useProfileNickname, setUseProfileNickname] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // 기본 정보
+  const [nickname, setNickname] = useState("김도현")
+  
+  // 강사 정보
+  const [instructorTitle, setInstructorTitle] = useState("AI 비즈니스 전문가 / 전 네이버 AI Lab")
+  const [instructorIntro, setInstructorIntro] = useState("10년간 AI 분야에서 활동하며 200개 이상의 AI 자동화 프로젝트를 성공적으로 이끌었습니다. 현재 AI 기반 수익화 컨설팅 대표로 활동 중이며, 3,000명 이상의 수강생이 실제 수익을 창출하고 있습니다.")
 
   const handleImageClick = () => {
     fileInputRef.current?.click()
@@ -57,766 +37,144 @@ export default function TeacherProfilePage() {
     }
   }
 
-  // 편집 모드 상태
-  const [editingField, setEditingField] = useState<"name" | "nickname" | "email" | "phone" | "password" | "introduction" | "career" | "expertise" | null>(null)
-
-  // 편집 중 임시 값
-  const [tempName, setTempName] = useState("")
-  const [tempNickname, setTempNickname] = useState("")
-  const [tempEmail, setTempEmail] = useState("")
-  const [tempPhone, setTempPhone] = useState("")
-  const [newPassword, setNewPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
-  const [tempIntroduction, setTempIntroduction] = useState("")
-  const [tempCareer, setTempCareer] = useState("")
-  const [tempExpertise, setTempExpertise] = useState("")
-
-  // 비밀번호 보기 상태
-  const [showNewPassword, setShowNewPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-
-  // 유효성 검사 오류
-  const [emailError, setEmailError] = useState("")
-
-  const startEditing = (field: "name" | "nickname" | "email" | "phone" | "password" | "introduction" | "career" | "expertise") => {
-    setEditingField(field)
-    if (field === "name") setTempName(name)
-    if (field === "nickname") setTempNickname(nickname)
-    if (field === "email") setTempEmail("")
-    if (field === "phone") setTempPhone("")
-    if (field === "password") {
-      setNewPassword("")
-      setConfirmPassword("")
-    }
-    if (field === "introduction") setTempIntroduction(introduction)
-    if (field === "career") setTempCareer(career)
-    if (field === "expertise") setTempExpertise(expertise)
-    setEmailError("")
-  }
-
-  const cancelEditing = () => {
-    setEditingField(null)
-    setEmailError("")
-  }
-
-  const handleNameChange = () => {
-    if (tempName.trim()) {
-      setName(tempName)
-      setEditingField(null)
-    }
-  }
-
-  const handleNicknameChange = () => {
-    if (tempNickname.trim() && tempNickname.length >= 2 && tempNickname.length <= 10) {
-      setNickname(tempNickname)
-      setEditingField(null)
-    }
-  }
-
-  const handleEmailVerify = () => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(tempEmail)) {
-      setEmailError("규칙에 맞는 이메일 주소를 입력해주세요.")
-      return
-    }
-    setEmailError("")
-    alert("인증 메일이 전송되었습니다.")
-  }
-
-  const handlePhoneVerify = () => {
-    if (tempPhone.length >= 10) {
-      alert("인증번호가 전송되었습니다.")
-    }
-  }
-
-  const handlePasswordChange = () => {
-    if (newPassword && newPassword === confirmPassword) {
-      alert("비밀번호가 변경되었습니다.")
-      setEditingField(null)
-      setNewPassword("")
-      setConfirmPassword("")
-    }
-  }
-
-  const handleIntroductionChange = () => {
-    if (tempIntroduction.trim()) {
-      setIntroduction(tempIntroduction)
-      setEditingField(null)
-    }
-  }
-
-  const handleCareerChange = () => {
-    if (tempCareer.trim()) {
-      setCareer(tempCareer)
-      setEditingField(null)
-    }
-  }
-
-  const handleExpertiseChange = () => {
-    if (tempExpertise.trim()) {
-      setExpertise(tempExpertise)
-      setEditingField(null)
-    }
+  const handleSave = () => {
+    alert("강사 정보가 저장되었습니다.")
   }
 
   return (
     <TeacherLayout>
       <div className="space-y-6">
-        <h2 className="text-xl font-bold text-foreground">{"강사 정보 수정"}</h2>
-
-        <div className="rounded-lg border border-border bg-card p-6">
-          <h3 className="text-base font-semibold text-foreground mb-6">{"내 프로필"}</h3>
-
-          <div className="flex flex-col gap-6">
-            {/* 프로필 이미지 */}
-            <div className="flex flex-col gap-2">
-              <label className="text-sm text-muted-foreground">{"프로필 이미지"}</label>
-              <div className="relative w-fit">
-                <div className="h-20 w-20 rounded-full bg-amber-100 overflow-hidden flex items-center justify-center">
-                  {profileImage ? (
-                    <Image
-                      src={profileImage}
-                      alt="프로필 이미지"
-                      width={80}
-                      height={80}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <div className="h-full w-full bg-amber-100 flex items-center justify-center">
-                      <span className="text-3xl">{"👤"}</span>
-                    </div>
-                  )}
-                </div>
-                <button
-                  type="button"
-                  onClick={handleImageClick}
-                  className="absolute bottom-0 right-0 flex h-7 w-7 items-center justify-center rounded-full bg-foreground text-background hover:bg-foreground/90 transition-colors"
-                >
-                  <Pencil className="h-3.5 w-3.5" />
-                </button>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="hidden"
-                />
-              </div>
-            </div>
-
-            {/* 닉네임 */}
-            <div className="flex flex-col gap-2">
-              <label className="text-sm text-muted-foreground">{"닉네임"}</label>
-              {editingField === "nickname" ? (
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      value={tempNickname}
-                      onChange={(e) => setTempNickname(e.target.value)}
-                      maxLength={10}
-                      className="flex h-11 w-full max-w-xs rounded-md border border-amber-400 bg-amber-50 px-4 text-sm text-foreground outline-none"
-                    />
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={cancelEditing}
-                      className="h-11 px-6"
-                    >
-                      {"취소"}
-                    </Button>
-                    <Button
-                      size="sm"
-                      onClick={handleNicknameChange}
-                      disabled={!tempNickname.trim() || tempNickname.length < 2}
-                      className="h-11 px-6 bg-foreground text-background hover:bg-foreground/90"
-                    >
-                      {"변경"}
-                    </Button>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    {"특수문자, 특수기호, 공백 제외 2~10자"}
-                  </p>
-                  <label className="mt-1 flex cursor-pointer items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={useProfileNickname}
-                      onChange={(e) => setUseProfileNickname(e.target.checked)}
-                      className="h-4 w-4 rounded border-border"
-                    />
-                    <span className="text-sm text-muted-foreground">{"내 프로필 닉네임 사용"}</span>
-                  </label>
-                </div>
-              ) : (
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      value={nickname}
-                      readOnly
-                      className="flex h-11 w-full max-w-xs rounded-md border border-border bg-muted/30 px-4 text-sm text-muted-foreground outline-none cursor-default"
-                    />
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => startEditing("nickname")}
-                      className="h-11 px-6"
-                    >
-                      {"변경"}
-                    </Button>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    {"특수문자, 특수기호, 공백 제외 2~10자"}
-                  </p>
-                  <label className="mt-1 flex cursor-pointer items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={useProfileNickname}
-                      onChange={(e) => setUseProfileNickname(e.target.checked)}
-                      className="h-4 w-4 rounded border-border"
-                    />
-                    <span className="text-sm text-muted-foreground">{"내 프로필 닉네임 사용"}</span>
-                  </label>
-                </div>
-              )}
-            </div>
-
-            {/* 강사 소개 */}
-            <div className="pt-2 border-t border-border">
-              <h4 className="text-base font-semibold text-foreground mb-4">{"강사 정보"}</h4>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="text-sm text-muted-foreground">{"강사 소개"}</label>
-              {editingField === "introduction" ? (
-                <div className="flex flex-col gap-2">
-                  <Textarea
-                    value={tempIntroduction}
-                    onChange={(e) => setTempIntroduction(e.target.value)}
-                    rows={4}
-                    className="max-w-xl border-amber-400 bg-amber-50"
-                  />
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={cancelEditing}
-                      className="h-11 px-6"
-                    >
-                      {"취소"}
-                    </Button>
-                    <Button
-                      size="sm"
-                      onClick={handleIntroductionChange}
-                      className="h-11 px-6 bg-foreground text-background hover:bg-foreground/90"
-                    >
-                      {"저장"}
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex flex-col gap-2">
-                  <div className="max-w-xl p-3 rounded-md border border-border bg-muted/30 text-sm text-muted-foreground whitespace-pre-wrap">
-                    {introduction}
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => startEditing("introduction")}
-                    className="w-fit h-11 px-6"
-                  >
-                    {"수정"}
-                  </Button>
-                </div>
-              )}
-            </div>
-
-            {/* 경력 사항 */}
-            <div className="flex flex-col gap-2">
-              <label className="text-sm text-muted-foreground">{"경력 사항"}</label>
-              {editingField === "career" ? (
-                <div className="flex flex-col gap-2">
-                  <Textarea
-                    value={tempCareer}
-                    onChange={(e) => setTempCareer(e.target.value)}
-                    rows={4}
-                    className="max-w-xl border-amber-400 bg-amber-50"
-                  />
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={cancelEditing}
-                      className="h-11 px-6"
-                    >
-                      {"취소"}
-                    </Button>
-                    <Button
-                      size="sm"
-                      onClick={handleCareerChange}
-                      className="h-11 px-6 bg-foreground text-background hover:bg-foreground/90"
-                    >
-                      {"저장"}
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex flex-col gap-2">
-                  <div className="max-w-xl p-3 rounded-md border border-border bg-muted/30 text-sm text-muted-foreground whitespace-pre-wrap">
-                    {career}
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => startEditing("career")}
-                    className="w-fit h-11 px-6"
-                  >
-                    {"수정"}
-                  </Button>
-                </div>
-              )}
-            </div>
-
-            {/* 전문 분야 */}
-            <div className="flex flex-col gap-2">
-              <label className="text-sm text-muted-foreground">{"전문 분야"}</label>
-              {editingField === "expertise" ? (
-                <div className="flex flex-col gap-2">
-                  <input
-                    type="text"
-                    value={tempExpertise}
-                    onChange={(e) => setTempExpertise(e.target.value)}
-                    className="flex h-11 w-full max-w-xl rounded-md border border-amber-400 bg-amber-50 px-4 text-sm text-foreground outline-none"
-                  />
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={cancelEditing}
-                      className="h-11 px-6"
-                    >
-                      {"취소"}
-                    </Button>
-                    <Button
-                      size="sm"
-                      onClick={handleExpertiseChange}
-                      className="h-11 px-6 bg-foreground text-background hover:bg-foreground/90"
-                    >
-                      {"저장"}
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    value={expertise}
-                    readOnly
-                    className="flex h-11 w-full max-w-xl rounded-md border border-border bg-muted/30 px-4 text-sm text-muted-foreground outline-none cursor-default"
-                  />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => startEditing("expertise")}
-                    className="h-11 px-6"
-                  >
-                    {"수정"}
-                  </Button>
-                </div>
-              )}
-            </div>
-
-            {/* 구분선 및 기본정보 타이틀 */}
-            <div className="pt-2 border-t border-border">
-              <h4 className="text-base font-semibold text-foreground mb-2">{"기본정보"}</h4>
-            </div>
-
-            {/* 이름(닉네임) */}
-            <div className="flex flex-col gap-2">
-              <label className="text-sm text-muted-foreground">{"이름(닉네임)"}</label>
-              {editingField === "name" ? (
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      value={tempName}
-                      onChange={(e) => setTempName(e.target.value)}
-                      className="flex h-11 w-full max-w-xs rounded-md border border-amber-400 bg-amber-50 px-4 text-sm text-foreground outline-none"
-                    />
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={cancelEditing}
-                      className="h-11 px-6"
-                    >
-                      {"취소"}
-                    </Button>
-                    <Button
-                      size="sm"
-                      onClick={handleNameChange}
-                      className="h-11 px-6 bg-foreground text-background hover:bg-foreground/90"
-                    >
-                      {"변경"}
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    value={name}
-                    readOnly
-                    className="flex h-11 w-full max-w-xs rounded-md border border-border bg-muted/30 px-4 text-sm text-muted-foreground outline-none cursor-default"
-                  />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => startEditing("name")}
-                    className="h-11 px-6"
-                  >
-                    {"변경"}
-                  </Button>
-                </div>
-              )}
-            </div>
-
-            {/* 이메일 */}
-            <div className="flex flex-col gap-2">
-              <label className="text-sm text-muted-foreground">{"이메일 (인증완료)"}</label>
-              {editingField === "email" ? (
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="email"
-                      value={email}
-                      readOnly
-                      className="flex h-11 w-full max-w-sm rounded-md border border-border bg-muted/30 px-4 text-sm text-muted-foreground outline-none cursor-default"
-                    />
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={cancelEditing}
-                      className="h-11 px-6"
-                    >
-                      {"취소"}
-                    </Button>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="email"
-                      value={tempEmail}
-                      onChange={(e) => {
-                        setTempEmail(e.target.value)
-                        setEmailError("")
-                      }}
-                      placeholder="실제 사용하는 이메일 주소를 입력해주세요."
-                      className={`flex h-11 w-full max-w-sm rounded-md border px-4 text-sm text-foreground outline-none ${
-                        emailError ? "border-red-400 bg-red-50" : "border-amber-400 bg-amber-50"
-                      }`}
-                    />
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleEmailVerify}
-                      className="h-11 px-4 text-amber-600 border-amber-300 hover:bg-amber-50"
-                    >
-                      {"인증메일 전송"}
-                    </Button>
-                  </div>
-                  {emailError && (
-                    <p className="text-sm text-red-500">{emailError}</p>
-                  )}
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <input
-                    type="email"
-                    value={email}
-                    readOnly
-                    className="flex h-11 w-full max-w-sm rounded-md border border-border bg-muted/30 px-4 text-sm text-muted-foreground outline-none cursor-default"
-                  />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => startEditing("email")}
-                    className="h-11 px-6"
-                  >
-                    {"변경"}
-                  </Button>
-                </div>
-              )}
-            </div>
-
-            {/* 휴대전화 */}
-            <div className="flex flex-col gap-2">
-              <label className="text-sm text-muted-foreground">{"휴대전화 (인증완료)"}</label>
-              {editingField === "phone" ? (
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="tel"
-                      value={phone}
-                      readOnly
-                      className="flex h-11 w-full max-w-sm rounded-md border border-border bg-muted/30 px-4 text-sm text-muted-foreground outline-none cursor-default"
-                    />
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={cancelEditing}
-                      className="h-11 px-6"
-                    >
-                      {"취소"}
-                    </Button>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="tel"
-                      value={tempPhone}
-                      onChange={(e) => setTempPhone(e.target.value.replace(/[^0-9]/g, ""))}
-                      placeholder="- 없이 입력해주세요."
-                      className="flex h-11 w-full max-w-sm rounded-md border border-amber-400 bg-amber-50 px-4 text-sm text-foreground outline-none"
-                    />
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handlePhoneVerify}
-                      className="h-11 px-4 text-amber-600 border-amber-300 hover:bg-amber-50"
-                    >
-                      {"인증번호 전송"}
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <input
-                    type="tel"
-                    value={phone}
-                    readOnly
-                    className="flex h-11 w-full max-w-sm rounded-md border border-border bg-muted/30 px-4 text-sm text-muted-foreground outline-none cursor-default"
-                  />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => startEditing("phone")}
-                    className="h-11 px-6"
-                  >
-                    {"변경"}
-                  </Button>
-                </div>
-              )}
-            </div>
-
-            {/* 비밀번호 */}
-            <div className="flex flex-col gap-2">
-              <label className="text-sm text-muted-foreground">{"비밀번호"}</label>
-              {editingField === "password" ? (
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="password"
-                      value="••••••••"
-                      readOnly
-                      className="flex h-11 w-full max-w-sm rounded-md border border-border bg-muted/30 px-4 text-sm text-muted-foreground outline-none cursor-default"
-                    />
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={cancelEditing}
-                      className="h-11 px-6"
-                    >
-                      {"취소"}
-                    </Button>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="relative w-full max-w-sm">
-                      <input
-                        type={showNewPassword ? "text" : "password"}
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        placeholder="비밀번호를 입력해주세요."
-                        className="flex h-11 w-full rounded-md border border-amber-400 bg-amber-50 px-4 pr-10 text-sm text-foreground outline-none"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowNewPassword(!showNewPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                      >
-                        {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </button>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="relative w-full max-w-sm">
-                      <input
-                        type={showConfirmPassword ? "text" : "password"}
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        placeholder="비밀번호를 입력해주세요."
-                        className="flex h-11 w-full rounded-md border border-amber-400 bg-amber-50 px-4 pr-10 text-sm text-foreground outline-none"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                      >
-                        {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </button>
-                    </div>
-                    <Button
-                      size="sm"
-                      onClick={handlePasswordChange}
-                      disabled={!newPassword || newPassword !== confirmPassword}
-                      className="h-11 px-6"
-                    >
-                      {"확인"}
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <input
-                    type="password"
-                    value="••••••••"
-                    readOnly
-                    className="flex h-11 w-full max-w-sm rounded-md border border-border bg-muted/30 px-4 text-sm text-muted-foreground outline-none cursor-default"
-                  />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => startEditing("password")}
-                    className="h-11 px-6"
-                  >
-                    {"변경"}
-                  </Button>
-                </div>
-              )}
-            </div>
-
-            {/* 마케팅 수신 동의 */}
-            <div className="mt-6 pt-6 border-t border-border">
-              <h4 className="text-base font-semibold text-foreground mb-4">{"마케팅 수신 동의"}</h4>
-              
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-foreground">{"마케팅 정보 수신에 동의합니다."}</span>
-                <button 
-                  onClick={() => setIsMarketingTermsOpen(true)}
-                  className="text-sm text-muted-foreground border border-border rounded px-3 py-1 hover:bg-muted/50"
-                >
-                  {"약관보기"}
-                </button>
-              </div>
-              <p className="mt-2 text-xs text-muted-foreground">
-                {"할인 이벤트와 쿠폰 발급 등의 알림을 받으시고 혜택을 놓치지 마세요."}
-              </p>
-              
-              <div className="mt-4 space-y-3">
-                {/* 이메일 수신 */}
-                <div className="flex items-center justify-between">
-                  <label className="flex cursor-pointer items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={emailMarketing}
-                      onChange={(e) => setEmailMarketing(e.target.checked)}
-                      className="h-4 w-4 rounded border-border accent-amber-600"
-                    />
-                    <span className="text-sm text-foreground">{"이메일 수신"}</span>
-                  </label>
-                  <span className="text-xs text-muted-foreground">
-                    {emailMarketing ? "동의" : "미동의"}{" 일자 : "}{emailMarketingDate}
-                  </span>
-                </div>
-                
-                {/* 문자메시지 수신 */}
-                <div className="flex items-center justify-between">
-                  <label className="flex cursor-pointer items-center gap-2">
-                    <input
-                      type="checkbox"
-                      checked={smsMarketing}
-                      onChange={(e) => setSmsMarketing(e.target.checked)}
-                      className="h-4 w-4 rounded border-border accent-amber-600"
-                    />
-                    <span className="text-sm text-foreground">{"문자메시지 수신"}</span>
-                  </label>
-                  <span className="text-xs text-muted-foreground">
-                    {smsMarketing ? "동의" : "미동의"}{" 일자 : "}{smsMarketingDate}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* 수정 완료 버튼 */}
-            <div className="mt-8">
-              <Button className="h-12 px-8 bg-accent text-accent-foreground hover:bg-accent/90">
-                {"수정 완료"}
-              </Button>
-            </div>
-          </div>
+        {/* Page Header */}
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">{"강사정보관리"}</h2>
+          <p className="text-muted-foreground">{"강사 프로필 정보를 관리합니다."}</p>
         </div>
 
-        {/* 마케팅 수신 동의 약관 모달 */}
-        {isMarketingTermsOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden">
-            {/* 어두운 배경 오버레이 */}
-            <div 
-              className="absolute inset-0 bg-black/50"
-              onClick={() => setIsMarketingTermsOpen(false)}
-            />
-            
-            {/* 모달 컨텐츠 */}
-            <div className="relative z-10 w-full max-w-3xl mx-4 bg-white rounded-lg shadow-lg text-black">
-              {/* 모달 헤더 */}
-              <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900">{"마케팅 수신 동의"}</h3>
-                <button
-                  onClick={() => setIsMarketingTermsOpen(false)}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  <X className="h-5 w-5" />
-                </button>
+        <div className="grid gap-6 lg:grid-cols-3">
+          {/* 프로필 사진 및 닉네임 */}
+          <Card className="lg:col-span-1">
+            <CardHeader>
+              <CardTitle>{"프로필"}</CardTitle>
+              <CardDescription>{"강의 페이지에 표시되는 프로필입니다."}</CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-col items-center gap-4">
+              <div 
+                className="relative w-32 h-32 rounded-full overflow-hidden bg-muted cursor-pointer group"
+                onClick={handleImageClick}
+              >
+                {profileImage ? (
+                  <Image
+                    src={profileImage}
+                    alt="프로필 이미지"
+                    fill
+                    className="object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-700 to-gray-900">
+                    <span className="text-4xl font-bold text-white">{nickname.charAt(0)}</span>
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Camera className="h-8 w-8 text-white" />
+                </div>
               </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="hidden"
+              />
+              <p className="text-xs text-muted-foreground text-center">
+                {"클릭하여 프로필 사진을 변경하세요"}
+              </p>
               
-              {/* 모달 본문 */}
-              <div className="p-6">
-                {/* 테이블 */}
-                <div className="border border-gray-200 rounded overflow-hidden">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b border-gray-200 bg-gray-50">
-                        <th className="px-4 py-3 text-center font-medium text-gray-900 w-24">{"서비스"}</th>
-                        <th className="px-4 py-3 text-center font-medium text-gray-900">{"목적"}</th>
-                        <th className="px-4 py-3 text-center font-medium text-gray-900 w-40">{"항목"}</th>
-                        <th className="px-4 py-3 text-center font-medium text-gray-900 w-32">{"보유기간"}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td className="px-4 py-4 text-center text-gray-700 align-top">{"회원가입"}</td>
-                        <td className="px-4 py-4 text-gray-700 align-top">
-                          {"(주) 컴퍼니가 제공하는 이용자 맞춤형 서비스 및 상품 추천, 각종 경품 행사, 이벤트 등의 광고성 정보 제공(이메일, 서신우편, SMS, 카카오톡 등)"}
-                        </td>
-                        <td className="px-4 py-4 text-center text-gray-700 align-top">
-                          {"이름, 이메일주소,"}<br />
-                          {"휴대전화번호, 마케팅 수신 동의 여부"}
-                        </td>
-                        <td className="px-4 py-4 text-center text-gray-700 align-top">
-                          {"회원 탈퇴 후 30일"}<br />
-                          {"또는 동의 철회 시까지"}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                
-                {/* 안내 문구 */}
-                <div className="mt-6 pt-6 border-t border-gray-200">
-                  <p className="text-sm text-gray-600 leading-relaxed">
-                    {"본 마케팅 정보 수신에 대한 동의를 거부하실 수 있으며, 이 경우 회원가입은 가능하나 일부 서비스 이용 및 각종 광고, 할인, 이벤트 및 이용자 맞춤형 상품 추천 등의 서비스 제공이 제한될 수 있습니다."}
-                  </p>
+              <div className="w-full space-y-2">
+                <Label htmlFor="nickname">{"닉네임"}</Label>
+                <Input
+                  id="nickname"
+                  value={nickname}
+                  onChange={(e) => setNickname(e.target.value)}
+                  placeholder="닉네임을 입력하세요"
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* 강사 정보 */}
+          <Card className="lg:col-span-2">
+            <CardHeader>
+              <CardTitle>{"강사 정보"}</CardTitle>
+              <CardDescription>{"수강생에게 표시되는 강사 소개 정보입니다."}</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="instructorTitle">{"강사 직함"}</Label>
+                <Input
+                  id="instructorTitle"
+                  value={instructorTitle}
+                  onChange={(e) => setInstructorTitle(e.target.value)}
+                  placeholder="AI 비즈니스 전문가 / 전 네이버 AI Lab"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="instructorIntro">{"강사 소개"}</Label>
+                <Textarea
+                  id="instructorIntro"
+                  value={instructorIntro}
+                  onChange={(e) => setInstructorIntro(e.target.value)}
+                  placeholder="강사의 경력 및 전문 분야를 소개해주세요."
+                  rows={5}
+                />
+              </div>
+
+              {/* 미리보기 */}
+              <div className="border-t pt-6">
+                <Label className="text-sm font-medium mb-3 block">{"미리보기"}</Label>
+                <div className="rounded-lg bg-muted/50 p-4">
+                  <div className="flex items-start gap-4">
+                    <div className="w-16 h-16 rounded-full overflow-hidden bg-muted shrink-0">
+                      {profileImage ? (
+                        <Image
+                          src={profileImage}
+                          alt="프로필 이미지"
+                          width={64}
+                          height={64}
+                          className="object-cover w-full h-full"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-700 to-gray-900">
+                          <span className="text-xl font-bold text-white">{nickname.charAt(0)}</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-semibold">{nickname || "닉네임"}</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-muted-foreground">
+                          <path fillRule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-2">
+                        {instructorTitle || "강사 직함을 입력하세요"}
+                      </p>
+                      <p className="text-sm">
+                        {instructorIntro || "강사 소개를 입력하세요"}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        )}
+
+              <div className="flex justify-end">
+                <Button onClick={handleSave}>
+                  {"저장하기"}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </TeacherLayout>
   )
