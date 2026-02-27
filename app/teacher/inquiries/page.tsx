@@ -455,15 +455,15 @@ export default function TeacherInquiriesPage() {
                       <div className="flex items-center gap-4 mt-3">
                         <button
                           onClick={() => toggleLike(`qna-${selectedQna.id}`, selectedQna.likes)}
-                          className={`flex items-center gap-1 text-sm transition-all duration-200 ${
+                          className={`flex items-center gap-1.5 text-sm px-2 py-1 rounded-md transition-all duration-200 ${
                             isLiked(`qna-${selectedQna.id}`)
-                              ? "text-yellow-500"
-                              : "text-muted-foreground hover:text-yellow-500"
+                              ? "border border-accent bg-accent/10 text-accent"
+                              : "text-muted-foreground hover:text-accent"
                           }`}
                         >
                           <ThumbsUp 
                             className={`h-4 w-4 transition-transform duration-200 ${
-                              isLiked(`qna-${selectedQna.id}`) ? "scale-110 fill-yellow-500" : ""
+                              isLiked(`qna-${selectedQna.id}`) ? "scale-110 fill-current" : ""
                             }`} 
                           />
                           <span className={`transition-all duration-200 ${
@@ -520,15 +520,15 @@ export default function TeacherInquiriesPage() {
                           <p className="text-sm">{reply.content}</p>
                           <button
                             onClick={() => toggleLike(`reply-${reply.id}`, reply.likes)}
-                            className={`flex items-center gap-1 mt-2 text-sm transition-all duration-200 ${
+                            className={`flex items-center gap-1.5 mt-2 text-sm px-2 py-1 rounded-md transition-all duration-200 ${
                               isLiked(`reply-${reply.id}`)
-                                ? "text-yellow-500"
-                                : "text-muted-foreground hover:text-yellow-500"
+                                ? "border border-accent bg-accent/10 text-accent"
+                                : "text-muted-foreground hover:text-accent"
                             }`}
                           >
                             <ThumbsUp 
                               className={`h-4 w-4 transition-transform duration-200 ${
-                                isLiked(`reply-${reply.id}`) ? "scale-110 fill-yellow-500" : ""
+                                isLiked(`reply-${reply.id}`) ? "scale-110 fill-current" : ""
                               }`} 
                             />
                             <span className={`transition-all duration-200 ${
