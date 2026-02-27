@@ -207,7 +207,7 @@ export default function StudentsPage() {
       statusFilter === "all" ||
       (statusFilter === "active" && student.status === "active") ||
       (statusFilter === "inactive" && student.status === "inactive")
-    const matchesMemberType = student.memberType === memberTypeFilter
+    const matchesMemberType = memberTypeFilter === "all" || student.memberType === memberTypeFilter
     return matchesSearch && matchesCourse && matchesStatus && matchesMemberType
   })
 
@@ -380,6 +380,7 @@ export default function StudentsPage() {
                         <SelectValue placeholder="회원 유형" />
                       </SelectTrigger>
                       <SelectContent>
+                        <SelectItem value="all">{"전체"}</SelectItem>
                         <SelectItem value="student">{"수강생"}</SelectItem>
                         <SelectItem value="teacher">{"강사"}</SelectItem>
                         <SelectItem value="admin">{"어드민"}</SelectItem>
