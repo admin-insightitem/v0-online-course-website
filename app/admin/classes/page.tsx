@@ -337,9 +337,9 @@ export default function ClassesPage() {
                   <TableHead className="text-right"><SortButton field="price" label="가격" /></TableHead>
                   <TableHead className="text-center"><SortButton field="students" label="수강생" /></TableHead>
                   <TableHead className="text-center"><SortButton field="lectures" label="강의수" /></TableHead>
+                  <TableHead className="px-1 text-center">강의 등록</TableHead>
                   <TableHead className="text-center"><SortButton field="badge" label="배지" /></TableHead>
                   <TableHead className="px-1 text-center">노출</TableHead>
-                  <TableHead className="px-1 text-center">강의 등록</TableHead>
                   <TableHead className="px-1 text-center">액션</TableHead>
                 </TableRow>
               </TableHeader>
@@ -384,6 +384,14 @@ export default function ClassesPage() {
                     </TableCell>
                     <TableCell className="px-2 text-center text-sm">{cls.students.toLocaleString()}명</TableCell>
                     <TableCell className="px-2 text-center text-sm">{cls.lectures}개</TableCell>
+                    <TableCell className="px-1 text-center">
+                      <Link href={`/admin/lectures?classId=${cls.id}`}>
+                        <Button variant="outline" size="sm" className="h-7 px-2 text-xs">
+                          <Plus className="mr-1 h-3 w-3" />
+                          {"등록"}
+                        </Button>
+                      </Link>
+                    </TableCell>
                     <TableCell className="px-2 text-center">
                       <Select
                         value={cls.badge || "none"}
@@ -419,14 +427,6 @@ export default function ClassesPage() {
                           <EyeOff className="h-4 w-4 text-muted-foreground" />
                         )}
                       </Button>
-                    </TableCell>
-                    <TableCell className="px-1 text-center">
-                      <Link href={`/admin/lectures?classId=${cls.id}`}>
-                        <Button variant="outline" size="sm" className="h-7 px-2 text-xs">
-                          <Plus className="mr-1 h-3 w-3" />
-                          {"등록"}
-                        </Button>
-                      </Link>
                     </TableCell>
                     <TableCell className="px-1 text-center">
                       <DropdownMenu>
