@@ -281,7 +281,7 @@ export default function NewClassPage() {
     }))
   }
 
-  // 총 ��의 수 계산
+  // 총 ���의 수 계산
   const totalLectures = formData.curriculum.reduce((acc, section) => acc + section.lessons.length, 0)
 
   // 총 강의 시간 계산
@@ -483,7 +483,7 @@ export default function NewClassPage() {
                 {/* 목록 썸네일 */}
                 <div className="space-y-3">
                   <div>
-                    <Label className="text-sm font-medium">목록 썸네일</Label>
+                    <Label className="text-sm font-medium">{"목록 썸네일"}<span className="text-foreground ml-1">*</span></Label>
                     <p className="text-xs text-muted-foreground">강좌 목록, 카드에 표시되는 이미지</p>
                   </div>
                   <div className="relative aspect-video w-full overflow-hidden rounded-lg border-2 border-dashed border-border bg-muted">
@@ -512,7 +512,7 @@ export default function NewClassPage() {
                 {/* 상세 페이지 타이틀 이미지 */}
                 <div className="space-y-3">
                   <div>
-                    <Label className="text-sm font-medium">상세 페이지 헤더 이미지</Label>
+                    <Label className="text-sm font-medium">{"상세 페이지 헤더 이미지"}<span className="text-foreground ml-1">*</span></Label>
                     <p className="text-xs text-muted-foreground">상세 페이지 상단 배경 이미지</p>
                   </div>
                   <div className="relative aspect-[21/9] w-full overflow-hidden rounded-lg border-2 border-dashed border-border bg-muted">
@@ -584,7 +584,7 @@ export default function NewClassPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="instructor">{"강사 선택"}<span className="text-red-500 ml-1">*</span></Label>
+                  <Label htmlFor="instructor">{"강사 선택"}<span className="text-foreground ml-1">*</span></Label>
                   <Select
                     value={formData.instructor}
                     onValueChange={handleInstructorChange}
