@@ -386,7 +386,6 @@ export default function ReviewsPage() {
                       sortBy === option.value ? "bg-primary" : "bg-muted-foreground/50"
                     }`} />
                     {option.label}
-                  </span>
                   </button>
                 ))}
               </div>
