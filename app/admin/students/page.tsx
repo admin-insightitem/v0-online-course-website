@@ -59,7 +59,7 @@ const studentsData = [
     avatar: "/images/avatar-user.jpg",
     joinDate: "2025.08.15",
     joinMethod: "email" as const,
-    memberType: "student" as const,
+    memberType: "admin" as const,
     courses: [
       { id: "1", title: "ChatGPT & AI 자동화", progress: 75, lastAccess: "2026.02.27", enrollDate: "2025.08.15", price: 149000, isRefunded: false },
       { id: "2", title: "유튜브 수익화 가이드", progress: 30, lastAccess: "2026.02.25", enrollDate: "2025.09.20", price: 129000, isRefunded: false },
@@ -124,7 +124,7 @@ const studentsData = [
     avatar: "",
     joinDate: "2025.09.10",
     joinMethod: "email" as const,
-    memberType: "student" as const,
+    memberType: "teacher" as const,
     courses: [
       { id: "2", title: "유튜브 수익화 가이드", progress: 10, lastAccess: "2026.01.15", enrollDate: "2025.09.10", price: 129000, isRefunded: false },
     ],
