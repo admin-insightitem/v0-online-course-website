@@ -7,6 +7,13 @@ import { Star, X, Pencil, CheckCircle, ThumbsUp, ChevronLeft, ChevronRight } fro
 import { MypageLayout } from "@/components/mypage-layout"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { courses } from "@/lib/courses"
 
 // 내가 들은 강의 (구매내역 기반)
@@ -206,15 +213,30 @@ export default function ReviewsPage() {
   const [helpfulReviews, setHelpfulReviews] = useState<string[]>(["all-review-1"])
   const [currentPage, setCurrentPage] = useState(1)
   const [sortBy, setSortBy] = useState<"latest" | "rating" | "helpful">("latest")
+  const [courseFilter, setCourseFilter] = useState<string>("all")
   const itemsPerPage = 10
+
+  // 강좌 목록 추출
+  const courseList = Array.from(new Set(allReviews.map((r) => r.course.id))).map(
+    (id) => allReviews.find((r) => r.course.id === id)!.course
+  )
 
   const handleSortChange = (value: string) => {
     setSortBy(value as "latest" | "rating" | "helpful")
     setCurrentPage(1)
   }
 
-  // 정렬된 리뷰
-  const sortedReviews = [...allReviews].sort((a, b) => {
+  const handleCourseFilterChange = (value: string) => {
+    setCourseFilter(value)
+    setCurrentPage(1)
+  }
+
+  // 필터링 및 정렬된 리뷰
+  const filteredReviews = courseFilter === "all" 
+    ? allReviews 
+    : allReviews.filter((r) => r.course.id === courseFilter)
+
+  const sortedReviews = [...filteredReviews].sort((a, b) => {
     switch (sortBy) {
       case "latest":
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -324,28 +346,50 @@ export default function ReviewsPage() {
         {activeTab === "all-reviews" ? (
           // 전체 수강평 목록
           <div className="flex flex-col gap-4">
-            {/* 정렬 옵션 */}
-            <div className="flex items-center gap-4">
-              {[
-                { value: "latest", label: "최신순" },
-                { value: "rating", label: "별점 순" },
-                { value: "helpful", label: "도움이 됨 순" },
-              ].map((option) => (
-                <button
-                  key={option.value}
-                  onClick={() => handleSortChange(option.value)}
-                  className={`flex items-center gap-1.5 text-sm transition-colors ${
-                    sortBy === option.value
-                      ? "text-primary font-medium"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  <span className={`h-1.5 w-1.5 rounded-full ${
-                    sortBy === option.value ? "bg-primary" : "bg-muted-foreground/50"
-                  }`} />
-                  {option.label}
-                </button>
-              ))}
+            {/* 필터 및 정렬 옵션 */}
+            <div className="flex items-center justify-between">
+              {/* 좌측: 강좌 필터 */}
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground whitespace-nowrap">{"강좌"}</span>
+                <Select value={courseFilter} onValueChange={handleCourseFilterChange}>
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue placeholder="강좌 선택" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">{"전체"}</SelectItem>
+                    {courseList.map((course) => (
+                      <SelectItem key={course.id} value={course.id}>
+                        {course.title.length > 20 ? course.title.substring(0, 20) + "..." : course.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* 우측: 정렬 옵션 */}
+              <div className="flex items-center gap-4">
+                {[
+                  { value: "latest", label: "최신순" },
+                  { value: "rating", label: "별점 순" },
+                  { value: "helpful", label: "도움이 됨 순" },
+                ].map((option) => (
+                  <button
+                    key={option.value}
+                    onClick={() => handleSortChange(option.value)}
+                    className={`flex items-center gap-1.5 text-sm transition-colors ${
+                      sortBy === option.value
+                        ? "text-primary font-medium"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <span className={`h-1.5 w-1.5 rounded-full ${
+                      sortBy === option.value ? "bg-primary" : "bg-muted-foreground/50"
+                    }`} />
+                    {option.label}
+                  </span>
+                  </button>
+                ))}
+              </div>
             </div>
 
             {allReviews.length === 0 ? (
