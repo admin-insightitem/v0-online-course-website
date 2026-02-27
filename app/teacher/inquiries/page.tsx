@@ -141,7 +141,30 @@ export default function TeacherInquiriesPage() {
   const [sortField, setSortField] = useState<SortField>("createdAt")
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc")
   const [currentPage, setCurrentPage] = useState(1)
+  const [likedItems, setLikedItems] = useState<Set<string>>(new Set())
+  const [likeCounts, setLikeCounts] = useState<Record<string, number>>({})
   const itemsPerPage = 30
+
+  const toggleLike = (itemId: string, originalLikes: number) => {
+    const isCurrentlyLiked = likedItems.has(itemId)
+    const newLikedItems = new Set(likedItems)
+    const currentCount = likeCounts[itemId] ?? originalLikes
+
+    if (isCurrentlyLiked) {
+      newLikedItems.delete(itemId)
+      setLikeCounts({ ...likeCounts, [itemId]: currentCount - 1 })
+    } else {
+      newLikedItems.add(itemId)
+      setLikeCounts({ ...likeCounts, [itemId]: currentCount + 1 })
+    }
+    setLikedItems(newLikedItems)
+  }
+
+  const getLikeCount = (itemId: string, originalLikes: number) => {
+    return likeCounts[itemId] ?? originalLikes
+  }
+
+  const isLiked = (itemId: string) => likedItems.has(itemId)
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -430,10 +453,25 @@ export default function TeacherInquiriesPage() {
                       <h4 className="font-medium mb-2">{selectedQna.title}</h4>
                       <p className="text-sm text-muted-foreground">{selectedQna.content}</p>
                       <div className="flex items-center gap-4 mt-3">
-                        <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                          <ThumbsUp className="h-4 w-4" />
-                          <span>{selectedQna.likes}</span>
-                        </div>
+                        <button
+                          onClick={() => toggleLike(`qna-${selectedQna.id}`, selectedQna.likes)}
+                          className={`flex items-center gap-1 text-sm transition-all duration-200 ${
+                            isLiked(`qna-${selectedQna.id}`)
+                              ? "text-yellow-500"
+                              : "text-muted-foreground hover:text-yellow-500"
+                          }`}
+                        >
+                          <ThumbsUp 
+                            className={`h-4 w-4 transition-transform duration-200 ${
+                              isLiked(`qna-${selectedQna.id}`) ? "scale-110 fill-yellow-500" : ""
+                            }`} 
+                          />
+                          <span className={`transition-all duration-200 ${
+                            isLiked(`qna-${selectedQna.id}`) ? "font-medium" : ""
+                          }`}>
+                            {getLikeCount(`qna-${selectedQna.id}`, selectedQna.likes)}
+                          </span>
+                        </button>
                         <div className="flex items-center gap-1 text-sm text-muted-foreground">
                           <MessageSquare className="h-4 w-4" />
                           <span>{"답글 "}{selectedQna.replyCount}</span>
@@ -480,10 +518,25 @@ export default function TeacherInquiriesPage() {
                             <span className="text-xs text-muted-foreground">{reply.createdAt}</span>
                           </div>
                           <p className="text-sm">{reply.content}</p>
-                          <div className="flex items-center gap-1 mt-2 text-sm text-muted-foreground">
-                            <ThumbsUp className="h-4 w-4" />
-                            <span>{reply.likes}</span>
-                          </div>
+                          <button
+                            onClick={() => toggleLike(`reply-${reply.id}`, reply.likes)}
+                            className={`flex items-center gap-1 mt-2 text-sm transition-all duration-200 ${
+                              isLiked(`reply-${reply.id}`)
+                                ? "text-yellow-500"
+                                : "text-muted-foreground hover:text-yellow-500"
+                            }`}
+                          >
+                            <ThumbsUp 
+                              className={`h-4 w-4 transition-transform duration-200 ${
+                                isLiked(`reply-${reply.id}`) ? "scale-110 fill-yellow-500" : ""
+                              }`} 
+                            />
+                            <span className={`transition-all duration-200 ${
+                              isLiked(`reply-${reply.id}`) ? "font-medium" : ""
+                            }`}>
+                              {getLikeCount(`reply-${reply.id}`, reply.likes)}
+                            </span>
+                          </button>
                         </div>
                       </div>
                     ))}
