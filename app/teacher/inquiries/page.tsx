@@ -506,7 +506,6 @@ export default function TeacherInquiriesPage() {
 
                 {/* 답변 입력 영역 */}
                 <div className="space-y-2">
-                  <Label htmlFor="qnaReply">{"답변 내용"}</Label>
                   <Textarea
                     id="qnaReply"
                     placeholder="답글을 입력하세요..."
