@@ -43,6 +43,8 @@ import {
   ArrowDown,
   ChevronLeft,
   ChevronRight,
+  ThumbsUp,
+  MessageSquare,
 } from "lucide-react"
 
 // 강의별 Q&A 데이터 (본인 강의만)
@@ -56,8 +58,9 @@ const qnaData = [
     lecture: "Section 2. Lecture 3",
     status: "pending",
     createdAt: "2026.02.27 15:20",
-    reply: null,
+    likes: 3,
     replyCount: 0,
+    replies: [],
   },
   {
     id: "QNA-002",
@@ -68,9 +71,18 @@ const qnaData = [
     lecture: "Section 3. Lecture 1",
     status: "completed",
     createdAt: "2026.02.26 13:40",
-    reply: "네, 무료 플랜으로도 기본 실습은 가능합니다. 다만 자동화 횟수에 제한이 있어요.",
-    repliedAt: "2026.02.26 14:15",
+    likes: 5,
     replyCount: 1,
+    replies: [
+      {
+        id: "R-001",
+        author: "김도현",
+        isInstructor: true,
+        content: "네, 무료 플랜으로도 기본 실습은 가능합니다. 다만 자동화 횟수에 제한이 있어요.",
+        createdAt: "2026.02.26 14:15",
+        likes: 3,
+      },
+    ],
   },
   {
     id: "QNA-003",
@@ -81,8 +93,9 @@ const qnaData = [
     lecture: "Section 1. Lecture 5",
     status: "pending",
     createdAt: "2026.02.27 09:10",
-    reply: null,
+    likes: 2,
     replyCount: 0,
+    replies: [],
   },
   {
     id: "QNA-004",
@@ -91,10 +104,28 @@ const qnaData = [
     author: "이지훈",
     course: "AI 비즈니스 심화",
     lecture: "Section 2. Lecture 1",
-    status: "in-progress",
+    status: "completed",
     createdAt: "2026.02.26 18:30",
-    reply: null,
+    likes: 8,
     replyCount: 2,
+    replies: [
+      {
+        id: "R-002",
+        author: "박서연",
+        isInstructor: false,
+        content: "저도 같은 궁금증이 있어요. 블로그 수익화가 제일 쉬울 것 같은데...",
+        createdAt: "2026.02.26 19:00",
+        likes: 2,
+      },
+      {
+        id: "R-003",
+        author: "김도현",
+        isInstructor: true,
+        content: "초보자분들께는 AI 콘텐츠 제작부터 시작하시는 것을 추천드립니다. 진입 장벽이 낮고 빠르게 결과를 볼 수 있어요.",
+        createdAt: "2026.02.26 20:30",
+        likes: 5,
+      },
+    ],
   },
 ]
 
@@ -369,15 +400,16 @@ export default function TeacherInquiriesPage() {
 
         {/* Q&A Reply Dialog */}
         <Dialog open={isReplyDialogOpen} onOpenChange={setIsReplyDialogOpen}>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Q&A 답변</DialogTitle>
+              <DialogTitle>{"Q&A 답변"}</DialogTitle>
               <DialogDescription>
-                수강생의 질문에 답변합니다.
+                {"수강생의 질문에 답변합니다."}
               </DialogDescription>
             </DialogHeader>
             {selectedQna && (
               <div className="space-y-4">
+                {/* 질문 영역 */}
                 <div className="rounded-lg border p-4">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
@@ -386,46 +418,83 @@ export default function TeacherInquiriesPage() {
                     </div>
                     {getStatusBadge(selectedQna.status)}
                   </div>
-                  <h4 className="font-medium mb-2">{selectedQna.title}</h4>
-                  <p className="text-sm text-muted-foreground">{selectedQna.content}</p>
-                  <div className="mt-2 text-xs text-muted-foreground">
-                    {selectedQna.author} · {selectedQna.createdAt}
+                  <div className="flex items-start gap-3 mt-3">
+                    <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center shrink-0">
+                      <span className="text-sm font-medium">{selectedQna.author.charAt(0)}</span>
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-medium">{selectedQna.author}</span>
+                        <span className="text-xs text-muted-foreground">{selectedQna.createdAt}</span>
+                      </div>
+                      <h4 className="font-medium mb-2">{selectedQna.title}</h4>
+                      <p className="text-sm text-muted-foreground">{selectedQna.content}</p>
+                      <div className="flex items-center gap-4 mt-3">
+                        <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                          <ThumbsUp className="h-4 w-4" />
+                          <span>{selectedQna.likes}</span>
+                        </div>
+                        <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                          <MessageSquare className="h-4 w-4" />
+                          <span>{"답글 "}{selectedQna.replyCount}</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
+                {/* 답변 입력 영역 */}
                 <div className="space-y-2">
-                  <Label htmlFor="qnaReply">답변 내용</Label>
+                  <Label htmlFor="qnaReply">{"답변 내용"}</Label>
                   <Textarea
                     id="qnaReply"
-                    placeholder="답변을 입력하세요"
+                    placeholder="답글을 입력하세요..."
                     value={replyContent}
                     onChange={(e) => setReplyContent(e.target.value)}
-                    rows={6}
-                    disabled={selectedQna.status === "completed"}
+                    rows={4}
                   />
+                  <div className="flex justify-end gap-2">
+                    <Button variant="outline" size="sm" onClick={() => setReplyContent("")}>
+                      {"취소"}
+                    </Button>
+                    <Button size="sm" onClick={() => setIsReplyDialogOpen(false)}>
+                      {"등록"}
+                    </Button>
+                  </div>
                 </div>
 
-                {selectedQna.reply && (
-                  <div className="rounded-lg bg-muted p-4">
-                    <p className="text-sm font-medium mb-1">기존 답변</p>
-                    <p className="text-sm">{selectedQna.reply}</p>
-                    <p className="text-xs text-muted-foreground mt-2">
-                      답변일: {selectedQna.repliedAt}
-                    </p>
+                {/* 기존 답변 목록 */}
+                {selectedQna.replies && selectedQna.replies.length > 0 && (
+                  <div className="space-y-3 border-t pt-4">
+                    {selectedQna.replies.map((reply) => (
+                      <div key={reply.id} className="flex items-start gap-3 pl-4 border-l-2 border-muted">
+                        <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center shrink-0">
+                          <span className="text-sm font-medium">{reply.author.charAt(0)}</span>
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="font-medium">{reply.author}</span>
+                            {reply.isInstructor && (
+                              <Badge variant="secondary" className="text-xs h-5">{"강사"}</Badge>
+                            )}
+                            <span className="text-xs text-muted-foreground">{reply.createdAt}</span>
+                          </div>
+                          <p className="text-sm">{reply.content}</p>
+                          <div className="flex items-center gap-1 mt-2 text-sm text-muted-foreground">
+                            <ThumbsUp className="h-4 w-4" />
+                            <span>{reply.likes}</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
             )}
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsReplyDialogOpen(false)}>
-                취소
+                {"닫기"}
               </Button>
-              {selectedQna?.status !== "completed" && (
-                <Button onClick={() => setIsReplyDialogOpen(false)}>
-                  <Send className="mr-2 h-4 w-4" />
-                  답변 등록
-                </Button>
-              )}
             </DialogFooter>
           </DialogContent>
         </Dialog>
