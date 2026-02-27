@@ -147,7 +147,6 @@ export default function TeacherInquiriesPage() {
   const itemsPerPage = 30
 
   const toggleLike = (itemId: string, originalLikes: number) => {
-    console.log("[v0] toggleLike called:", itemId, originalLikes)
     const isCurrentlyLiked = likedItems.has(itemId)
     const newLikedItems = new Set(likedItems)
     const currentCount = likeCounts[itemId] ?? originalLikes
@@ -160,7 +159,6 @@ export default function TeacherInquiriesPage() {
       setLikeCounts({ ...likeCounts, [itemId]: currentCount + 1 })
     }
     setLikedItems(newLikedItems)
-    console.log("[v0] newLikedItems:", Array.from(newLikedItems))
   }
 
   const getLikeCount = (itemId: string, originalLikes: number) => {

@@ -96,6 +96,31 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
   const [reviewHoverRating, setReviewHoverRating] = useState(0)
   const [reviewContent, setReviewContent] = useState("")
   const [showThankYouModal, setShowThankYouModal] = useState(false)
+  
+  // Like state
+  const [likedItems, setLikedItems] = useState<Set<string>>(new Set())
+  const [likeCounts, setLikeCounts] = useState<Record<string, number>>({})
+
+  const toggleLike = (itemId: string, originalLikes: number) => {
+    const isCurrentlyLiked = likedItems.has(itemId)
+    const newLikedItems = new Set(likedItems)
+    const currentCount = likeCounts[itemId] ?? originalLikes
+
+    if (isCurrentlyLiked) {
+      newLikedItems.delete(itemId)
+      setLikeCounts({ ...likeCounts, [itemId]: currentCount - 1 })
+    } else {
+      newLikedItems.add(itemId)
+      setLikeCounts({ ...likeCounts, [itemId]: currentCount + 1 })
+    }
+    setLikedItems(newLikedItems)
+  }
+
+  const getLikeCount = (itemId: string, originalLikes: number) => {
+    return likeCounts[itemId] ?? originalLikes
+  }
+
+  const isLiked = (itemId: string) => likedItems.has(itemId)
 
   if (!course) {
     return (
@@ -454,9 +479,19 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
                             <p className="mt-2 text-sm text-foreground">{question.content}</p>
                           )}
                           <div className="mt-3 flex items-center gap-4">
-                            <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
-                              <ThumbsUp className="h-3.5 w-3.5" />
-                              {question.likes}
+                            <button 
+                              type="button"
+                              onClick={() => toggleLike(`question-${question.id}`, question.likes)}
+                              className={`flex items-center gap-1 text-xs px-2 py-1 rounded-md transition-all duration-200 ${
+                                isLiked(`question-${question.id}`)
+                                  ? "border border-accent bg-accent/10 text-accent"
+                                  : "text-muted-foreground hover:text-accent"
+                              }`}
+                            >
+                              <ThumbsUp className={`h-3.5 w-3.5 transition-transform duration-200 ${
+                                isLiked(`question-${question.id}`) ? "scale-110 fill-current" : ""
+                              }`} />
+                              {getLikeCount(`question-${question.id}`, question.likes)}
                             </button>
                             <button 
                               onClick={() => toggleReplies(question.id)}
@@ -565,9 +600,19 @@ export default function WatchPage({ params }: { params: Promise<{ id: string; le
                                           <p className="mt-1 text-sm text-foreground">{reply.content}</p>
                                         )}
                                         <div className="mt-2 flex items-center gap-1">
-                                          <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
-                                            <ThumbsUp className="h-3 w-3" />
-                                            {reply.likes}
+                                          <button 
+                                            type="button"
+                                            onClick={() => toggleLike(`reply-${question.id}-${reply.id}`, reply.likes)}
+                                            className={`flex items-center gap-1 text-xs px-2 py-1 rounded-md transition-all duration-200 ${
+                                              isLiked(`reply-${question.id}-${reply.id}`)
+                                                ? "border border-accent bg-accent/10 text-accent"
+                                                : "text-muted-foreground hover:text-accent"
+                                            }`}
+                                          >
+                                            <ThumbsUp className={`h-3 w-3 transition-transform duration-200 ${
+                                              isLiked(`reply-${question.id}-${reply.id}`) ? "scale-110 fill-current" : ""
+                                            }`} />
+                                            {getLikeCount(`reply-${question.id}-${reply.id}`, reply.likes)}
                                           </button>
                                         </div>
                                       </div>
