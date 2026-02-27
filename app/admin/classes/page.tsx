@@ -339,7 +339,7 @@ export default function ClassesPage() {
                   <TableHead className="text-center"><SortButton field="lectures" label="강의수" /></TableHead>
                   <TableHead className="text-center"><SortButton field="badge" label="배지" /></TableHead>
                   <TableHead className="px-1 text-center">노출</TableHead>
-                  <TableHead className="px-1 text-center">등록</TableHead>
+                  <TableHead className="px-1 text-center">강의 등록</TableHead>
                   <TableHead className="px-1 text-center">액션</TableHead>
                 </TableRow>
               </TableHeader>
