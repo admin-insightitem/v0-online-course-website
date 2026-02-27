@@ -12,6 +12,7 @@ import {
   X,
   LogOut,
   Bell,
+  UserCog,
 } from "lucide-react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
@@ -27,6 +28,7 @@ import {
 
 const teacherMenu = [
   { icon: LayoutDashboard, label: "대시보드", href: "/teacher" },
+  { icon: UserCog, label: "강사정보관리", href: "/teacher/profile" },
   { icon: BookOpen, label: "클래스 관리", href: "/teacher/classes" },
   { icon: Users, label: "수강생 관리", href: "/teacher/students" },
   { icon: MessageSquare, label: "강의별 Q&A", href: "/teacher/inquiries" },
