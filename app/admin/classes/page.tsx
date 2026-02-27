@@ -44,6 +44,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react"
+import Image from "next/image"
 
 // 클래스 데이터
 const classesData = [
@@ -321,12 +322,22 @@ export default function ClassesPage() {
                       {cls.createdAt}
                     </TableCell>
                     <TableCell>
-                      <Link 
-                        href={`/courses/${cls.id}`} 
-                        className="font-medium line-clamp-1 hover:text-primary hover:underline cursor-pointer"
-                      >
-                        {cls.title}
-                      </Link>
+                      <div className="flex items-center gap-3">
+                        <div className="relative h-10 w-16 overflow-hidden rounded-md shrink-0">
+                          <Image
+                            src={cls.image}
+                            alt={cls.title}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <Link 
+                          href={`/courses/${cls.id}`} 
+                          className="font-medium line-clamp-1 hover:text-primary hover:underline cursor-pointer"
+                        >
+                          {cls.title}
+                        </Link>
+                      </div>
                     </TableCell>
                     <TableCell>
                       <Badge variant="outline">{cls.category}</Badge>
