@@ -59,6 +59,7 @@ const studentsData = [
     avatar: "/images/avatar-user.jpg",
     joinDate: "2025.08.15",
     joinMethod: "email" as const,
+    memberType: "student" as const,
     courses: [
       { id: "1", title: "ChatGPT & AI 자동화", progress: 75, lastAccess: "2026.02.27", enrollDate: "2025.08.15", price: 149000, isRefunded: false },
       { id: "2", title: "유튜브 수익화 가이드", progress: 30, lastAccess: "2026.02.25", enrollDate: "2025.09.20", price: 129000, isRefunded: false },
@@ -74,6 +75,7 @@ const studentsData = [
     avatar: "",
     joinDate: "2025.10.20",
     joinMethod: "kakao" as const,
+    memberType: "teacher" as const,
     courses: [
       { id: "3", title: "퍼포먼스 마케팅 마스터클래스", progress: 100, lastAccess: "2026.02.20", enrollDate: "2025.10.20", price: 169000, isRefunded: false },
     ],
@@ -90,6 +92,7 @@ const studentsData = [
     avatar: "",
     joinDate: "2025.12.01",
     joinMethod: "kakao" as const,
+    memberType: "admin" as const,
     courses: [
       { id: "1", title: "ChatGPT & AI 자동화", progress: 45, lastAccess: "2026.02.26", enrollDate: "2025.12.01", price: 149000, isRefunded: false },
       { id: "4", title: "프리미어 프로 & 포토샵", progress: 20, lastAccess: "2026.02.22", enrollDate: "2026.01.10", price: 149000, isRefunded: false },
@@ -106,6 +109,7 @@ const studentsData = [
     avatar: "",
     joinDate: "2026.01.05",
     joinMethod: "email" as const,
+    memberType: "student" as const,
     courses: [
       { id: "6", title: "인스타그램 & 틱톡 SNS 수익화", progress: 85, lastAccess: "2026.02.27", enrollDate: "2026.01.05", price: 119000, isRefunded: false },
     ],
@@ -120,6 +124,7 @@ const studentsData = [
     avatar: "",
     joinDate: "2025.09.10",
     joinMethod: "email" as const,
+    memberType: "student" as const,
     courses: [
       { id: "2", title: "유튜브 수익화 가이드", progress: 10, lastAccess: "2026.01.15", enrollDate: "2025.09.10", price: 129000, isRefunded: false },
     ],
@@ -134,6 +139,7 @@ const studentsData = [
     avatar: "",
     joinDate: "2026.02.01",
     joinMethod: "kakao" as const,
+    memberType: "student" as const,
     courses: [
       { id: "1", title: "ChatGPT & AI 자동화", progress: 5, lastAccess: "2026.02.27", enrollDate: "2026.02.01", price: 149000, isRefunded: false },
     ],
@@ -155,13 +161,14 @@ const courseFilters = [
   "인스타그램 & 틱톡 SNS 수익화",
 ]
 
-type SortKey = "name" | "email" | "joinMethod" | "courses" | "refundedCourses" | "joinDate" | "progress" | "totalSpent" | "status"
+type SortKey = "name" | "memberType" | "joinMethod" | "courses" | "refundedCourses" | "joinDate" | "progress" | "totalSpent" | "status"
 type SortOrder = "asc" | "desc"
 
 export default function StudentsPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCourse, setSelectedCourse] = useState("전체")
   const [statusFilter, setStatusFilter] = useState("all")
+  const [memberTypeFilter, setMemberTypeFilter] = useState("student")
   const [selectedStudent, setSelectedStudent] = useState<typeof studentsData[0] | null>(null)
   const [isDetailOpen, setIsDetailOpen] = useState(false)
   const [sortKey, setSortKey] = useState<SortKey>("joinDate")
@@ -200,7 +207,8 @@ export default function StudentsPage() {
       statusFilter === "all" ||
       (statusFilter === "active" && student.status === "active") ||
       (statusFilter === "inactive" && student.status === "inactive")
-    return matchesSearch && matchesCourse && matchesStatus
+    const matchesMemberType = student.memberType === memberTypeFilter
+    return matchesSearch && matchesCourse && matchesStatus && matchesMemberType
   })
 
   // 정렬 로직
@@ -210,8 +218,8 @@ export default function StudentsPage() {
       case "name":
         comparison = a.name.localeCompare(b.name)
         break
-      case "email":
-        comparison = a.email.localeCompare(b.email)
+      case "memberType":
+        comparison = a.memberType.localeCompare(b.memberType)
         break
       case "joinMethod":
         comparison = a.joinMethod.localeCompare(b.joinMethod)
@@ -366,6 +374,19 @@ export default function StudentsPage() {
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground whitespace-nowrap">{"회원"}</span>
+                    <Select value={memberTypeFilter} onValueChange={setMemberTypeFilter}>
+                      <SelectTrigger className="w-[130px]">
+                        <SelectValue placeholder="회원 유형" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="student">{"수강생"}</SelectItem>
+                        <SelectItem value="teacher">{"강사"}</SelectItem>
+                        <SelectItem value="admin">{"어드민"}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex items-center gap-2">
                     <span className="text-sm text-muted-foreground whitespace-nowrap">{"강좌"}</span>
                     <Select value={selectedCourse} onValueChange={setSelectedCourse}>
                       <SelectTrigger className="w-[200px]">
@@ -397,7 +418,7 @@ export default function StudentsPage() {
                 <div className="relative w-full sm:w-[280px]">
                   <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
-                    placeholder="이름 또는 이메일로 검색"
+                    placeholder="이름으로 검색"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-10"
@@ -427,8 +448,8 @@ export default function StudentsPage() {
                     </button>
                   </TableHead>
                   <TableHead>
-                    <button onClick={() => handleSort("email")} className="flex items-center hover:text-foreground">
-                      이메일 {getSortIcon("email")}
+                    <button onClick={() => handleSort("memberType")} className="flex items-center hover:text-foreground">
+                      회원 {getSortIcon("memberType")}
                     </button>
                   </TableHead>
                   <TableHead>
@@ -498,7 +519,18 @@ export default function StudentsPage() {
                                         </Badge>
                                       </TableCell>
                                       <TableCell>
-                                        <p className="text-sm">{student.email}</p>
+                                        <Badge 
+                                          variant="secondary" 
+                                          className={
+                                            student.memberType === "admin" 
+                                              ? "bg-purple-100 text-purple-700" 
+                                              : student.memberType === "teacher"
+                                              ? "bg-green-100 text-green-700"
+                                              : "bg-gray-100 text-gray-700"
+                                          }
+                                        >
+                                          {student.memberType === "admin" ? "어드민" : student.memberType === "teacher" ? "강사" : "수강생"}
+                                        </Badge>
                                       </TableCell>
                                       <TableCell>
                                         <div className="space-y-1">
