@@ -374,6 +374,7 @@ export default function TeacherInquiriesPage() {
                   <TableHead><SortButton field="createdAt" label="작성일" /></TableHead>
                   <TableHead><SortButton field="title" label="제목" /></TableHead>
                   <TableHead><SortButton field="author" label="작성자" /></TableHead>
+                  <TableHead className="text-center">{"좋아요"}</TableHead>
                   <TableHead><SortButton field="course" label="강좌" /></TableHead>
                   <TableHead><SortButton field="lecture" label="강의" /></TableHead>
                   <TableHead className="text-center"><SortButton field="replyCount" label="답변 개수" /></TableHead>
@@ -390,6 +391,27 @@ export default function TeacherInquiriesPage() {
                     <TableCell className="text-sm text-muted-foreground">{qna.createdAt}</TableCell>
                     <TableCell className="font-medium max-w-[200px] truncate">{qna.title}</TableCell>
                     <TableCell>{qna.author}</TableCell>
+                    <TableCell className="text-center">
+                      <button
+                        onClick={() => toggleLike(`list-qna-${qna.id}`, qna.likes)}
+                        className={`inline-flex items-center gap-1 text-sm px-2 py-1 rounded-md transition-all duration-200 ${
+                          isLiked(`list-qna-${qna.id}`)
+                            ? "border border-accent bg-accent/10 text-accent"
+                            : "text-muted-foreground hover:text-accent"
+                        }`}
+                      >
+                        <ThumbsUp 
+                          className={`h-3.5 w-3.5 transition-transform duration-200 ${
+                            isLiked(`list-qna-${qna.id}`) ? "scale-110 fill-current" : ""
+                          }`} 
+                        />
+                        <span className={`transition-all duration-200 ${
+                          isLiked(`list-qna-${qna.id}`) ? "font-medium" : ""
+                        }`}>
+                          {getLikeCount(`list-qna-${qna.id}`, qna.likes)}
+                        </span>
+                      </button>
+                    </TableCell>
                     <TableCell>
                       <Badge variant="outline" className="text-xs">
                         {qna.course.length > 15 ? qna.course.substring(0, 15) + "..." : qna.course}
