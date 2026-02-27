@@ -129,7 +129,7 @@ const qnaData = [
   },
 ]
 
-type SortField = "createdAt" | "title" | "author" | "course" | "lecture" | "status"
+type SortField = "createdAt" | "title" | "author" | "course" | "lecture" | "replyCount" | "status"
 type SortDirection = "asc" | "desc"
 
 export default function TeacherInquiriesPage() {
@@ -206,6 +206,9 @@ export default function TeacherInquiriesPage() {
         break
       case "lecture":
         comparison = a.lecture.localeCompare(b.lecture)
+        break
+      case "replyCount":
+        comparison = a.replyCount - b.replyCount
         break
       case "status":
         comparison = a.status.localeCompare(b.status)
@@ -373,7 +376,7 @@ export default function TeacherInquiriesPage() {
                   <TableHead><SortButton field="author" label="작성자" /></TableHead>
                   <TableHead><SortButton field="course" label="강좌" /></TableHead>
                   <TableHead><SortButton field="lecture" label="강의" /></TableHead>
-                  <TableHead className="text-center">{"답변 개수"}</TableHead>
+                  <TableHead className="text-center"><SortButton field="replyCount" label="답변 개수" /></TableHead>
                   <TableHead className="text-center"><SortButton field="status" label="강사 답변" /></TableHead>
                   <TableHead className="text-center">{"액션"}</TableHead>
                 </TableRow>
