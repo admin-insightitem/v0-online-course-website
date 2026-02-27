@@ -273,8 +273,8 @@ export default function StudentsPage() {
         {/* Page Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight">수강생 관리</h2>
-            <p className="text-muted-foreground">수강생 정보와 학습 진도를 관리합니다.</p>
+            <h2 className="text-2xl font-bold tracking-tight">{"회원 관리"}</h2>
+            <p className="text-muted-foreground">{"회원 정보와 학습 진도를 관리합니다."}</p>
           </div>
           <div className="flex items-center gap-2">
             <Button variant="outline">
@@ -350,7 +350,7 @@ export default function StudentsPage() {
                   <p className="text-2xl font-bold">
                     {studentsData.filter((s) => s.status === "inactive").length}
                   </p>
-                  <p className="text-sm text-muted-foreground">비활성 수강생</p>
+                  <p className="text-sm text-muted-foreground">{"비활성 회원"}</p>
                 </div>
               </div>
             </CardContent>
@@ -364,10 +364,10 @@ export default function StudentsPage() {
               <div>
                 <CardTitle className="flex items-center gap-2">
                   <Users className="h-5 w-5" />
-                  수강생 목록
+                  {"회원 목록"}
                 </CardTitle>
                 <CardDescription>
-                  총 {sortedStudents.length}명의 수강생 (30명씩 표시)
+                  {"총 "}{sortedStudents.length}{"명의 회원 (30명씩 표시)"}
                 </CardDescription>
               </div>
               {/* 검색 및 필터 */}
@@ -418,7 +418,7 @@ export default function StudentsPage() {
                 <div className="relative w-full sm:w-[280px]">
                   <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
-                    placeholder="이름으로 검색"
+                    placeholder="이름으�� 검색"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-10"

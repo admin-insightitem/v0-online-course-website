@@ -30,7 +30,7 @@ import {
 const adminMenu = [
   { icon: LayoutDashboard, label: "대시보드", href: "/admin" },
   { icon: BookOpen, label: "클래스 관리", href: "/admin/classes" },
-  { icon: Users, label: "수강생 관리", href: "/admin/students" },
+  { icon: Users, label: "회원 관리", href: "/admin/students" },
   { icon: CreditCard, label: "결제/환불", href: "/admin/payments" },
   { icon: MessageSquare, label: "게시판/문의", href: "/admin/inquiries" },
   { icon: Tag, label: "쿠폰/이벤트", href: "/admin/promotions" },
