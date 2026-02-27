@@ -352,14 +352,14 @@ export default function ReviewsPage() {
               <div className="flex items-center gap-2">
                 <span className="text-sm text-muted-foreground whitespace-nowrap">{"강좌"}</span>
                 <Select value={courseFilter} onValueChange={handleCourseFilterChange}>
-                  <SelectTrigger className="w-[200px]">
+                  <SelectTrigger className="w-[320px]">
                     <SelectValue placeholder="강좌 선택" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">{"전체"}</SelectItem>
                     {courseList.map((course) => (
                       <SelectItem key={course.id} value={course.id}>
-                        {course.title.length > 20 ? course.title.substring(0, 20) + "..." : course.title}
+                        {course.title.length > 35 ? course.title.substring(0, 35) + "..." : course.title}
                       </SelectItem>
                     ))}
                   </SelectContent>
