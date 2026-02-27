@@ -470,6 +470,39 @@ export default function NewClassPage() {
                     </Select>
                   </div>
                 </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="enrollmentPeriod">{"수강 기간"}</Label>
+                    <Select
+                      value={formData.enrollmentPeriod}
+                      onValueChange={(value) => setFormData({ ...formData, enrollmentPeriod: value })}
+                    >
+                      <SelectTrigger id="enrollmentPeriod">
+                        <SelectValue placeholder="수강 기간" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="평생 무제한">{"평생 무제한"}</SelectItem>
+                        <SelectItem value="1년">{"1년"}</SelectItem>
+                        <SelectItem value="6개월">{"6개월"}</SelectItem>
+                        <SelectItem value="3개월">{"3개월"}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label>{"수료증"}</Label>
+                    <div className="flex items-center gap-2 h-10">
+                      <Switch
+                        id="hasCertificate"
+                        checked={formData.hasCertificate}
+                        onCheckedChange={(checked) => setFormData({ ...formData, hasCertificate: checked })}
+                      />
+                      <Label htmlFor="hasCertificate" className="font-normal">
+                        {formData.hasCertificate ? "발급 가능" : "발급 불가"}
+                      </Label>
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
 
@@ -623,57 +656,7 @@ export default function NewClassPage() {
               </CardContent>
             </Card>
 
-            {/* 강의 정보 */}
-            <Card className="lg:col-span-3">
-              <CardHeader>
-                <CardTitle>강의 정보</CardTitle>
-                <CardDescription>강의 기간 및 수료증 발급 여부를 설정하세요.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                  <div className="flex flex-col items-center gap-2 rounded-lg border p-4">
-                    <Clock className="h-6 w-6 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground">총 강의 시간</span>
-                    <span className="font-semibold">{calculateTotalDuration() || "-"}</span>
-                  </div>
-                  <div className="flex flex-col items-center gap-2 rounded-lg border p-4">
-                    <Video className="h-6 w-6 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground">강의 수</span>
-                    <span className="font-semibold">{totalLectures}개</span>
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="enrollmentPeriod">수강 기간</Label>
-                    <Select
-                      value={formData.enrollmentPeriod}
-                      onValueChange={(value) => setFormData({ ...formData, enrollmentPeriod: value })}
-                    >
-                      <SelectTrigger id="enrollmentPeriod">
-                        <SelectValue placeholder="수강 기간" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="평생 무제한">평생 무제한</SelectItem>
-                        <SelectItem value="1년">1년</SelectItem>
-                        <SelectItem value="6개월">6개월</SelectItem>
-                        <SelectItem value="3개월">3개월</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <Label>수료증</Label>
-                    <div className="flex items-center gap-2">
-                      <Switch
-                        id="hasCertificate"
-                        checked={formData.hasCertificate}
-                        onCheckedChange={(checked) => setFormData({ ...formData, hasCertificate: checked })}
-                      />
-                      <Label htmlFor="hasCertificate" className="font-normal">
-                        {formData.hasCertificate ? "발급 가능" : "발급 불가"}
-                      </Label>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            
           </div>
         )}
 
