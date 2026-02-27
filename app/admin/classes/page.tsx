@@ -38,8 +38,12 @@ import {
   EyeOff,
   BookOpen,
   Filter,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react"
-import Image from "next/image"
 
 // 클래스 데이터
 const classesData = [
@@ -117,10 +121,27 @@ const classesData = [
 
 const categories = ["전체", "AI / 자동화", "유튜브", "마케팅", "디자인", "커머스", "SNS"]
 
+type SortField = "createdAt" | "title" | "category" | "instructor" | "price" | "students" | "lectures" | "badge"
+type SortDirection = "asc" | "desc"
+
 export default function ClassesPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("전체")
   const [classes, setClasses] = useState(classesData)
+  const [sortField, setSortField] = useState<SortField>("createdAt")
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc")
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 30
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc")
+    } else {
+      setSortField(field)
+      setSortDirection("desc")
+    }
+    setCurrentPage(1)
+  }
 
   const filteredClasses = classes.filter((cls) => {
     const matchesSearch = cls.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -128,6 +149,63 @@ export default function ClassesPage() {
     const matchesCategory = selectedCategory === "전체" || cls.category === selectedCategory
     return matchesSearch && matchesCategory
   })
+
+  const sortedClasses = [...filteredClasses].sort((a, b) => {
+    let comparison = 0
+    switch (sortField) {
+      case "createdAt":
+        comparison = a.createdAt.localeCompare(b.createdAt)
+        break
+      case "title":
+        comparison = a.title.localeCompare(b.title)
+        break
+      case "category":
+        comparison = a.category.localeCompare(b.category)
+        break
+      case "instructor":
+        comparison = a.instructor.localeCompare(b.instructor)
+        break
+      case "price":
+        comparison = a.price - b.price
+        break
+      case "students":
+        comparison = a.students - b.students
+        break
+      case "lectures":
+        comparison = a.lectures - b.lectures
+        break
+      case "badge":
+        comparison = (a.badge || "").localeCompare(b.badge || "")
+        break
+    }
+    return sortDirection === "asc" ? comparison : -comparison
+  })
+
+  const totalPages = Math.ceil(sortedClasses.length / itemsPerPage)
+  const paginatedClasses = sortedClasses.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  )
+
+  const SortButton = ({ field, label }: { field: SortField; label: string }) => (
+    <Button
+      variant="ghost"
+      size="sm"
+      className="h-auto p-0 font-medium hover:bg-transparent"
+      onClick={() => handleSort(field)}
+    >
+      {label}
+      {sortField === field ? (
+        sortDirection === "asc" ? (
+          <ArrowUp className="ml-1 h-3 w-3" />
+        ) : (
+          <ArrowDown className="ml-1 h-3 w-3" />
+        )
+      ) : (
+        <ArrowUpDown className="ml-1 h-3 w-3 opacity-50" />
+      )}
+    </Button>
+  )
 
   const toggleVisibility = (id: string) => {
     setClasses(classes.map((cls) =>
@@ -158,10 +236,20 @@ export default function ClassesPage() {
           </Link>
         </div>
 
-        {/* Filters */}
+        {/* Classes Table */}
         <Card>
-          <CardContent className="pt-6">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BookOpen className="h-5 w-5" />
+              클래스 목록
+            </CardTitle>
+            <CardDescription>
+              총 {sortedClasses.length}개의 클래스
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {/* Filters */}
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-4">
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-muted-foreground whitespace-nowrap">{"카테고리"}</span>
@@ -205,60 +293,40 @@ export default function ClassesPage() {
                 />
               </div>
             </div>
-          </CardContent>
-        </Card>
 
-        {/* Classes Table */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <BookOpen className="h-5 w-5" />
-              클래스 목록
-            </CardTitle>
-            <CardDescription>
-              총 {filteredClasses.length}개의 클래스
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[80px]">이미지</TableHead>
-                  <TableHead>강좌명</TableHead>
-                  <TableHead>카테고리</TableHead>
-                  <TableHead>강사</TableHead>
-                  <TableHead className="text-right">가격</TableHead>
-                  <TableHead className="text-center">수강생</TableHead>
-                  <TableHead className="text-center">강의 수</TableHead>
-                  <TableHead className="text-center">배지</TableHead>
+                  <TableHead className="w-16 text-center">No.</TableHead>
+                  <TableHead><SortButton field="createdAt" label="등록일" /></TableHead>
+                  <TableHead><SortButton field="title" label="강좌명" /></TableHead>
+                  <TableHead><SortButton field="category" label="카테고리" /></TableHead>
+                  <TableHead><SortButton field="instructor" label="강사" /></TableHead>
+                  <TableHead className="text-right"><SortButton field="price" label="가격" /></TableHead>
+                  <TableHead className="text-center"><SortButton field="students" label="수강생" /></TableHead>
+                  <TableHead className="text-center"><SortButton field="lectures" label="강의수" /></TableHead>
+                  <TableHead className="text-center"><SortButton field="badge" label="배지" /></TableHead>
                   <TableHead className="text-center">노출</TableHead>
                   <TableHead className="text-center">강의 등록</TableHead>
                   <TableHead className="text-center">액션</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredClasses.map((cls) => (
+                {paginatedClasses.map((cls, index) => (
                   <TableRow key={cls.id}>
-                    <TableCell>
-                      <div className="relative h-12 w-20 overflow-hidden rounded-md">
-                        <Image
-                          src={cls.image}
-                          alt={cls.title}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
+                    <TableCell className="text-center font-medium">
+                      {(currentPage - 1) * itemsPerPage + index + 1}
+                    </TableCell>
+                    <TableCell className="text-sm text-muted-foreground">
+                      {cls.createdAt}
                     </TableCell>
                     <TableCell>
-                      <div className="flex flex-col gap-1">
-                        <Link 
-                          href={`/courses/${cls.id}`} 
-                          className="font-medium line-clamp-1 hover:text-primary hover:underline cursor-pointer"
-                        >
-                          {cls.title}
-                        </Link>
-                        <span className="text-xs text-muted-foreground">등록일: {cls.createdAt}</span>
-                      </div>
+                      <Link 
+                        href={`/courses/${cls.id}`} 
+                        className="font-medium line-clamp-1 hover:text-primary hover:underline cursor-pointer"
+                      >
+                        {cls.title}
+                      </Link>
                     </TableCell>
                     <TableCell>
                       <Badge variant="outline">{cls.category}</Badge>
@@ -340,6 +408,38 @@ export default function ClassesPage() {
                 ))}
               </TableBody>
             </Table>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between mt-4 pt-4 border-t">
+                <p className="text-sm text-muted-foreground">
+                  {sortedClasses.length}개 중 {(currentPage - 1) * itemsPerPage + 1}-{Math.min(currentPage * itemsPerPage, sortedClasses.length)}개 표시
+                </p>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                    disabled={currentPage === 1}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                    이전
+                  </Button>
+                  <span className="text-sm">
+                    {currentPage} / {totalPages}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                    disabled={currentPage === totalPages}
+                  >
+                    다음
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
