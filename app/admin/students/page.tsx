@@ -719,7 +719,7 @@ export default function StudentsPage() {
                       <div className="flex items-center gap-3">
                         {[
                           { value: "enrollDate", label: "수강 신청일 순" },
-                          { value: "lastAccess", label: "마지막 학습������� 순" },
+                          { value: "lastAccess", label: "마지막 학습일 순" },
                         ].map((option) => (
                           <button
                             key={option.value}
