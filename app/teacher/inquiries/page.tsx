@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Switch } from "@/components/ui/switch"
 import {
   Table,
   TableBody,
@@ -33,65 +32,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import {
   Search,
   Filter,
-  MessageSquare,
-  FileText,
   HelpCircle,
-  Plus,
-  MoreHorizontal,
-  Edit,
-  Trash2,
   Send,
-  Eye,
   Clock,
   CheckCircle,
   AlertCircle,
-  Pin,
 } from "lucide-react"
-
-// 공지사항 데이터 (강사 본인 강의용)
-const noticesData = [
-  {
-    id: "1",
-    title: "[필독] AI 자동화 강의 보충 자료 업데이트 안내",
-    content: "Section 3의 보충 자료가 업데이트되었습니다. 강의 자료 탭에서 확인해주세요.",
-    isPinned: true,
-    isPublished: true,
-    views: 1240,
-    createdAt: "2026.02.20",
-    course: "ChatGPT & AI 자동화",
-  },
-  {
-    id: "2",
-    title: "실시간 Q&A 세션 안내 (2/28 저녁 8시)",
-    content: "이번 주 토요일 저녁 8시에 실시간 Q&A 세션을 진행합니다. Zoom 링크는 추후 공지드립니다.",
-    isPinned: true,
-    isPublished: true,
-    views: 856,
-    createdAt: "2026.02.25",
-    course: "ChatGPT & AI 자동화",
-  },
-  {
-    id: "3",
-    title: "AI 비즈니스 심화 과정 오픈 안내",
-    content: "기존 수강생 대상 40% 할인 이벤트 진행 중입니다!",
-    isPinned: false,
-    isPublished: true,
-    views: 2100,
-    createdAt: "2026.02.01",
-    course: "AI 비즈니스 심화",
-  },
-]
 
 // 강의별 Q&A 데이터 (본인 강의만)
 const qnaData = [
@@ -145,7 +94,6 @@ const qnaData = [
 export default function TeacherInquiriesPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [statusFilter, setStatusFilter] = useState("all")
-  const [isNoticeDialogOpen, setIsNoticeDialogOpen] = useState(false)
   const [isReplyDialogOpen, setIsReplyDialogOpen] = useState(false)
   const [selectedQna, setSelectedQna] = useState<typeof qnaData[0] | null>(null)
   const [replyContent, setReplyContent] = useState("")
@@ -200,26 +148,13 @@ export default function TeacherInquiriesPage() {
         {/* Page Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight">게시판/문의 관리</h2>
-            <p className="text-muted-foreground">강의 공지사항과 Q&A를 관리합니다.</p>
+            <h2 className="text-2xl font-bold tracking-tight">{"강의별 Q&A"}</h2>
+            <p className="text-muted-foreground">{"수강생들의 질문에 답변합니다."}</p>
           </div>
         </div>
 
         {/* Stats */}
-        <div className="grid gap-4 md:grid-cols-3">
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-4">
-                <div className="rounded-lg bg-primary/10 p-3">
-                  <FileText className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">{noticesData.length}</p>
-                  <p className="text-sm text-muted-foreground">공지사항</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+        <div className="grid gap-4 md:grid-cols-2">
           <Card>
             <CardContent className="pt-6">
               <div className="flex items-center gap-4">
@@ -250,27 +185,9 @@ export default function TeacherInquiriesPage() {
           </Card>
         </div>
 
-        {/* Tabs */}
-        <Tabs defaultValue="qna" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="qna" className="flex items-center gap-2">
-              <HelpCircle className="h-4 w-4" />
-              강의 Q&A
-              {pendingQna > 0 && (
-                <Badge variant="destructive" className="ml-1 h-5 w-5 rounded-full p-0 text-xs">
-                  {pendingQna}
-                </Badge>
-              )}
-            </TabsTrigger>
-            <TabsTrigger value="notices" className="flex items-center gap-2">
-              <FileText className="h-4 w-4" />
-              공지사항
-            </TabsTrigger>
-          </TabsList>
-
-          {/* Q&A Tab */}
-          <TabsContent value="qna" className="space-y-4">
-            <Card>
+        {/* Q&A Section */}
+        <div className="space-y-4">
+          <Card>
               <CardContent className="pt-6">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                   <div className="relative flex-1">
@@ -349,141 +266,7 @@ export default function TeacherInquiriesPage() {
                 </Table>
               </CardContent>
             </Card>
-          </TabsContent>
-
-          {/* Notices Tab */}
-          <TabsContent value="notices" className="space-y-4">
-            <div className="flex justify-end">
-              <Dialog open={isNoticeDialogOpen} onOpenChange={setIsNoticeDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button>
-                    <Plus className="mr-2 h-4 w-4" />
-                    공지사항 작성
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-2xl">
-                  <DialogHeader>
-                    <DialogTitle>공지사항 작성</DialogTitle>
-                    <DialogDescription>
-                      강의 수강생에게 전달할 공지사항을 작성합니다.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <div className="grid gap-2">
-                      <Label htmlFor="noticeCourse">대상 강좌</Label>
-                      <Select defaultValue="all">
-                        <SelectTrigger>
-                          <SelectValue placeholder="강좌 선택" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">전체 강좌</SelectItem>
-                          <SelectItem value="chatgpt">ChatGPT & AI 자동화</SelectItem>
-                          <SelectItem value="ai-business">AI 비즈니스 심화</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="noticeTitle">제목</Label>
-                      <Input id="noticeTitle" placeholder="공지사항 제목을 입력하세요" />
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="noticeContent">내용</Label>
-                      <Textarea
-                        id="noticeContent"
-                        placeholder="공지사항 내용을 입력하세요"
-                        rows={8}
-                      />
-                    </div>
-                    <div className="flex items-center gap-6">
-                      <div className="flex items-center gap-2">
-                        <Switch id="isPinned" />
-                        <Label htmlFor="isPinned">상단 고정</Label>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Switch id="isPublished" defaultChecked />
-                        <Label htmlFor="isPublished">즉시 게시</Label>
-                      </div>
-                    </div>
-                  </div>
-                  <DialogFooter>
-                    <Button variant="outline" onClick={() => setIsNoticeDialogOpen(false)}>
-                      취소
-                    </Button>
-                    <Button onClick={() => setIsNoticeDialogOpen(false)}>등록</Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </div>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>공지사항 목록</CardTitle>
-                <CardDescription>총 {noticesData.length}개의 공지사항</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-[50px]">고정</TableHead>
-                      <TableHead>제목</TableHead>
-                      <TableHead>대상 강좌</TableHead>
-                      <TableHead className="text-center">조회수</TableHead>
-                      <TableHead className="text-center">상태</TableHead>
-                      <TableHead>작성일</TableHead>
-                      <TableHead className="text-center">액션</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {noticesData.map((notice) => (
-                      <TableRow key={notice.id}>
-                        <TableCell>
-                          {notice.isPinned && (
-                            <Pin className="h-4 w-4 text-primary" />
-                          )}
-                        </TableCell>
-                        <TableCell className="font-medium">{notice.title}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline">{notice.course}</Badge>
-                        </TableCell>
-                        <TableCell className="text-center">{notice.views.toLocaleString()}</TableCell>
-                        <TableCell className="text-center">
-                          <Badge variant={notice.isPublished ? "default" : "secondary"}>
-                            {notice.isPublished ? "게시중" : "비공개"}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>{notice.createdAt}</TableCell>
-                        <TableCell className="text-center">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon">
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem>
-                                <Eye className="mr-2 h-4 w-4" />
-                                미리보기
-                              </DropdownMenuItem>
-                              <DropdownMenuItem>
-                                <Edit className="mr-2 h-4 w-4" />
-                                수정
-                              </DropdownMenuItem>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem className="text-destructive">
-                                <Trash2 className="mr-2 h-4 w-4" />
-                                삭제
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+        </div>
 
         {/* Q&A Reply Dialog */}
         <Dialog open={isReplyDialogOpen} onOpenChange={setIsReplyDialogOpen}>

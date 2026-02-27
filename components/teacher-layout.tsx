@@ -29,7 +29,7 @@ const teacherMenu = [
   { icon: LayoutDashboard, label: "대시보드", href: "/teacher" },
   { icon: BookOpen, label: "클래스 관리", href: "/teacher/classes" },
   { icon: Users, label: "수강생 관리", href: "/teacher/students" },
-  { icon: MessageSquare, label: "게시판/문의", href: "/teacher/inquiries" },
+  { icon: MessageSquare, label: "강의별 Q&A", href: "/teacher/inquiries" },
 ]
 
 interface TeacherLayoutProps {
