@@ -281,7 +281,7 @@ export default function NewClassPage() {
     }))
   }
 
-  // 총 강의 수 계산
+  // 총 ��의 수 계산
   const totalLectures = formData.curriculum.reduce((acc, section) => acc + section.lessons.length, 0)
 
   // 총 강의 시간 계산
@@ -584,7 +584,7 @@ export default function NewClassPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="instructor">강사 선택</Label>
+                  <Label htmlFor="instructor">{"강사 선택"}<span className="text-red-500 ml-1">*</span></Label>
                   <Select
                     value={formData.instructor}
                     onValueChange={handleInstructorChange}
