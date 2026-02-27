@@ -1,11 +1,22 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { AdminLayout } from "@/components/admin-layout"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import {
   Table,
   TableBody,
@@ -126,13 +137,33 @@ type SortField = "createdAt" | "title" | "category" | "instructor" | "price" | "
 type SortDirection = "asc" | "desc"
 
 export default function ClassesPage() {
+  const router = useRouter()
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("전체")
   const [classes, setClasses] = useState(classesData)
   const [sortField, setSortField] = useState<SortField>("createdAt")
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc")
   const [currentPage, setCurrentPage] = useState(1)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [classToDelete, setClassToDelete] = useState<string | null>(null)
   const itemsPerPage = 30
+
+  const handleEdit = (classId: string) => {
+    router.push(`/admin/classes/new?edit=${classId}`)
+  }
+
+  const handleDeleteClick = (classId: string) => {
+    setClassToDelete(classId)
+    setDeleteDialogOpen(true)
+  }
+
+  const handleDeleteConfirm = () => {
+    if (classToDelete) {
+      setClasses(classes.filter((cls) => cls.id !== classToDelete))
+      setClassToDelete(null)
+    }
+    setDeleteDialogOpen(false)
+  }
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -314,16 +345,16 @@ export default function ClassesPage() {
               </TableHeader>
               <TableBody>
                 {paginatedClasses.map((cls, index) => (
-                  <TableRow key={cls.id}>
-                    <TableCell className="text-center font-medium">
+                  <TableRow key={cls.id} className={!cls.isVisible ? "text-muted-foreground" : ""}>
+                    <TableCell className={`text-center font-medium ${!cls.isVisible ? "text-muted-foreground" : ""}`}>
                       {(currentPage - 1) * itemsPerPage + index + 1}
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
                       {cls.createdAt}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="max-w-[200px]">
                       <div className="flex items-center gap-3">
-                        <div className="relative h-10 w-16 overflow-hidden rounded-md shrink-0">
+                        <div className={`relative h-10 w-16 overflow-hidden rounded-md shrink-0 ${!cls.isVisible ? "opacity-50" : ""}`}>
                           <Image
                             src={cls.image}
                             alt={cls.title}
@@ -333,7 +364,7 @@ export default function ClassesPage() {
                         </div>
                         <Link 
                           href={`/courses/${cls.id}`} 
-                          className="font-medium line-clamp-1 hover:text-primary hover:underline cursor-pointer"
+                          className={`font-medium line-clamp-2 hover:text-primary hover:underline cursor-pointer ${!cls.isVisible ? "text-muted-foreground" : ""}`}
                         >
                           {cls.title}
                         </Link>
@@ -404,11 +435,14 @@ export default function ClassesPage() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleEdit(cls.id)}>
                             <Edit className="mr-2 h-4 w-4" />
                             수정
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="text-destructive">
+                          <DropdownMenuItem 
+                            className="text-destructive"
+                            onClick={() => handleDeleteClick(cls.id)}
+                          >
                             <Trash2 className="mr-2 h-4 w-4" />
                             삭제
                           </DropdownMenuItem>
@@ -454,6 +488,24 @@ export default function ClassesPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* 삭제 확인 다이얼로그 */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{"정말 삭제하시겠습니까?"}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {"이 작업은 되돌릴 수 없습니다. 해당 클래스가 영구적으로 삭제됩니다."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{"취소"}</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              {"삭제"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </AdminLayout>
   )
 }
