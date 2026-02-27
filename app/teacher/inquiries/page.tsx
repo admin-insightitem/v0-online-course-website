@@ -147,6 +147,7 @@ export default function TeacherInquiriesPage() {
   const itemsPerPage = 30
 
   const toggleLike = (itemId: string, originalLikes: number) => {
+    console.log("[v0] toggleLike called:", itemId, originalLikes)
     const isCurrentlyLiked = likedItems.has(itemId)
     const newLikedItems = new Set(likedItems)
     const currentCount = likeCounts[itemId] ?? originalLikes
@@ -159,6 +160,7 @@ export default function TeacherInquiriesPage() {
       setLikeCounts({ ...likeCounts, [itemId]: currentCount + 1 })
     }
     setLikedItems(newLikedItems)
+    console.log("[v0] newLikedItems:", Array.from(newLikedItems))
   }
 
   const getLikeCount = (itemId: string, originalLikes: number) => {
@@ -393,7 +395,11 @@ export default function TeacherInquiriesPage() {
                     <TableCell>{qna.author}</TableCell>
                     <TableCell className="text-center">
                       <button
-                        onClick={() => toggleLike(`list-qna-${qna.id}`, qna.likes)}
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          toggleLike(`list-qna-${qna.id}`, qna.likes)
+                        }}
                         className={`inline-flex items-center gap-1 text-sm px-2 py-1 rounded-md transition-all duration-200 ${
                           isLiked(`list-qna-${qna.id}`)
                             ? "border border-accent bg-accent/10 text-accent"
