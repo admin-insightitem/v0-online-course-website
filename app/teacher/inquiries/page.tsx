@@ -134,6 +134,7 @@ type SortDirection = "asc" | "desc"
 
 export default function TeacherInquiriesPage() {
   const [searchQuery, setSearchQuery] = useState("")
+  const [courseFilter, setCourseFilter] = useState("all")
   const [statusFilter, setStatusFilter] = useState("all")
   const [isReplyDialogOpen, setIsReplyDialogOpen] = useState(false)
   const [selectedQna, setSelectedQna] = useState<typeof qnaData[0] | null>(null)
@@ -176,12 +177,16 @@ export default function TeacherInquiriesPage() {
     setCurrentPage(1)
   }
 
+  // 강좌 목록 추출
+  const courses = Array.from(new Set(qnaData.map((qna) => qna.course)))
+
   const filteredQna = qnaData.filter((qna) => {
     const matchesSearch =
       qna.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       qna.author.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesCourse = courseFilter === "all" || qna.course === courseFilter
     const matchesStatus = statusFilter === "all" || qna.status === statusFilter
-    return matchesSearch && matchesStatus
+    return matchesSearch && matchesCourse && matchesStatus
   })
 
   const sortedQna = [...filteredQna].sort((a, b) => {
@@ -316,18 +321,36 @@ export default function TeacherInquiriesPage() {
           <CardContent className="space-y-4">
             {/* Filter Section */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground whitespace-nowrap">{"강사 답변"}</span>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="w-[130px]">
-                    <SelectValue placeholder="상태" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">{"전체"}</SelectItem>
-                    <SelectItem value="pending">{"대기중"}</SelectItem>
-                    <SelectItem value="completed">{"완료"}</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground whitespace-nowrap">{"강좌"}</span>
+                  <Select value={courseFilter} onValueChange={setCourseFilter}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="강좌 선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">{"전체"}</SelectItem>
+                      {courses.map((course) => (
+                        <SelectItem key={course} value={course}>
+                          {course}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground whitespace-nowrap">{"강사 답변"}</span>
+                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <SelectTrigger className="w-[130px]">
+                      <SelectValue placeholder="상태" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">{"전체"}</SelectItem>
+                      <SelectItem value="pending">{"대기중"}</SelectItem>
+                      <SelectItem value="completed">{"완료"}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
               <div className="relative w-full sm:w-[280px]">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
