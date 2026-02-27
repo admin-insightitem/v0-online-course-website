@@ -34,12 +34,14 @@ import {
 } from "@/components/ui/select"
 import {
   Search,
-  Filter,
   HelpCircle,
   Send,
   Clock,
   CheckCircle,
   AlertCircle,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
 } from "lucide-react"
 
 // 강의별 Q&A 데이터 (본인 강의만)
@@ -54,6 +56,7 @@ const qnaData = [
     status: "pending",
     createdAt: "2026.02.27 15:20",
     reply: null,
+    replyCount: 0,
   },
   {
     id: "QNA-002",
@@ -66,6 +69,7 @@ const qnaData = [
     createdAt: "2026.02.26 13:40",
     reply: "네, 무료 플랜으로도 기본 실습은 가능합니다. 다만 자동화 횟수에 제한이 있어요.",
     repliedAt: "2026.02.26 14:15",
+    replyCount: 1,
   },
   {
     id: "QNA-003",
@@ -77,6 +81,7 @@ const qnaData = [
     status: "pending",
     createdAt: "2026.02.27 09:10",
     reply: null,
+    replyCount: 0,
   },
   {
     id: "QNA-004",
@@ -88,8 +93,12 @@ const qnaData = [
     status: "in-progress",
     createdAt: "2026.02.26 18:30",
     reply: null,
+    replyCount: 2,
   },
 ]
+
+type SortField = "createdAt" | "title" | "author" | "course" | "lecture" | "status"
+type SortDirection = "asc" | "desc"
 
 export default function TeacherInquiriesPage() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -97,6 +106,17 @@ export default function TeacherInquiriesPage() {
   const [isReplyDialogOpen, setIsReplyDialogOpen] = useState(false)
   const [selectedQna, setSelectedQna] = useState<typeof qnaData[0] | null>(null)
   const [replyContent, setReplyContent] = useState("")
+  const [sortField, setSortField] = useState<SortField>("createdAt")
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc")
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc")
+    } else {
+      setSortField(field)
+      setSortDirection("desc")
+    }
+  }
 
   const filteredQna = qnaData.filter((qna) => {
     const matchesSearch =
@@ -105,6 +125,51 @@ export default function TeacherInquiriesPage() {
     const matchesStatus = statusFilter === "all" || qna.status === statusFilter
     return matchesSearch && matchesStatus
   })
+
+  const sortedQna = [...filteredQna].sort((a, b) => {
+    let comparison = 0
+    switch (sortField) {
+      case "createdAt":
+        comparison = a.createdAt.localeCompare(b.createdAt)
+        break
+      case "title":
+        comparison = a.title.localeCompare(b.title)
+        break
+      case "author":
+        comparison = a.author.localeCompare(b.author)
+        break
+      case "course":
+        comparison = a.course.localeCompare(b.course)
+        break
+      case "lecture":
+        comparison = a.lecture.localeCompare(b.lecture)
+        break
+      case "status":
+        comparison = a.status.localeCompare(b.status)
+        break
+    }
+    return sortDirection === "asc" ? comparison : -comparison
+  })
+
+  const SortButton = ({ field, label }: { field: SortField; label: string }) => (
+    <Button
+      variant="ghost"
+      size="sm"
+      className="h-auto p-0 font-medium hover:bg-transparent"
+      onClick={() => handleSort(field)}
+    >
+      {label}
+      {sortField === field ? (
+        sortDirection === "asc" ? (
+          <ArrowUp className="ml-1 h-3 w-3" />
+        ) : (
+          <ArrowDown className="ml-1 h-3 w-3" />
+        )
+      ) : (
+        <ArrowUpDown className="ml-1 h-3 w-3 opacity-50" />
+      )}
+    </Button>
+  )
 
   const pendingQna = qnaData.filter((q) => q.status === "pending").length
 
@@ -186,87 +251,83 @@ export default function TeacherInquiriesPage() {
         </div>
 
         {/* Q&A Section */}
-        <div className="space-y-4">
-          <Card>
-              <CardContent className="pt-6">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                  <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                    <Input
-                      placeholder="제목 또는 작성자로 검색"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10"
-                    />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Filter className="h-4 w-4 text-muted-foreground" />
-                    <Select value={statusFilter} onValueChange={setStatusFilter}>
-                      <SelectTrigger className="w-[130px]">
-                        <SelectValue placeholder="상태" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">전체</SelectItem>
-                        <SelectItem value="pending">대기중</SelectItem>
-                        <SelectItem value="in-progress">처리중</SelectItem>
-                        <SelectItem value="completed">완료</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>{"강의 Q&A"}</CardTitle>
+            <CardDescription>{"총 "}{sortedQna.length}{"건의 질문"}</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {/* Filter Section */}
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground whitespace-nowrap">{"강사 답변"}</span>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="w-[130px]">
+                    <SelectValue placeholder="상태" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">{"전체"}</SelectItem>
+                    <SelectItem value="pending">{"대기중"}</SelectItem>
+                    <SelectItem value="in-progress">{"처리중"}</SelectItem>
+                    <SelectItem value="completed">{"완료"}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="relative w-full sm:w-[280px]">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  placeholder="제목 또는 작성자로 검색"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>강의 Q&A</CardTitle>
-                <CardDescription>총 {filteredQna.length}건의 질문</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>ID</TableHead>
-                      <TableHead>제목</TableHead>
-                      <TableHead>작성자</TableHead>
-                      <TableHead>강좌</TableHead>
-                      <TableHead>강의</TableHead>
-                      <TableHead className="text-center">상태</TableHead>
-                      <TableHead>작성일</TableHead>
-                      <TableHead className="text-center">액션</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredQna.map((qna) => (
-                      <TableRow key={qna.id}>
-                        <TableCell className="font-mono text-sm">{qna.id}</TableCell>
-                        <TableCell className="font-medium max-w-[200px] truncate">{qna.title}</TableCell>
-                        <TableCell>{qna.author}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className="text-xs">
-                            {qna.course.length > 15 ? qna.course.substring(0, 15) + "..." : qna.course}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-sm text-muted-foreground">{qna.lecture}</TableCell>
-                        <TableCell className="text-center">{getStatusBadge(qna.status)}</TableCell>
-                        <TableCell className="text-sm text-muted-foreground">{qna.createdAt}</TableCell>
-                        <TableCell className="text-center">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => openQnaReplyDialog(qna)}
-                          >
-                            <Send className="mr-1 h-4 w-4" />
-                            {qna.status === "completed" ? "답변 보기" : "답변하기"}
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-        </div>
+            {/* Table */}
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead><SortButton field="createdAt" label="작성일" /></TableHead>
+                  <TableHead><SortButton field="title" label="제목" /></TableHead>
+                  <TableHead><SortButton field="author" label="작성자" /></TableHead>
+                  <TableHead><SortButton field="course" label="강좌" /></TableHead>
+                  <TableHead><SortButton field="lecture" label="강의" /></TableHead>
+                  <TableHead className="text-center">{"답변 개수"}</TableHead>
+                  <TableHead className="text-center"><SortButton field="status" label="강사 답변" /></TableHead>
+                  <TableHead className="text-center">{"액션"}</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {sortedQna.map((qna) => (
+                  <TableRow key={qna.id}>
+                    <TableCell className="text-sm text-muted-foreground">{qna.createdAt}</TableCell>
+                    <TableCell className="font-medium max-w-[200px] truncate">{qna.title}</TableCell>
+                    <TableCell>{qna.author}</TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className="text-xs">
+                        {qna.course.length > 15 ? qna.course.substring(0, 15) + "..." : qna.course}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-sm text-muted-foreground">{qna.lecture}</TableCell>
+                    <TableCell className="text-center">{qna.replyCount}</TableCell>
+                    <TableCell className="text-center">{getStatusBadge(qna.status)}</TableCell>
+                    <TableCell className="text-center">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => openQnaReplyDialog(qna)}
+                      >
+                        <Send className="mr-1 h-4 w-4" />
+                        {qna.status === "completed" ? "답변 보기" : "답변하기"}
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
 
         {/* Q&A Reply Dialog */}
         <Dialog open={isReplyDialogOpen} onOpenChange={setIsReplyDialogOpen}>
