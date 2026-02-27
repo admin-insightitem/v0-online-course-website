@@ -338,9 +338,9 @@ export default function ClassesPage() {
                   <TableHead className="text-center"><SortButton field="students" label="수강생" /></TableHead>
                   <TableHead className="text-center"><SortButton field="lectures" label="강의수" /></TableHead>
                   <TableHead className="text-center"><SortButton field="badge" label="배지" /></TableHead>
-                  <TableHead className="text-center">노출</TableHead>
-                  <TableHead className="text-center">강의 등록</TableHead>
-                  <TableHead className="text-center">액션</TableHead>
+                  <TableHead className="px-1 text-center">노출</TableHead>
+                  <TableHead className="px-1 text-center">등록</TableHead>
+                  <TableHead className="px-1 text-center">액션</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -352,9 +352,9 @@ export default function ClassesPage() {
                     <TableCell className="text-sm text-muted-foreground">
                       {cls.createdAt}
                     </TableCell>
-                    <TableCell className="max-w-[200px]">
-                      <div className="flex items-center gap-3">
-                        <div className={`relative h-10 w-16 overflow-hidden rounded-md shrink-0 ${!cls.isVisible ? "opacity-50" : ""}`}>
+                    <TableCell className="min-w-[240px] max-w-[280px]">
+                      <div className="flex items-center gap-2">
+                        <div className={`relative h-10 w-14 overflow-hidden rounded-md shrink-0 ${!cls.isVisible ? "opacity-50" : ""}`}>
                           <Image
                             src={cls.image}
                             alt={cls.title}
@@ -364,33 +364,33 @@ export default function ClassesPage() {
                         </div>
                         <Link 
                           href={`/courses/${cls.id}`} 
-                          className={`font-medium line-clamp-2 hover:text-primary hover:underline cursor-pointer ${!cls.isVisible ? "text-muted-foreground" : ""}`}
+                          className={`font-medium text-sm line-clamp-2 hover:text-primary hover:underline cursor-pointer ${!cls.isVisible ? "text-muted-foreground" : ""}`}
                         >
                           {cls.title}
                         </Link>
                       </div>
                     </TableCell>
-                    <TableCell>
-                      <Badge variant="outline">{cls.category}</Badge>
+                    <TableCell className="px-2">
+                      <Badge variant="outline" className="text-xs">{cls.category}</Badge>
                     </TableCell>
-                    <TableCell>{cls.instructor}</TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="px-2 text-sm">{cls.instructor}</TableCell>
+                    <TableCell className="px-2 text-right">
                       <div className="flex flex-col">
-                        <span className="font-medium">{cls.price.toLocaleString()}원</span>
+                        <span className="font-medium text-sm">{cls.price.toLocaleString()}원</span>
                         <span className="text-xs text-muted-foreground line-through">
                           {cls.originalPrice.toLocaleString()}원
                         </span>
                       </div>
                     </TableCell>
-                    <TableCell className="text-center">{cls.students.toLocaleString()}명</TableCell>
-                    <TableCell className="text-center">{cls.lectures}개</TableCell>
-                    <TableCell className="text-center">
+                    <TableCell className="px-2 text-center text-sm">{cls.students.toLocaleString()}명</TableCell>
+                    <TableCell className="px-2 text-center text-sm">{cls.lectures}개</TableCell>
+                    <TableCell className="px-2 text-center">
                       <Select
                         value={cls.badge || "none"}
                         onValueChange={(value) => handleBadgeChange(cls.id, value)}
                       >
-                        <SelectTrigger className="w-[100px] h-8">
-                          <SelectValue placeholder="배지 선택" />
+                        <SelectTrigger className="w-[80px] h-7 text-xs">
+                          <SelectValue placeholder="배지" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="none">없음</SelectItem>
@@ -406,10 +406,11 @@ export default function ClassesPage() {
                         </SelectContent>
                       </Select>
                     </TableCell>
-                    <TableCell className="text-center">
+                    <TableCell className="px-1 text-center">
                       <Button
                         variant="ghost"
                         size="icon"
+                        className="h-7 w-7"
                         onClick={() => toggleVisibility(cls.id)}
                       >
                         {cls.isVisible ? (
@@ -419,15 +420,15 @@ export default function ClassesPage() {
                         )}
                       </Button>
                     </TableCell>
-                    <TableCell className="text-center">
+                    <TableCell className="px-1 text-center">
                       <Link href={`/admin/lectures?classId=${cls.id}`}>
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" className="h-7 px-2 text-xs">
                           <Plus className="mr-1 h-3 w-3" />
-                          강의 등록
+                          {"등록"}
                         </Button>
                       </Link>
                     </TableCell>
-                    <TableCell className="text-center">
+                    <TableCell className="px-1 text-center">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" size="icon">
@@ -500,7 +501,7 @@ export default function ClassesPage() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{"취소"}</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+            <AlertDialogAction onClick={handleDeleteConfirm} className="bg-destructive text-white hover:bg-destructive/90">
               {"삭제"}
             </AlertDialogAction>
           </AlertDialogFooter>
