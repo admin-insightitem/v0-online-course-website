@@ -38,10 +38,11 @@ import {
   Send,
   Clock,
   CheckCircle,
-  AlertCircle,
   ArrowUpDown,
   ArrowUp,
   ArrowDown,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react"
 
 // 강의별 Q&A 데이터 (본인 강의만)
@@ -108,6 +109,8 @@ export default function TeacherInquiriesPage() {
   const [replyContent, setReplyContent] = useState("")
   const [sortField, setSortField] = useState<SortField>("createdAt")
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc")
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 30
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -116,6 +119,7 @@ export default function TeacherInquiriesPage() {
       setSortField(field)
       setSortDirection("desc")
     }
+    setCurrentPage(1)
   }
 
   const filteredQna = qnaData.filter((qna) => {
@@ -151,6 +155,12 @@ export default function TeacherInquiriesPage() {
     return sortDirection === "asc" ? comparison : -comparison
   })
 
+  const totalPages = Math.ceil(sortedQna.length / itemsPerPage)
+  const paginatedQna = sortedQna.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  )
+
   const SortButton = ({ field, label }: { field: SortField; label: string }) => (
     <Button
       variant="ghost"
@@ -179,21 +189,14 @@ export default function TeacherInquiriesPage() {
         return (
           <Badge className="bg-yellow-100 text-yellow-700">
             <Clock className="mr-1 h-3 w-3" />
-            대기중
-          </Badge>
-        )
-      case "in-progress":
-        return (
-          <Badge className="bg-blue-100 text-blue-700">
-            <AlertCircle className="mr-1 h-3 w-3" />
-            처리중
+            {"대기중"}
           </Badge>
         )
       case "completed":
         return (
           <Badge className="bg-green-100 text-green-700">
             <CheckCircle className="mr-1 h-3 w-3" />
-            완료
+            {"완료"}
           </Badge>
         )
       default:
@@ -268,7 +271,6 @@ export default function TeacherInquiriesPage() {
                   <SelectContent>
                     <SelectItem value="all">{"전체"}</SelectItem>
                     <SelectItem value="pending">{"대기중"}</SelectItem>
-                    <SelectItem value="in-progress">{"처리중"}</SelectItem>
                     <SelectItem value="completed">{"완료"}</SelectItem>
                   </SelectContent>
                 </Select>
@@ -288,6 +290,7 @@ export default function TeacherInquiriesPage() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-16 text-center">{"No."}</TableHead>
                   <TableHead><SortButton field="createdAt" label="작성일" /></TableHead>
                   <TableHead><SortButton field="title" label="제목" /></TableHead>
                   <TableHead><SortButton field="author" label="작성자" /></TableHead>
@@ -299,8 +302,11 @@ export default function TeacherInquiriesPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {sortedQna.map((qna) => (
+                {paginatedQna.map((qna, index) => (
                   <TableRow key={qna.id}>
+                    <TableCell className="text-center font-medium">
+                      {(currentPage - 1) * itemsPerPage + index + 1}
+                    </TableCell>
                     <TableCell className="text-sm text-muted-foreground">{qna.createdAt}</TableCell>
                     <TableCell className="font-medium max-w-[200px] truncate">{qna.title}</TableCell>
                     <TableCell>{qna.author}</TableCell>
@@ -326,6 +332,38 @@ export default function TeacherInquiriesPage() {
                 ))}
               </TableBody>
             </Table>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between mt-4 pt-4 border-t">
+                <p className="text-sm text-muted-foreground">
+                  {sortedQna.length}{"개 중 "}{(currentPage - 1) * itemsPerPage + 1}{"-"}{Math.min(currentPage * itemsPerPage, sortedQna.length)}{"개 표시"}
+                </p>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                    disabled={currentPage === 1}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                    {"이전"}
+                  </Button>
+                  <span className="text-sm">
+                    {currentPage} / {totalPages}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                    disabled={currentPage === totalPages}
+                  >
+                    {"다음"}
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 
