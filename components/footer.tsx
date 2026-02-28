@@ -22,10 +22,10 @@ const footerLinks = [
   {
     title: "고객센터",
     links: [
-      { label: "자주 묻는 질문", href: "#" },
-      { label: "1:1 문의", href: "#" },
-      { label: "환불 정책", href: "#" },
-      { label: "이용약관", href: "#" },
+      { label: "자주 묻는 질문", href: "/support" },
+      { label: "1:1 문의", href: "/mypage/support?tab=inquiry" },
+      { label: "환불 정책", href: "/support/refund" },
+      { label: "이용약관", href: "/support/terms" },
     ],
   },
 ]

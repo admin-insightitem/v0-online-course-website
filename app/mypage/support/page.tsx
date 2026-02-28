@@ -14,78 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-
-// FAQ 데이터
-const faqCategories = [
-  { id: "all", label: "전체" },
-  { id: "payment", label: "결제/환불" },
-  { id: "playback", label: "영상 재생" },
-  { id: "account", label: "계정/회원" },
-  { id: "course", label: "강의/수강" },
-]
-
-const faqData = [
-  {
-    id: 1,
-    category: "payment",
-    question: "결제가 완료되었는데 강의가 안 보여요.",
-    answer: "결제 완료 후 강의가 바로 보이지 않는 경우, 먼저 새로고침을 해주세요. 그래도 해결되지 않으면 브라우저 캐시를 삭제하거나 다른 브라우저에서 시도해 주세요. 문제가 지속되면 1:1 문의를 남겨주시면 빠르게 처리해 드리겠습니다.",
-  },
-  {
-    id: 2,
-    category: "payment",
-    question: "환불은 어떻게 신청하나요?",
-    answer: "환불은 구매일로부터 7일 이내, 강의 진도율 10% 미만일 경우 가능합니다. [마이페이지 > 구매내역]에서 해당 강의의 '환불 신청' 버튼을 클릭하여 신청할 수 있습니다. 환불 처리는 영업일 기준 3~5일 소요됩니다.",
-  },
-  {
-    id: 3,
-    category: "payment",
-    question: "결제 수단을 변경하고 싶어요.",
-    answer: "이미 결제가 완료된 건은 결제 수단 변경이 불가합니다. 다른 결제 수단으로 재결제를 원하시면 기존 결제를 환불 신청 후 다시 구매해 주세요.",
-  },
-  {
-    id: 4,
-    category: "playback",
-    question: "영상이 재생되지 않아요.",
-    answer: "영상 재생 문제는 주로 브라우저 호환성 또는 인터넷 연결 문제입니다. Chrome 최신 버전 사용을 권장하며, 광고 차단 프로그램이 있다면 해제 후 다시 시도해 주세요. 모바일에서는 앱을 통한 시청을 권장합니다.",
-  },
-  {
-    id: 5,
-    category: "playback",
-    question: "영상 화질이 좋지 않아요.",
-    answer: "영상 플레이어 하단의 설정(톱니바퀴) 버튼을 클릭하여 화질을 720p 또는 1080p로 변경해 주세요. 인터넷 속도가 느린 경우 자동으로 낮은 화질로 재생될 수 있습니다.",
-  },
-  {
-    id: 6,
-    category: "playback",
-    question: "배속 재생이 가능한가요?",
-    answer: "네, 가능합니다. 영상 플레이어 하단의 설정 버튼에서 재생 속도를 0.5배속부터 2배속까지 조절할 수 있습니다.",
-  },
-  {
-    id: 7,
-    category: "account",
-    question: "비밀번호를 잊어버렸어요.",
-    answer: "로그인 페이지에서 '비밀번호 찾기'를 클릭하신 후, 가입 시 사용한 이메일을 입력하시면 비밀번호 재설정 링크가 발송됩니다. 메일이 오지 않으면 스팸함을 확인해 주세요.",
-  },
-  {
-    id: 8,
-    category: "account",
-    question: "이메일 주소를 변경하고 싶어요.",
-    answer: "이메일 주소는 [마이페이지 > 회원정보관리]에서 변경 가능합니다. 단, 소셜 로그인(카카오, 네이버 등)으로 가입하신 경우 이메일 변경이 제한될 수 있습니다.",
-  },
-  {
-    id: 9,
-    category: "course",
-    question: "강의 수강 기간은 얼마인가요?",
-    answer: "대부분의 강의는 평생 수강 가능합니다. 단, 일부 기간 한정 강의나 정기 업데이트 강의의 경우 수강 기간이 별도로 명시되어 있으니 강의 상세 페이지를 확인해 주세요.",
-  },
-  {
-    id: 10,
-    category: "course",
-    question: "수료증은 어떻게 받나요?",
-    answer: "강의를 100% 완료하시면 [마이페이지 > 내 강의실]에서 해당 강의의 수료증을 발급받으실 수 있습니다. PDF 형태로 다운로드 가능합니다.",
-  },
-]
+import { faqData, faqCategories } from "@/lib/faq-data"
 
 // 문의 유형
 const inquiryTypes = [
