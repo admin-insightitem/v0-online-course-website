@@ -672,9 +672,9 @@ export default function StudentsPage() {
             {selectedStudent && (
               <>
                 <DialogHeader>
-                  <DialogTitle>수강생 상세 정보</DialogTitle>
+                  <DialogTitle>{"회원 상세 정보"}</DialogTitle>
                   <DialogDescription>
-                    수강생의 정보와 학습 현황을 확인합니다.
+                    {"회원의 정보와 학습 현황을 확인합니다."}
                   </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-6 py-4">
@@ -688,7 +688,30 @@ export default function StudentsPage() {
                     </Avatar>
                     <div className="flex-1 space-y-2">
                       <div className="flex items-center justify-between">
-                        <h3 className="text-lg font-semibold">{selectedStudent.name}</h3>
+                        <div className="flex items-center gap-3">
+                          <h3 className="text-lg font-semibold">{selectedStudent.name}</h3>
+                          <Select 
+                            value={selectedStudent.memberType} 
+                            onValueChange={(value) => {
+                              // 실제 구현 시 API 호출로 변경
+                              const updatedStudents = studentsData.map(s => 
+                                s.id === selectedStudent.id 
+                                  ? { ...s, memberType: value as "student" | "teacher" | "admin" }
+                                  : s
+                              )
+                              setSelectedStudent({ ...selectedStudent, memberType: value as "student" | "teacher" | "admin" })
+                            }}
+                          >
+                            <SelectTrigger className="w-[100px] h-8">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="student">{"수강생"}</SelectItem>
+                              <SelectItem value="teacher">{"강사"}</SelectItem>
+                              <SelectItem value="admin">{"관리자"}</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
                         <Badge
                           variant={selectedStudent.status === "active" ? "default" : "secondary"}
                           className={
