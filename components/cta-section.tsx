@@ -19,7 +19,7 @@ export function CTASection() {
         </h2>
 
         <p className="mt-5 text-base leading-relaxed text-muted-foreground md:text-lg">
-          50,000명 이상의 수강생이 타이탄클래스와 함께 인생을 바꾸고 있습니다.
+          50,000명 이상의 수강생이 부자 클래스와 함께 인생을 바꾸고 있습니다.
           당신도 그 여정에 동참하세요.
         </p>
 

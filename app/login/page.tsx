@@ -82,7 +82,7 @@ function LoginPageContent() {
             <h1 className="text-2xl font-semibold leading-snug text-foreground md:text-[28px]">
               당신의 성장을 위한 교육,
               <br />
-              타이탄클래스.
+              부자 클래스.
             </h1>
           </div>
 
@@ -192,7 +192,7 @@ function LoginPageContent() {
               로그인/회원 관련 궁금하신 사항이 있다면?
             </p>
             <Link
-              href="/faq"
+              href="/support"
               className="mt-1 inline-flex items-center gap-1 text-[13px] font-medium text-accent transition-colors hover:underline"
             >
               자주 묻는 질문 바로가기

@@ -298,7 +298,7 @@ export function Header({ variant }: HeaderProps) {
                 </Link>
                 <Link href="/signup">
                   <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
-                    무료 시작하기
+                    가입하기
                   </Button>
                 </Link>
               </>
@@ -373,7 +373,7 @@ export function Header({ variant }: HeaderProps) {
                   </Link>
                   <Link href="/signup" onClick={() => setMobileOpen(false)}>
                     <Button size="sm" className="w-full bg-primary text-primary-foreground">
-                      무료 시작하기
+                      가입하기
                     </Button>
                   </Link>
                 </>
