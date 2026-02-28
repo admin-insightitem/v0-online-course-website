@@ -270,7 +270,7 @@ export function Header({ variant = "default" }: HeaderProps) {
             </Link>
             <Link href="/login">
               <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
-                무료 시작하기
+                가입하기
               </Button>
             </Link>
           </div>
@@ -332,7 +332,7 @@ export function Header({ variant = "default" }: HeaderProps) {
                   </Link>
                   <Link href="/login" onClick={() => setMobileOpen(false)}>
                     <Button size="sm" className="w-full bg-primary text-primary-foreground">
-                      무료 시작하기
+                      가입하기
                     </Button>
                   </Link>
                 </>
