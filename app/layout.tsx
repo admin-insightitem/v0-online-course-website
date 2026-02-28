@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from 'next'
 import { Noto_Sans_KR, Space_Grotesk } from 'next/font/google'
-import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
 const notoSansKR = Noto_Sans_KR({
@@ -41,7 +40,6 @@ export default function RootLayout({
     <html lang="ko">
       <body className={`${notoSansKR.variable} ${spaceGrotesk.variable} font-sans antialiased`}>
         {children}
-        <Analytics />
       </body>
     </html>
   )
