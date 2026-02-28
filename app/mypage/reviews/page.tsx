@@ -215,7 +215,7 @@ export default function ReviewsPage() {
   const [sortBy, setSortBy] = useState<"latest" | "oldest" | "helpful">("latest")
   const [courseFilter, setCourseFilter] = useState<string>("all")
   const [ratingFilter, setRatingFilter] = useState<string>("all")
-  const itemsPerPage = 20
+  const itemsPerPage = 10
 
   // 강좌 목록 추출
   const courseList = Array.from(new Set(allReviews.map((r) => r.course.id))).map(
