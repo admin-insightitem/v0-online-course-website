@@ -5,10 +5,12 @@ import { updateSession } from '@/lib/supabase/middleware'
 const PUBLIC_PATHS = [
   '/',
   '/login',
+  '/signup',
   '/forgot-password',
   '/courses',
   '/access-denied',
   '/api/webhooks',
+  '/api/auth',
 ]
 
 // 경로 매칭 헬퍼

@@ -3,8 +3,11 @@
 import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { Menu, X, ShoppingCart, User, Bell, MoreVertical, Check, Trash2 } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { Menu, X, ShoppingCart, User, Bell, MoreVertical, Check, Trash2, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useAuthStore } from "@/store/auth-store"
+import { signOut } from "@/lib/actions/auth"
 
 const navItems = [
   { label: "전체 클래스", href: "/#courses" },
@@ -13,7 +16,7 @@ const navItems = [
   { label: "후기", href: "/#testimonials" },
 ]
 
-// 알림 데이터
+// 알림 데이터 (추후 서버 연동)
 const notificationsData = [
   {
     id: 1,
@@ -54,12 +57,18 @@ interface HeaderProps {
   variant?: "default" | "logged-in"
 }
 
-export function Header({ variant = "default" }: HeaderProps) {
+export function Header({ variant }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [notificationOpen, setNotificationOpen] = useState(false)
   const [notifications, setNotifications] = useState(notificationsData)
   const [menuOpenId, setMenuOpenId] = useState<number | null>(null)
   const notificationRef = useRef<HTMLDivElement>(null)
+  const router = useRouter()
+
+  const { user, isLoading } = useAuthStore()
+
+  // variant prop이 있으면 우선 사용, 없으면 auth store 기반
+  const isLoggedIn = variant ? variant === "logged-in" : !!user
 
   // 외부 클릭 시 팝업 닫기
   useEffect(() => {
@@ -88,6 +97,14 @@ export function Header({ variant = "default" }: HeaderProps) {
     setMenuOpenId(null)
   }
 
+  const handleSignOut = async () => {
+    await signOut()
+  }
+
+  // 마이페이지 링크 (Role 기반)
+  const dashboardLink = user?.role === 'admin' ? '/admin' : user?.role === 'instructor' ? '/teacher' : '/mypage'
+  const dashboardLabel = user?.role === 'admin' ? '관리자' : user?.role === 'instructor' ? '강사 대시보드' : '마이페이지'
+
   return (
     <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 lg:px-8">
@@ -112,7 +129,7 @@ export function Header({ variant = "default" }: HeaderProps) {
           ))}
         </nav>
 
-        {variant === "logged-in" ? (
+        {isLoggedIn ? (
           <div className="hidden items-center gap-2 lg:flex">
             <Link href="/cart">
               <Button variant="ghost" size="icon" className="relative text-muted-foreground hover:text-foreground">
@@ -124,9 +141,9 @@ export function Header({ variant = "default" }: HeaderProps) {
               </Button>
             </Link>
             <div className="relative" ref={notificationRef}>
-              <Button 
-                variant="ghost" 
-                size="icon" 
+              <Button
+                variant="ghost"
+                size="icon"
                 className="relative text-muted-foreground hover:text-foreground"
                 onClick={() => setNotificationOpen(!notificationOpen)}
               >
@@ -146,18 +163,18 @@ export function Header({ variant = "default" }: HeaderProps) {
                   <div className="flex items-center justify-between border-b border-border px-4 py-3">
                     <h3 className="font-semibold text-foreground">알림</h3>
                     <div className="flex items-center gap-2">
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
+                      <Button
+                        variant="ghost"
+                        size="sm"
                         className="h-7 text-xs text-muted-foreground hover:text-foreground"
                         onClick={handleMarkAllRead}
                       >
                         <Check className="h-3 w-3 mr-1" />
                         모두 읽음
                       </Button>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
+                      <Button
+                        variant="ghost"
+                        size="sm"
                         className="h-7 text-xs text-muted-foreground hover:text-destructive"
                         onClick={handleDeleteAll}
                       >
@@ -175,8 +192,8 @@ export function Header({ variant = "default" }: HeaderProps) {
                       </div>
                     ) : (
                       notifications.map((notification) => (
-                        <div 
-                          key={notification.id} 
+                        <div
+                          key={notification.id}
                           className={`relative flex gap-3 px-4 py-3 hover:bg-muted/50 transition-colors ${
                             !notification.isRead ? "bg-primary/5" : ""
                           }`}
@@ -214,7 +231,7 @@ export function Header({ variant = "default" }: HeaderProps) {
 
                           {/* 더보기 메뉴 */}
                           <div className="relative">
-                            <button 
+                            <button
                               className="p-1 text-muted-foreground hover:text-foreground rounded"
                               onClick={(e) => {
                                 e.stopPropagation()
@@ -223,7 +240,7 @@ export function Header({ variant = "default" }: HeaderProps) {
                             >
                               <MoreVertical className="h-4 w-4" />
                             </button>
-                            
+
                             {menuOpenId === notification.id && (
                               <div className="absolute right-0 top-full mt-1 w-56 rounded-lg border border-border bg-card shadow-lg z-10">
                                 <div className="px-3 py-2 border-b border-border">
@@ -232,13 +249,13 @@ export function Header({ variant = "default" }: HeaderProps) {
                                     {notification.title}
                                   </p>
                                 </div>
-                                <button 
+                                <button
                                   className="w-full px-3 py-2 text-left text-sm text-destructive hover:bg-muted/50"
                                   onClick={() => handleDeleteNotification(notification.id)}
                                 >
                                   삭제하기
                                 </button>
-                                <button 
+                                <button
                                   className="w-full px-3 py-2 text-left text-sm text-muted-foreground hover:bg-muted/50 rounded-b-lg"
                                   onClick={() => setMenuOpenId(null)}
                                 >
@@ -254,25 +271,38 @@ export function Header({ variant = "default" }: HeaderProps) {
                 </div>
               )}
             </div>
-            <Link href="/mypage">
+            <Link href={dashboardLink}>
               <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground hover:text-foreground">
                 <User className="h-4 w-4" />
-                {"마이페이지"}
+                {user?.name || dashboardLabel}
               </Button>
             </Link>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-muted-foreground hover:text-foreground"
+              onClick={handleSignOut}
+            >
+              <LogOut className="h-4 w-4" />
+              <span className="sr-only">로그아웃</span>
+            </Button>
           </div>
         ) : (
           <div className="hidden items-center gap-3 lg:flex">
-            <Link href="/login">
-              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
-                로그인
-              </Button>
-            </Link>
-            <Link href="/login">
-              <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
-                무료 시작하기
-              </Button>
-            </Link>
+            {!isLoading && (
+              <>
+                <Link href="/login">
+                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+                    로그인
+                  </Button>
+                </Link>
+                <Link href="/signup">
+                  <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                    무료 시작하기
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         )}
 
@@ -299,7 +329,7 @@ export function Header({ variant = "default" }: HeaderProps) {
               </Link>
             ))}
             <div className="mt-4 flex flex-col gap-2 border-t border-border/50 pt-4">
-              {variant === "logged-in" ? (
+              {isLoggedIn ? (
                 <>
                   <Link href="/cart" onClick={() => setMobileOpen(false)}>
                     <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground">
@@ -307,21 +337,32 @@ export function Header({ variant = "default" }: HeaderProps) {
                       장바구니
                     </Button>
                   </Link>
-                  <Link href="/mypage" onClick={() => setMobileOpen(false)}>
+                  <Link href={dashboardLink} onClick={() => setMobileOpen(false)}>
                     <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground">
                       <User className="h-4 w-4" />
-                      {"마이페이지"}
+                      {dashboardLabel}
                     </Button>
                   </Link>
                   <Link href="/mypage/notifications" onClick={() => setMobileOpen(false)}>
                     <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground">
                       <Bell className="h-4 w-4" />
                       알림
-                      <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-accent-foreground">
-                        3
-                      </span>
+                      {unreadCount > 0 && (
+                        <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-accent-foreground">
+                          {unreadCount}
+                        </span>
+                      )}
                     </Button>
                   </Link>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full justify-start gap-2 text-muted-foreground"
+                    onClick={handleSignOut}
+                  >
+                    <LogOut className="h-4 w-4" />
+                    로그아웃
+                  </Button>
                 </>
               ) : (
                 <>
@@ -330,7 +371,7 @@ export function Header({ variant = "default" }: HeaderProps) {
                       로그인
                     </Button>
                   </Link>
-                  <Link href="/login" onClick={() => setMobileOpen(false)}>
+                  <Link href="/signup" onClick={() => setMobileOpen(false)}>
                     <Button size="sm" className="w-full bg-primary text-primary-foreground">
                       무료 시작하기
                     </Button>

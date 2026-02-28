@@ -1,20 +1,36 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useTransition } from "react"
 import Link from "next/link"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, Loader2 } from "lucide-react"
+import { resetPassword } from "@/lib/actions/auth"
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("")
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [isPending, startTransition] = useTransition()
 
   const isFormValid = email.trim() !== "" && email.includes("@")
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (isFormValid) {
+    if (!isFormValid || isPending) return
+    setError(null)
+
+    startTransition(async () => {
+      const formData = new FormData()
+      formData.set("email", email)
+
+      const result = await resetPassword(formData)
+
+      if (!result.success) {
+        setError(result.error.message)
+        return
+      }
+
       setIsSubmitted(true)
-    }
+    })
   }
 
   return (
@@ -50,6 +66,13 @@ export default function ForgotPasswordPage() {
                 </p>
               </div>
 
+              {/* Error Message */}
+              {error && (
+                <div className="mb-6 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+                  {error}
+                </div>
+              )}
+
               {/* Email Form */}
               <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                 <div className="flex flex-col gap-2">
@@ -62,16 +85,17 @@ export default function ForgotPasswordPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="이메일 주소를 입력해 주세요."
-                    className="h-12 w-full rounded-lg border border-border bg-card px-4 text-[15px] text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+                    disabled={isPending}
+                    className="h-12 w-full rounded-lg border border-border bg-card px-4 text-[15px] text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none disabled:opacity-50"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  disabled={!isFormValid}
-                  className="h-12 w-full rounded-lg bg-primary text-[15px] font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground"
+                  disabled={!isFormValid || isPending}
+                  className="flex h-12 w-full items-center justify-center rounded-lg bg-primary text-[15px] font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground"
                 >
-                  이메일 전송하기
+                  {isPending ? <Loader2 className="h-5 w-5 animate-spin" /> : "이메일 전송하기"}
                 </button>
               </form>
 
@@ -117,7 +141,10 @@ export default function ForgotPasswordPage() {
 
               <div className="flex flex-col gap-3">
                 <button
-                  onClick={() => setIsSubmitted(false)}
+                  onClick={() => {
+                    setIsSubmitted(false)
+                    setError(null)
+                  }}
                   className="h-12 w-full rounded-lg border border-border bg-card text-[15px] font-semibold text-foreground transition-colors hover:bg-secondary"
                 >
                   다른 이메일로 다시 시도
