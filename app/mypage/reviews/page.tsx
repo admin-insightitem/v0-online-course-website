@@ -412,7 +412,6 @@ export default function ReviewsPage() {
               <div className="flex items-center gap-4">
                 {[
                   { value: "latest", label: "최신순" },
-                  { value: "rating", label: "별점 순" },
                   { value: "helpful", label: "도움이 됨 순" },
                 ].map((option) => (
                   <button
