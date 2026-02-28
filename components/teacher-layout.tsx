@@ -102,24 +102,27 @@ export function TeacherLayout({ children }: TeacherLayoutProps) {
                 </li>
               )
             })}
+            <li>
+              <Link
+                href="/login"
+                className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                onClick={() => setSidebarOpen(false)}
+              >
+                <LogOut className="h-5 w-5" />
+                {"로그아웃"}
+              </Link>
+            </li>
           </ul>
         </nav>
 
-        {/* Back to site & Logout */}
-        <div className="border-t border-border p-4 space-y-1">
+        {/* Back to site */}
+        <div className="border-t border-border p-4">
           <Link
             href="/"
             className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           >
             <ChevronLeft className="h-4 w-4" />
             {"사이트로 돌아가기"}
-          </Link>
-          <Link
-            href="/login"
-            className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-          >
-            <LogOut className="h-4 w-4" />
-            {"로그아웃"}
           </Link>
         </div>
       </aside>
