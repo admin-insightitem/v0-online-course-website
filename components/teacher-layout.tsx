@@ -13,6 +13,7 @@ import {
   LogOut,
   Bell,
   UserCog,
+  Star,
 } from "lucide-react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
@@ -32,6 +33,7 @@ const teacherMenu = [
   { icon: BookOpen, label: "클래스 관리", href: "/teacher/classes" },
   { icon: Users, label: "수강생 관리", href: "/teacher/students" },
   { icon: MessageSquare, label: "강의별 Q&A", href: "/teacher/inquiries" },
+  { icon: Star, label: "수강평 관리", href: "/teacher/reviews" },
 ]
 
 interface TeacherLayoutProps {
