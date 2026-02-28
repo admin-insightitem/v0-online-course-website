@@ -405,6 +405,7 @@ export default function ReviewsPage() {
                   <span className="text-muted-foreground">{"평균"}</span>
                   <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                   <span className="font-medium">{getAverageRating()}</span>
+                  <span className="text-muted-foreground">{"("}{filteredReviews.length}{"개)"}</span>
                 </div>
               </div>
 
