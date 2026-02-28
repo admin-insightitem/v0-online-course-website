@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import Image from "next/image"
 import { AdminLayout } from "@/components/admin-layout"
@@ -176,6 +176,14 @@ const coursesWithCurriculum = [
 ]
 
 export default function LecturesPage() {
+  return (
+    <Suspense fallback={null}>
+      <LecturesPageContent />
+    </Suspense>
+  )
+}
+
+function LecturesPageContent() {
   const searchParams = useSearchParams()
   const classId = searchParams.get("classId") || coursesWithCurriculum[0].id
 

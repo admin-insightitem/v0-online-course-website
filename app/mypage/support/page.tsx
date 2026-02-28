@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { ChevronDown, ChevronUp, Send, MessageSquare } from "lucide-react"
 import { MypageLayout } from "@/components/mypage-layout"
@@ -97,6 +97,14 @@ const inquiryTypes = [
 ]
 
 export default function SupportPage() {
+  return (
+    <Suspense fallback={null}>
+      <SupportPageContent />
+    </Suspense>
+  )
+}
+
+function SupportPageContent() {
   const searchParams = useSearchParams()
   const [activeTab, setActiveTab] = useState<"faq" | "inquiry">("faq")
   const [selectedCategory, setSelectedCategory] = useState("all")
