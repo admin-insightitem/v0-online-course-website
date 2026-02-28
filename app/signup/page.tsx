@@ -387,32 +387,32 @@ export default function SignupPage() {
 
       {/* Marketing Modal */}
       <Dialog open={showMarketingModal} onOpenChange={setShowMarketingModal}>
-        <DialogContent className="max-w-3xl p-0">
+        <DialogContent className="max-w-2xl p-0">
           <DialogHeader className="flex flex-row items-center justify-between border-b border-border px-6 py-4">
             <DialogTitle className="text-lg font-semibold">{"마케팅 수신 동의"}</DialogTitle>
           </DialogHeader>
           <div className="px-6 py-4">
             {/* Table */}
             <div className="overflow-hidden rounded-lg border border-border">
-              <table className="w-full text-sm">
+              <table className="w-full text-sm table-fixed">
                 <thead className="bg-muted/50">
                   <tr>
-                    <th className="w-[100px] border-r border-border px-4 py-3 text-center font-medium text-foreground">{"서비스"}</th>
-                    <th className="border-r border-border px-4 py-3 text-center font-medium text-foreground">{"목적"}</th>
-                    <th className="w-[160px] border-r border-border px-4 py-3 text-center font-medium text-foreground">{"항목"}</th>
-                    <th className="w-[140px] px-4 py-3 text-center font-medium text-foreground">{"보유기간"}</th>
+                    <th className="w-[80px] border-r border-border px-3 py-3 text-center font-medium text-foreground">{"서비스"}</th>
+                    <th className="w-[45%] border-r border-border px-3 py-3 text-center font-medium text-foreground">{"목적"}</th>
+                    <th className="border-r border-border px-3 py-3 text-center font-medium text-foreground">{"항목"}</th>
+                    <th className="w-[110px] px-3 py-3 text-center font-medium text-foreground">{"보유기간"}</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr className="border-t border-border">
-                    <td className="border-r border-border px-4 py-4 text-center text-muted-foreground">{"회원가입"}</td>
-                    <td className="border-r border-border px-4 py-4 text-center text-muted-foreground">
+                    <td className="border-r border-border px-3 py-3 text-center text-muted-foreground align-top">{"회원가입"}</td>
+                    <td className="border-r border-border px-3 py-3 text-left text-muted-foreground align-top leading-relaxed">
                       {"(주) 컴퍼니가 제공하는 이용자 맞춤형 서비스 및 상품 추천, 각종 경품 행사, 이벤트 등의 광고성 정보 제공(이메일, 서신우편, SMS, 카카오톡 등)"}
                     </td>
-                    <td className="border-r border-border px-4 py-4 text-center text-muted-foreground">
+                    <td className="border-r border-border px-3 py-3 text-center text-muted-foreground align-top">
                       {"이름, 이메일주소, 휴대전화번호, 마케팅 수신 동의 여부"}
                     </td>
-                    <td className="px-4 py-4 text-center text-muted-foreground">
+                    <td className="px-3 py-3 text-center text-muted-foreground align-top">
                       {"회원 탈퇴 후 30일 또는 동의 철회 시까지"}
                     </td>
                   </tr>
@@ -487,7 +487,7 @@ export default function SignupPage() {
               <section>
                 <h3 className="mb-3 font-semibold text-foreground">{"제4장 기타 사항"}</h3>
                 <ul className="space-y-1 pl-2">
-                  <li>{"제 31 조 (연결 사이트와 피연결 사이트의 관계)"}</li>
+                  <li>{"제 31 조 (연결 사이트와 피연결 ��이트의 관계)"}</li>
                   <li>{"제 32 조 (저작권의 귀속 및 이용제한)"}</li>
                   <li>{"제 33 조 (회사의 면책)"}</li>
                   <li>{"제 34 조 (분쟁해결)"}</li>
