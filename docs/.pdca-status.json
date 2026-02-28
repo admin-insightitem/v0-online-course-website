@@ -1,7 +1,21 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-02-28T11:45:00.000Z",
-  "activeFeatures": ["richclass-fullstack-platform"],
+  "lastUpdated": "2026-02-28T13:14:20.171Z",
+  "activeFeatures": [
+    "richclass-fullstack-platform",
+    "actions",
+    "callback",
+    "store",
+    "login",
+    "forgot-password",
+    "signup",
+    "v0-online-course-website",
+    "mux",
+    "external",
+    "supabase",
+    "avatar",
+    "material"
+  ],
   "primaryFeature": "richclass-fullstack-platform",
   "features": {
     "richclass-fullstack-platform": {
@@ -13,6 +27,162 @@
       "iterationCount": 0,
       "currentSprint": 1,
       "sprintStatus": "completed"
+    },
+    "actions": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-02-28T12:32:34.772Z",
+        "lastUpdated": "2026-02-28T13:14:20.171Z"
+      },
+      "lastFile": "C:\\Users\\user\\00_DEV\\v0-online-course-website\\lib\\actions\\admin.ts"
+    },
+    "callback": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-02-28T12:32:40.486Z",
+        "lastUpdated": "2026-02-28T12:32:40.486Z"
+      },
+      "lastFile": "C:\\Users\\user\\00_DEV\\v0-online-course-website\\app\\api\\auth\\callback\\route.ts"
+    },
+    "store": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-02-28T12:32:44.180Z",
+        "lastUpdated": "2026-02-28T12:57:09.530Z"
+      },
+      "lastFile": "C:\\Users\\user\\00_DEV\\v0-online-course-website\\store\\cart-store.ts"
+    },
+    "login": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-02-28T12:33:13.641Z",
+        "lastUpdated": "2026-02-28T12:35:39.276Z"
+      },
+      "lastFile": "C:\\Users\\user\\00_DEV\\v0-online-course-website\\app\\login\\page.tsx"
+    },
+    "forgot-password": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-02-28T12:33:32.706Z",
+        "lastUpdated": "2026-02-28T12:33:32.706Z"
+      },
+      "lastFile": "C:\\Users\\user\\00_DEV\\v0-online-course-website\\app\\forgot-password\\page.tsx"
+    },
+    "signup": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-02-28T12:33:59.549Z",
+        "lastUpdated": "2026-02-28T12:33:59.549Z"
+      },
+      "lastFile": "C:\\Users\\user\\00_DEV\\v0-online-course-website\\app\\signup\\page.tsx"
+    },
+    "v0-online-course-website": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-02-28T12:34:02.308Z",
+        "lastUpdated": "2026-02-28T12:43:58.865Z"
+      },
+      "lastFile": "C:\\Users\\user\\00_DEV\\v0-online-course-website\\components\\mux-player-wrapper.tsx"
+    },
+    "mux": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-02-28T12:59:50.971Z",
+        "lastUpdated": "2026-02-28T12:59:50.971Z"
+      },
+      "lastFile": "C:\\Users\\user\\00_DEV\\v0-online-course-website\\app\\api\\webhooks\\mux\\route.ts"
+    },
+    "external": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-02-28T13:00:02.696Z",
+        "lastUpdated": "2026-02-28T13:00:02.696Z"
+      },
+      "lastFile": "C:\\Users\\user\\00_DEV\\v0-online-course-website\\app\\api\\webhooks\\external\\route.ts"
+    },
+    "supabase": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-02-28T13:01:01.985Z",
+        "lastUpdated": "2026-02-28T13:01:01.985Z"
+      },
+      "lastFile": "C:\\Users\\user\\00_DEV\\v0-online-course-website\\lib\\supabase\\admin.ts"
+    },
+    "avatar": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-02-28T13:12:14.551Z",
+        "lastUpdated": "2026-02-28T13:12:14.551Z"
+      },
+      "lastFile": "C:\\Users\\user\\00_DEV\\v0-online-course-website\\app\\api\\upload\\avatar\\route.ts"
+    },
+    "material": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-02-28T13:12:21.306Z",
+        "lastUpdated": "2026-02-28T13:12:21.306Z"
+      },
+      "lastFile": "C:\\Users\\user\\00_DEV\\v0-online-course-website\\app\\api\\upload\\material\\route.ts"
     }
   },
   "pipeline": {
@@ -44,7 +214,7 @@
   "session": {
     "startedAt": "2026-02-27T13:01:51.202Z",
     "onboardingCompleted": true,
-    "lastActivity": "2026-02-28T11:45:00.000Z"
+    "lastActivity": "2026-02-28T13:14:20.171Z"
   },
   "history": [
     {
@@ -70,6 +240,186 @@
       "feature": "richclass-fullstack-platform",
       "timestamp": "2026-02-28T11:45:00.000Z",
       "details": "Sprint 1 Foundation: deps installed, Supabase clients (3), middleware, types, DB migration (21 tables + RLS + triggers), build verified"
+    },
+    {
+      "timestamp": "2026-02-28T12:32:34.772Z",
+      "feature": "actions",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-28T12:32:40.486Z",
+      "feature": "callback",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-28T12:32:44.180Z",
+      "feature": "store",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-28T12:33:13.641Z",
+      "feature": "login",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-28T12:33:32.706Z",
+      "feature": "forgot-password",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-28T12:33:59.550Z",
+      "feature": "signup",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-28T12:34:02.308Z",
+      "feature": "v0-online-course-website",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-28T12:34:10.934Z",
+      "feature": "v0-online-course-website",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-28T12:34:15.068Z",
+      "feature": "v0-online-course-website",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-28T12:35:16.660Z",
+      "feature": "v0-online-course-website",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-28T12:35:22.764Z",
+      "feature": "v0-online-course-website",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-28T12:35:39.276Z",
+      "feature": "login",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-28T12:43:32.677Z",
+      "feature": "actions",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-28T12:43:52.884Z",
+      "feature": "actions",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-28T12:43:58.865Z",
+      "feature": "v0-online-course-website",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-28T12:44:44.127Z",
+      "feature": "actions",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-28T12:45:38.832Z",
+      "feature": "actions",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-28T12:57:02.116Z",
+      "feature": "actions",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-28T12:57:09.530Z",
+      "feature": "store",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-28T12:57:47.774Z",
+      "feature": "actions",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-28T12:58:09.822Z",
+      "feature": "actions",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-28T12:58:25.424Z",
+      "feature": "actions",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-28T12:59:50.971Z",
+      "feature": "mux",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-28T13:00:02.696Z",
+      "feature": "external",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-28T13:00:13.596Z",
+      "feature": "actions",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-28T13:01:01.985Z",
+      "feature": "supabase",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-28T13:12:02.619Z",
+      "feature": "actions",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-28T13:12:14.551Z",
+      "feature": "avatar",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-28T13:12:21.306Z",
+      "feature": "material",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-28T13:14:20.171Z",
+      "feature": "actions",
+      "phase": "do",
+      "action": "updated"
     }
   ]
 }

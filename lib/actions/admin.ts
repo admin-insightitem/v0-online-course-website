@@ -203,6 +203,64 @@ export async function createCoupon(formData: FormData): Promise<ActionResult<{ c
   }
 }
 
+// ─── Update Coupon (쿠폰 수정) ───
+export async function updateCoupon(couponId: string, formData: FormData): Promise<ActionResult> {
+  try {
+    const { supabase } = await requireAdmin()
+
+    const updates: Record<string, unknown> = {}
+    const name = formData.get('name')
+    if (name !== null) updates.name = name
+    const type = formData.get('type')
+    if (type !== null) updates.type = type
+    const discountValue = formData.get('discount_value')
+    if (discountValue !== null) updates.discount_value = parseInt(discountValue as string)
+    const minPurchase = formData.get('min_purchase')
+    if (minPurchase !== null) updates.min_purchase = parseInt(minPurchase as string) || 0
+    const maxDiscount = formData.get('max_discount')
+    if (maxDiscount !== null) updates.max_discount = maxDiscount ? parseInt(maxDiscount as string) : null
+    const usageLimit = formData.get('usage_limit')
+    if (usageLimit !== null) updates.usage_limit = usageLimit ? parseInt(usageLimit as string) : null
+    const startsAt = formData.get('starts_at')
+    if (startsAt !== null) updates.starts_at = startsAt || null
+    const expiresAt = formData.get('expires_at')
+    if (expiresAt !== null) updates.expires_at = expiresAt || null
+    const isActive = formData.get('is_active')
+    if (isActive !== null) updates.is_active = isActive === 'true'
+
+    const { error } = await supabase
+      .from('coupons')
+      .update(updates)
+      .eq('id', couponId)
+
+    if (error) throw error
+
+    revalidatePath('/admin/promotions')
+    return { success: true, data: undefined }
+  } catch {
+    return { success: false, error: { code: 'UPDATE_FAILED', message: '쿠폰 수정에 실패했습니다.' } }
+  }
+}
+
+// ─── Delete Coupon (쿠폰 삭제) ───
+export async function deleteCoupon(couponId: string): Promise<ActionResult> {
+  try {
+    const { supabase } = await requireAdmin()
+
+    const { error } = await supabase
+      .from('coupons')
+      .delete()
+      .eq('id', couponId)
+
+    if (error) throw error
+
+    revalidatePath('/admin/promotions')
+    return { success: true, data: undefined }
+  } catch {
+    return { success: false, error: { code: 'DELETE_FAILED', message: '쿠폰 삭제에 실패했습니다.' } }
+  }
+}
+
 // ─── Section & Lecture CRUD (관리자/강사 커리큘럼 관리) ───
 export async function createSection(courseId: string, title: string): Promise<ActionResult<{ sectionId: string }>> {
   const supabase = await createClient()
