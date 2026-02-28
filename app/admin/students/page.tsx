@@ -815,21 +815,21 @@ export default function StudentsPage() {
                           </div>
                           <Progress value={course.progress} className="h-2 mb-2" />
                           <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
-                            <span>마지막 학습: {course.lastAccess}</span>
+                            <span>{"수강 신청일: "}{course.enrollDate}</span>
+                            <span className="font-medium text-foreground">{course.price.toLocaleString()}{"원"}</span>
+                          </div>
+                          <div className="flex items-center justify-between text-xs text-muted-foreground border-t border-border pt-2">
+                            <span>{"마지막 학습: "}{course.lastAccess}</span>
                             {course.progress < 50 && (
                               <Badge variant="outline" className="text-yellow-600 border-yellow-600">
-                                진도율 낮음
+                                {"진도율 낮음"}
                               </Badge>
                             )}
                             {course.progress === 100 && (
                               <Badge variant="outline" className="text-green-600 border-green-600">
-                                완료
+                                {"완료"}
                               </Badge>
                             )}
-                          </div>
-                          <div className="flex items-center justify-between text-xs text-muted-foreground border-t border-border pt-2">
-                            <span>수강 신청일: {course.enrollDate}</span>
-                            <span className="font-medium text-foreground">{course.price.toLocaleString()}원</span>
                           </div>
                         </div>
                       ))}
