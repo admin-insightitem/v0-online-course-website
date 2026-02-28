@@ -140,7 +140,7 @@ export default function LoginPage() {
               로그인/회원 관련 궁금하신 사항이 있다면?
             </p>
             <Link
-              href="/faq"
+              href="/support"
               className="mt-1 inline-flex items-center gap-1 text-[13px] font-medium text-accent transition-colors hover:underline"
             >
               자주 묻는 질문 바로가기
