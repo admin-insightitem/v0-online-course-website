@@ -99,7 +99,7 @@ export default function TeacherReviewsPage() {
   const [courseFilter, setCourseFilter] = useState<string>("all")
   const [ratingFilter, setRatingFilter] = useState<string>("all")
   const [helpfulReviews, setHelpfulReviews] = useState<string[]>([])
-  const itemsPerPage = 10
+  const itemsPerPage = 20
 
   // 강좌 목록 추출
   const courseList = Array.from(new Set(courseReviews.map((r) => r.course.id))).map(
