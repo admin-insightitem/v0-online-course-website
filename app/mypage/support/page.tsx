@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useEffect, Suspense } from "react"
+import { useState, useEffect, useTransition, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
-import { ChevronDown, ChevronUp, Send, MessageSquare } from "lucide-react"
+import { ChevronDown, ChevronUp, Send, MessageSquare, Loader2 } from "lucide-react"
 import { MypageLayout } from "@/components/mypage-layout"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -15,6 +15,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { faqData, faqCategories } from "@/lib/faq-data"
+import { createInquiry, getMyInquiries } from "@/lib/actions/qna"
+import type { InquiryWithReplies } from "@/types"
 
 // 문의 유형
 const inquiryTypes = [
@@ -24,6 +26,17 @@ const inquiryTypes = [
   { value: "course", label: "강의/수강 문의" },
   { value: "etc", label: "기타 문의" },
 ]
+
+// 상태 뱃지 매핑
+function statusBadge(status: string) {
+  switch (status) {
+    case "answered":
+      return { label: "답변 완료", className: "bg-green-100 text-green-700" }
+    case "pending":
+    default:
+      return { label: "답변 대기", className: "bg-yellow-100 text-yellow-700" }
+  }
+}
 
 export default function SupportPage() {
   return (
@@ -39,24 +52,29 @@ function SupportPageContent() {
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
-  
+
   // 1:1 문의 폼 상태
   const [inquiryType, setInquiryType] = useState("")
   const [inquiryTitle, setInquiryTitle] = useState("")
   const [inquiryContent, setInquiryContent] = useState("")
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isPending, startTransition] = useTransition()
   const [showSuccessMessage, setShowSuccessMessage] = useState(false)
+  const [formError, setFormError] = useState<string | null>(null)
+
+  // 문의 내역 상태
+  const [myInquiries, setMyInquiries] = useState<InquiryWithReplies[]>([])
+  const [isLoadingInquiries, setIsLoadingInquiries] = useState(false)
 
   // 쿼리 파라미터로 탭과 문의 유형, 제목 설정
   useEffect(() => {
     const tab = searchParams.get("tab")
     const type = searchParams.get("type")
     const title = searchParams.get("title")
-    
+
     if (tab === "inquiry") {
       setActiveTab("inquiry")
     }
-    
+
     if (type === "payment") {
       setInquiryType("payment")
     }
@@ -66,10 +84,26 @@ function SupportPageContent() {
     }
   }, [searchParams])
 
+  // 문의 탭 전환 시 내역 로드
+  useEffect(() => {
+    if (activeTab === "inquiry") {
+      loadMyInquiries()
+    }
+  }, [activeTab])
+
+  const loadMyInquiries = async () => {
+    setIsLoadingInquiries(true)
+    const result = await getMyInquiries({ type: "support", limit: 10 })
+    if (result.success) {
+      setMyInquiries(result.data.inquiries)
+    }
+    setIsLoadingInquiries(false)
+  }
+
   // FAQ 필터링
   const filteredFaq = faqData.filter((faq) => {
     const matchesCategory = selectedCategory === "all" || faq.category === selectedCategory
-    const matchesSearch = searchQuery === "" || 
+    const matchesSearch = searchQuery === "" ||
       faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
       faq.answer.toLowerCase().includes(searchQuery.toLowerCase())
     return matchesCategory && matchesSearch
@@ -81,20 +115,33 @@ function SupportPageContent() {
 
   const handleInquirySubmit = () => {
     if (!inquiryType || !inquiryTitle.trim() || !inquiryContent.trim()) return
-    
-    setIsSubmitting(true)
-    // 실제로는 API 호출
-    setTimeout(() => {
-      setIsSubmitting(false)
+    setFormError(null)
+
+    startTransition(async () => {
+      const formData = new FormData()
+      formData.set("type", "support")
+      formData.set("title", inquiryTitle.trim())
+      formData.set("content", `[${inquiryTypes.find(t => t.value === inquiryType)?.label}] ${inquiryContent.trim()}`)
+
+      const result = await createInquiry(formData)
+
+      if (!result.success) {
+        setFormError(result.error.message)
+        return
+      }
+
       setShowSuccessMessage(true)
       setInquiryType("")
       setInquiryTitle("")
       setInquiryContent("")
-      
+
+      // 내역 새로고침
+      loadMyInquiries()
+
       setTimeout(() => {
         setShowSuccessMessage(false)
       }, 3000)
-    }, 1000)
+    })
   }
 
   return (
@@ -231,8 +278,14 @@ function SupportPageContent() {
             {showSuccessMessage && (
               <div className="mb-6 rounded-lg bg-green-50 border border-green-200 p-4">
                 <p className="text-sm font-medium text-green-800">
-                  문의가 성공적으로 등��되었습니다. 빠른 시일 내에 답변 드리겠습니다.
+                  문의가 성공적으로 등록되었습니다. 빠른 시일 내에 답변 드리겠습니다.
                 </p>
+              </div>
+            )}
+
+            {formError && (
+              <div className="mb-6 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+                {formError}
               </div>
             )}
 
@@ -273,6 +326,7 @@ function SupportPageContent() {
                     value={inquiryTitle}
                     onChange={(e) => setInquiryTitle(e.target.value)}
                     className="h-11"
+                    disabled={isPending}
                   />
                 </div>
 
@@ -286,6 +340,7 @@ function SupportPageContent() {
                     value={inquiryContent}
                     onChange={(e) => setInquiryContent(e.target.value)}
                     className="min-h-[160px] resize-none"
+                    disabled={isPending}
                   />
                 </div>
 
@@ -301,11 +356,14 @@ function SupportPageContent() {
                 {/* 제출 버튼 */}
                 <Button
                   onClick={handleInquirySubmit}
-                  disabled={!inquiryType || !inquiryTitle.trim() || !inquiryContent.trim() || isSubmitting}
+                  disabled={!inquiryType || !inquiryTitle.trim() || !inquiryContent.trim() || isPending}
                   className="h-11 gap-2 bg-accent text-accent-foreground hover:bg-accent/90"
                 >
-                  {isSubmitting ? (
-                    "등록 중..."
+                  {isPending ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      등록 중...
+                    </>
                   ) : (
                     <>
                       <Send className="h-4 w-4" />
@@ -320,36 +378,39 @@ function SupportPageContent() {
             <div className="mt-8">
               <h3 className="text-base font-semibold text-foreground">내 문의 내역</h3>
               <div className="mt-4 rounded-lg border border-border bg-card">
-                <div className="flex flex-col divide-y divide-border">
-                  <div className="flex items-center justify-between p-4">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="rounded bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
-                          답변 완료
-                        </span>
-                        <span className="text-sm font-medium text-foreground">
-                          결제 오류 관련 문의드립니다
-                        </span>
-                      </div>
-                      <p className="mt-1 text-xs text-muted-foreground">2026.02.20</p>
-                    </div>
-                    <ChevronDown className="h-5 w-5 text-muted-foreground" />
+                {isLoadingInquiries ? (
+                  <div className="flex items-center justify-center py-12">
+                    <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
                   </div>
-                  <div className="flex items-center justify-between p-4">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="rounded bg-yellow-100 px-2 py-0.5 text-xs font-medium text-yellow-700">
-                          답변 대기
-                        </span>
-                        <span className="text-sm font-medium text-foreground">
-                          영상 재생이 안됩니다
-                        </span>
-                      </div>
-                      <p className="mt-1 text-xs text-muted-foreground">2026.02.25</p>
-                    </div>
-                    <ChevronDown className="h-5 w-5 text-muted-foreground" />
+                ) : myInquiries.length === 0 ? (
+                  <div className="px-6 py-12 text-center text-sm text-muted-foreground">
+                    문의 내역이 없습니다.
                   </div>
-                </div>
+                ) : (
+                  <div className="flex flex-col divide-y divide-border">
+                    {myInquiries.map((inquiry) => {
+                      const badge = statusBadge(inquiry.status)
+                      return (
+                        <div key={inquiry.id} className="flex items-center justify-between p-4">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className={`rounded px-2 py-0.5 text-xs font-medium ${badge.className}`}>
+                                {badge.label}
+                              </span>
+                              <span className="text-sm font-medium text-foreground">
+                                {inquiry.title || inquiry.content.slice(0, 30)}
+                              </span>
+                            </div>
+                            <p className="mt-1 text-xs text-muted-foreground">
+                              {new Date(inquiry.created_at).toLocaleDateString("ko-KR")}
+                            </p>
+                          </div>
+                          <ChevronDown className="h-5 w-5 text-muted-foreground" />
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
               </div>
             </div>
           </div>

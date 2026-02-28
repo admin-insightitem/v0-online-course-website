@@ -85,9 +85,9 @@ export function Footer() {
             &copy; 2026 RichClass. All rights reserved.
           </p>
           <div className="flex gap-6 text-xs text-muted-foreground">
-            <Link href="#" className="hover:text-foreground">개인정보처리방침</Link>
-            <Link href="#" className="hover:text-foreground">이용약관</Link>
-            <Link href="#" className="hover:text-foreground">사업자정보</Link>
+            <Link href="/support/privacy" className="hover:text-foreground">개인정보처리방침</Link>
+            <Link href="/support/terms" className="hover:text-foreground">이용약관</Link>
+            <Link href="/support/notice" className="hover:text-foreground">공지사항</Link>
           </div>
         </div>
       </div>
