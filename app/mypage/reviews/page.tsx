@@ -212,7 +212,7 @@ export default function ReviewsPage() {
   const [reviewContent, setReviewContent] = useState("")
   const [helpfulReviews, setHelpfulReviews] = useState<string[]>(["all-review-1"])
   const [currentPage, setCurrentPage] = useState(1)
-  const [sortBy, setSortBy] = useState<"latest" | "rating" | "helpful">("latest")
+  const [sortBy, setSortBy] = useState<"latest" | "oldest" | "helpful">("latest")
   const [courseFilter, setCourseFilter] = useState<string>("all")
   const [ratingFilter, setRatingFilter] = useState<string>("all")
   const itemsPerPage = 10
@@ -233,7 +233,7 @@ export default function ReviewsPage() {
   }
 
   const handleSortChange = (value: string) => {
-    setSortBy(value as "latest" | "rating" | "helpful")
+    setSortBy(value as "latest" | "oldest" | "helpful")
     setCurrentPage(1)
   }
 
@@ -259,8 +259,8 @@ export default function ReviewsPage() {
     switch (sortBy) {
       case "latest":
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      case "rating":
-        return b.rating - a.rating
+      case "oldest":
+        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
       case "helpful":
         return b.helpful - a.helpful
       default:
@@ -413,6 +413,7 @@ export default function ReviewsPage() {
               <div className="flex items-center gap-4">
                 {[
                   { value: "latest", label: "최신순" },
+                  { value: "oldest", label: "등록순" },
                   { value: "helpful", label: "도움이 됨 순" },
                 ].map((option) => (
                   <button
