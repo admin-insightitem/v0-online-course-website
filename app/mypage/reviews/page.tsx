@@ -214,12 +214,23 @@ export default function ReviewsPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const [sortBy, setSortBy] = useState<"latest" | "rating" | "helpful">("latest")
   const [courseFilter, setCourseFilter] = useState<string>("all")
+  const [ratingFilter, setRatingFilter] = useState<string>("all")
   const itemsPerPage = 10
 
   // 강좌 목록 추출
   const courseList = Array.from(new Set(allReviews.map((r) => r.course.id))).map(
     (id) => allReviews.find((r) => r.course.id === id)!.course
   )
+
+  // 선택된 강좌의 평균 별점 계산
+  const getAverageRating = () => {
+    const reviewsForCourse = courseFilter === "all" 
+      ? allReviews 
+      : allReviews.filter((r) => r.course.id === courseFilter)
+    if (reviewsForCourse.length === 0) return 0
+    const sum = reviewsForCourse.reduce((acc, r) => acc + r.rating, 0)
+    return (sum / reviewsForCourse.length).toFixed(1)
+  }
 
   const handleSortChange = (value: string) => {
     setSortBy(value as "latest" | "rating" | "helpful")
@@ -228,13 +239,21 @@ export default function ReviewsPage() {
 
   const handleCourseFilterChange = (value: string) => {
     setCourseFilter(value)
+    setRatingFilter("all")
+    setCurrentPage(1)
+  }
+
+  const handleRatingFilterChange = (value: string) => {
+    setRatingFilter(value)
     setCurrentPage(1)
   }
 
   // 필터링 및 정렬된 리뷰
-  const filteredReviews = courseFilter === "all" 
-    ? allReviews 
-    : allReviews.filter((r) => r.course.id === courseFilter)
+  const filteredReviews = allReviews.filter((r) => {
+    const matchesCourse = courseFilter === "all" || r.course.id === courseFilter
+    const matchesRating = ratingFilter === "all" || r.rating === parseInt(ratingFilter)
+    return matchesCourse && matchesRating
+  })
 
   const sortedReviews = [...filteredReviews].sort((a, b) => {
     switch (sortBy) {
@@ -348,22 +367,45 @@ export default function ReviewsPage() {
           <div className="flex flex-col gap-4">
             {/* 필터 및 정렬 옵션 */}
             <div className="flex items-center justify-between">
-              {/* 좌측: 강좌 필터 */}
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground whitespace-nowrap">{"강좌"}</span>
-                <Select value={courseFilter} onValueChange={handleCourseFilterChange}>
-                  <SelectTrigger className="w-[320px]">
-                    <SelectValue placeholder="강좌 선택" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">{"전체"}</SelectItem>
-                    {courseList.map((course) => (
-                      <SelectItem key={course.id} value={course.id}>
-                        {course.title.length > 35 ? course.title.substring(0, 35) + "..." : course.title}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              {/* 좌측: 강좌 필터, 별점 필터, 평균 별점 */}
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground whitespace-nowrap">{"강좌"}</span>
+                  <Select value={courseFilter} onValueChange={handleCourseFilterChange}>
+                    <SelectTrigger className="w-[320px]">
+                      <SelectValue placeholder="강좌 선택" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">{"전체"}</SelectItem>
+                      {courseList.map((course) => (
+                        <SelectItem key={course.id} value={course.id}>
+                          {course.title.length > 35 ? course.title.substring(0, 35) + "..." : course.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground whitespace-nowrap">{"별점"}</span>
+                  <Select value={ratingFilter} onValueChange={handleRatingFilterChange}>
+                    <SelectTrigger className="w-[100px]">
+                      <SelectValue placeholder="별점" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">{"전체"}</SelectItem>
+                      <SelectItem value="5">{"5점"}</SelectItem>
+                      <SelectItem value="4">{"4점"}</SelectItem>
+                      <SelectItem value="3">{"3점"}</SelectItem>
+                      <SelectItem value="2">{"2점"}</SelectItem>
+                      <SelectItem value="1">{"1점"}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-center gap-1.5 text-sm">
+                  <span className="text-muted-foreground">{"평균"}</span>
+                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                  <span className="font-medium">{getAverageRating()}</span>
+                </div>
               </div>
 
               {/* 우측: 정렬 옵션 */}
@@ -595,7 +637,7 @@ export default function ReviewsPage() {
             )}
           </div>
         ) : (
-          // 수강평 작성하기
+          // 수��평 작성하기
           <div className="flex flex-col gap-4">
             {coursesWithoutReview.length === 0 ? (
               <div className="rounded-lg border border-border bg-card px-6 py-12 text-center">
