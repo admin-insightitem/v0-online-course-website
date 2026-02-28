@@ -43,7 +43,7 @@ export function TestimonialsSection() {
             수강생들의 실제 성과
           </h2>
           <p className="mt-3 text-muted-foreground">
-            타이탄클래스와 함께 성장한 수강생들의 이야기
+            부자 클래스와 함께 성장한 수강생들의 이야기
           </p>
         </div>
 

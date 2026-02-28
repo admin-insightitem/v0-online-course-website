@@ -35,7 +35,7 @@ export default function LoginPage() {
             <h1 className="text-2xl font-semibold leading-snug text-foreground md:text-[28px]">
               당신의 성장을 위한 교육,
               <br />
-              타이탄클래스.
+              부자 클래스.
             </h1>
           </div>
 
