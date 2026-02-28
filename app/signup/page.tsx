@@ -2,7 +2,13 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { Eye, EyeOff, Check } from "lucide-react"
+import { Eye, EyeOff, Check, X } from "lucide-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 export default function SignupPage() {
   const [name, setName] = useState("")
@@ -20,6 +26,7 @@ export default function SignupPage() {
   const [agreePrivacy, setAgreePrivacy] = useState(false)
   const [agreeAge, setAgreeAge] = useState(false)
   const [agreeMarketing, setAgreeMarketing] = useState(false)
+  const [showMarketingModal, setShowMarketingModal] = useState(false)
 
   const handleAgreeAll = () => {
     const newValue = !agreeAll
@@ -336,9 +343,13 @@ export default function SignupPage() {
                       <span className="text-muted-foreground/70">{"(선택)"}</span>
                     </span>
                   </label>
-                  <Link href="/terms/marketing" className="text-[12px] text-muted-foreground hover:underline">
+                  <button 
+                    type="button"
+                    onClick={() => setShowMarketingModal(true)}
+                    className="text-[12px] text-muted-foreground hover:underline"
+                  >
                     {"보기"}
-                  </Link>
+                  </button>
                 </div>
               </div>
             </div>
@@ -366,6 +377,49 @@ export default function SignupPage() {
           </div>
         </div>
       </main>
+
+      {/* Marketing Modal */}
+      <Dialog open={showMarketingModal} onOpenChange={setShowMarketingModal}>
+        <DialogContent className="max-w-2xl p-0">
+          <DialogHeader className="flex flex-row items-center justify-between border-b border-border px-6 py-4">
+            <DialogTitle className="text-lg font-semibold">{"마케팅 수신 동의"}</DialogTitle>
+          </DialogHeader>
+          <div className="px-6 py-4">
+            {/* Table */}
+            <div className="overflow-hidden rounded-lg border border-border">
+              <table className="w-full text-sm">
+                <thead className="bg-muted/50">
+                  <tr>
+                    <th className="border-r border-border px-4 py-3 text-center font-medium text-foreground">{"서비스"}</th>
+                    <th className="border-r border-border px-4 py-3 text-center font-medium text-foreground">{"목적"}</th>
+                    <th className="border-r border-border px-4 py-3 text-center font-medium text-foreground">{"항목"}</th>
+                    <th className="px-4 py-3 text-center font-medium text-foreground">{"보유기간"}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-t border-border">
+                    <td className="border-r border-border px-4 py-4 text-center text-muted-foreground">{"회원가입"}</td>
+                    <td className="border-r border-border px-4 py-4 text-center text-muted-foreground">
+                      {"(주) 컴퍼니가 제공하는 이용자 맞춤형 서비스 및 상품 추천, 각종 경품 행사, 이벤트 등의 광고성 정보 제공(이메일, 서신우편, SMS, 카카오톡 등)"}
+                    </td>
+                    <td className="border-r border-border px-4 py-4 text-center text-muted-foreground">
+                      {"이름, 이메일주소, 휴대전화번호, 마케팅 수신 동의 여부"}
+                    </td>
+                    <td className="px-4 py-4 text-center text-muted-foreground">
+                      {"회원 탈퇴 후 30일 또는 동의 철회 시까지"}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            {/* Notice */}
+            <p className="mt-4 text-[13px] leading-relaxed text-muted-foreground">
+              {"본 마케팅 정보 수신에 대한 동의를 거부하실 수 있으며, 이 경우 회원가입은 가능하나 일부 서비스 이용 및 각종 광고, 할인, 이벤트 및 이용자 맞춤형 상품 추천 등의 서비스 제공이 제한될 수 있습니다."}
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
