@@ -27,6 +27,8 @@ export default function SignupPage() {
   const [agreeAge, setAgreeAge] = useState(false)
   const [agreeMarketing, setAgreeMarketing] = useState(false)
   const [showMarketingModal, setShowMarketingModal] = useState(false)
+  const [showTermsModal, setShowTermsModal] = useState(false)
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false)
 
   const handleAgreeAll = () => {
     const newValue = !agreeAll
@@ -274,9 +276,13 @@ export default function SignupPage() {
                       <span className="text-primary">{"(필수)"}</span>
                     </span>
                   </label>
-                  <Link href="/terms" className="text-[12px] text-muted-foreground hover:underline">
+                  <button 
+                    type="button"
+                    onClick={() => setShowTermsModal(true)}
+                    className="text-[12px] text-muted-foreground hover:underline"
+                  >
                     {"보기"}
-                  </Link>
+                  </button>
                 </div>
 
                 {/* Privacy */}
@@ -297,13 +303,17 @@ export default function SignupPage() {
                       <span className="text-primary">{"(필수)"}</span>
                     </span>
                   </label>
-                  <Link href="/privacy" className="text-[12px] text-muted-foreground hover:underline">
+                  <button 
+                    type="button"
+                    onClick={() => setShowPrivacyModal(true)}
+                    className="text-[12px] text-muted-foreground hover:underline"
+                  >
                     {"보기"}
-                  </Link>
+                  </button>
                 </div>
 
                 {/* Age */}
-                <div className="flex items-center justify-between">
+                <div className="flex items-center">
                   <label className="flex cursor-pointer items-center gap-3">
                     <div
                       className={`flex h-5 w-5 items-center justify-center rounded border ${
@@ -320,9 +330,6 @@ export default function SignupPage() {
                       <span className="text-primary">{"(필수)"}</span>
                     </span>
                   </label>
-                  <Link href="/terms/age" className="text-[12px] text-muted-foreground hover:underline">
-                    {"보기"}
-                  </Link>
                 </div>
 
                 {/* Marketing */}
@@ -380,7 +387,7 @@ export default function SignupPage() {
 
       {/* Marketing Modal */}
       <Dialog open={showMarketingModal} onOpenChange={setShowMarketingModal}>
-        <DialogContent className="max-w-2xl p-0">
+        <DialogContent className="max-w-3xl p-0">
           <DialogHeader className="flex flex-row items-center justify-between border-b border-border px-6 py-4">
             <DialogTitle className="text-lg font-semibold">{"마케팅 수신 동의"}</DialogTitle>
           </DialogHeader>
@@ -390,10 +397,10 @@ export default function SignupPage() {
               <table className="w-full text-sm">
                 <thead className="bg-muted/50">
                   <tr>
-                    <th className="border-r border-border px-4 py-3 text-center font-medium text-foreground">{"서비스"}</th>
+                    <th className="w-[100px] border-r border-border px-4 py-3 text-center font-medium text-foreground">{"서비스"}</th>
                     <th className="border-r border-border px-4 py-3 text-center font-medium text-foreground">{"목적"}</th>
-                    <th className="border-r border-border px-4 py-3 text-center font-medium text-foreground">{"항목"}</th>
-                    <th className="px-4 py-3 text-center font-medium text-foreground">{"보유기간"}</th>
+                    <th className="w-[160px] border-r border-border px-4 py-3 text-center font-medium text-foreground">{"항목"}</th>
+                    <th className="w-[140px] px-4 py-3 text-center font-medium text-foreground">{"보유기간"}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -416,6 +423,120 @@ export default function SignupPage() {
             {/* Notice */}
             <p className="mt-4 text-[13px] leading-relaxed text-muted-foreground">
               {"본 마케팅 정보 수신에 대한 동의를 거부하실 수 있으며, 이 경우 회원가입은 가능하나 일부 서비스 이용 및 각종 광고, 할인, 이벤트 및 이용자 맞춤형 상품 추천 등의 서비스 제공이 제한될 수 있습니다."}
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Terms Modal */}
+      <Dialog open={showTermsModal} onOpenChange={setShowTermsModal}>
+        <DialogContent className="max-w-3xl p-0">
+          <DialogHeader className="flex flex-row items-center justify-between border-b border-border px-6 py-4">
+            <DialogTitle className="text-lg font-semibold">{"부자 클래스 이용약관"}</DialogTitle>
+          </DialogHeader>
+          <div className="max-h-[60vh] overflow-y-auto px-6 py-4">
+            <div className="space-y-6 text-sm text-muted-foreground">
+              <section>
+                <h3 className="mb-3 font-semibold text-foreground">{"제1장 총칙"}</h3>
+                <ul className="space-y-1 pl-2">
+                  <li>{"제 1 조 (목적)"}</li>
+                  <li>{"제 2 조 (용어의 정의)"}</li>
+                  <li>{"제 3 조 (약관의 명시와 효력 및 개정)"}</li>
+                  <li>{"제 4 조 (약관 외 준칙)"}</li>
+                  <li>{"제 5 조 (이용계약의 성립)"}</li>
+                  <li>{"제 6 조 (회원의 의무)"}</li>
+                  <li>{"제 7 조 (회원의 아이디 및 비밀번호에 대한 의무)"}</li>
+                  <li>{"제 8 조 (회원 탈퇴 및 자격 상실 등)"}</li>
+                  <li>{"제 9 조 (회사의 의무)"}</li>
+                  <li>{"제 10 조 (서비스의 제공 및 변경)"}</li>
+                  <li>{"제 11 조 (서비스의 중단)"}</li>
+                  <li>{"제 12 조 (개인정보보호)"}</li>
+                  <li>{"제 13 조 (회원에 대한 통지)"}</li>
+                  <li>{"제 14 조 (정보의 제공 및 광고의 게재)"}</li>
+                </ul>
+              </section>
+
+              <section>
+                <h3 className="mb-3 font-semibold text-foreground">{"제2장 전자상거래 서비스"}</h3>
+                <ul className="space-y-1 pl-2">
+                  <li>{"제 15 조 (구매신청)"}</li>
+                  <li>{"제 16 조 (대금지급방법)"}</li>
+                  <li>{"제 17 조 (할인쿠폰)"}</li>
+                  <li>{"제 18 조 (포인트)"}</li>
+                  <li>{"제 19 조 (계약의 성립)"}</li>
+                  <li>{"제 20 조 (수신확인통지·구매신청 변경 및 취소)"}</li>
+                  <li>{"제 21 조 (상품 등의 공급)"}</li>
+                  <li>{"제 22 조 (환급)"}</li>
+                  <li>{"제 23 조 (청약철회 등)"}</li>
+                  <li>{"제 24 조 (청약철회 등의 효과)"}</li>
+                  <li>{"제 25 조 (상품 등의 환불 특칙)"}</li>
+                </ul>
+              </section>
+
+              <section>
+                <h3 className="mb-3 font-semibold text-foreground">{"제3장 커뮤니티"}</h3>
+                <ul className="space-y-1 pl-2">
+                  <li>{"제 26 조 (커뮤니티의 이용)"}</li>
+                  <li>{"제 27 조 (게시물에 대한 권리 귀속 및 사용 허가)"}</li>
+                  <li>{"제 28 조 (게시물의 삭제 등)"}</li>
+                  <li>{"제 29 조 (커뮤니티 이용의 제한)"}</li>
+                  <li>{"제 30 조 (회사의 커뮤니티 서비스에 대한 면책)"}</li>
+                </ul>
+              </section>
+
+              <section>
+                <h3 className="mb-3 font-semibold text-foreground">{"제4장 기타 사항"}</h3>
+                <ul className="space-y-1 pl-2">
+                  <li>{"제 31 조 (연결 사이트와 피연결 사이트의 관계)"}</li>
+                  <li>{"제 32 조 (저작권의 귀속 및 이용제한)"}</li>
+                  <li>{"제 33 조 (회사의 면책)"}</li>
+                  <li>{"제 34 조 (분쟁해결)"}</li>
+                  <li>{"제 35 조 (재판권 및 준거법)"}</li>
+                </ul>
+              </section>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Privacy Modal */}
+      <Dialog open={showPrivacyModal} onOpenChange={setShowPrivacyModal}>
+        <DialogContent className="max-w-3xl p-0">
+          <DialogHeader className="flex flex-row items-center justify-between border-b border-border px-6 py-4">
+            <DialogTitle className="text-lg font-semibold">{"개인정보 수집 및 이용 동의"}</DialogTitle>
+          </DialogHeader>
+          <div className="px-6 py-4">
+            {/* Table */}
+            <div className="overflow-hidden rounded-lg border border-border">
+              <table className="w-full text-sm">
+                <thead className="bg-muted/50">
+                  <tr>
+                    <th className="border-r border-border px-4 py-3 text-center font-medium text-foreground">{"수집항목"}</th>
+                    <th className="border-r border-border px-4 py-3 text-center font-medium text-foreground">{"수집 및 이용 목적"}</th>
+                    <th className="px-4 py-3 text-center font-medium text-foreground">{"이용 및 보유기간"}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-t border-border">
+                    <td className="border-r border-border px-4 py-4 text-center text-muted-foreground">
+                      {"[필수] 이름, 이메일, 휴대폰번호, 비밀번호"}
+                    </td>
+                    <td className="border-r border-border px-4 py-4 text-center text-muted-foreground">
+                      {"회원가입 및 서비스 이용"}
+                    </td>
+                    <td className="px-4 py-4 text-center font-medium text-foreground">
+                      {"회원 탈퇴 후 30일까지"}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            {/* Notice */}
+            <p className="mt-4 text-[13px] leading-relaxed text-muted-foreground">
+              {"※고객님께서는 [필수] 개인정보 수집 및 이용동의에 거부할 수 있습니다."}
+              <br />
+              {"단, 거부할 경우 회원가입이 불가능합니다."}
             </p>
           </div>
         </DialogContent>
