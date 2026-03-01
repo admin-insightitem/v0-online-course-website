@@ -15,22 +15,38 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Camera, Star } from "lucide-react"
+import { Camera, Star, Users, BookOpen, Award, BadgeCheck, Crown, Shield, Zap } from "lucide-react"
+
+// 아이콘 옵션
+const iconOptions = [
+  { id: "none", label: "없음", icon: null },
+  { id: "award", label: "Award", icon: Award },
+  { id: "badge", label: "인증", icon: BadgeCheck },
+  { id: "crown", label: "왕관", icon: Crown },
+  { id: "shield", label: "방패", icon: Shield },
+  { id: "zap", label: "번개", icon: Zap },
+]
 
 // 강사 더미 데이터
 const instructorsData = [
   {
     id: "1",
     name: "김도현",
-    rating: "4.9",
-    title: "AI 비즈니스 전문가 / 전 네이버 AI Lab",
-    intro: "10년간 AI 분야에서 활동하며 200개 이상의 AI 자동화 프로젝트를 성공적으로 이끌었습니다. 현재 AI 기반 수익화 컨설팅 대표로 활동 중이며, 3,000명 이상의 수강생이 실제 수익을 창출하고 있습니다.",
+    icon: "award",
+    rating: 4.9,
+    students: 8340,
+    courses: 5,
+    title: "AI 자동화 전문가",
+    intro: "전 네이버 AI 연구원 출신. GPT, 자동화 툴을 활용한 비즈니스 솔루션 전문가. 200개 이상의 기업 컨설팅 경험.",
     image: null as string | null,
   },
   {
     id: "2",
     name: "이수진",
-    rating: "4.8",
+    icon: "badge",
+    rating: 4.8,
+    students: 6210,
+    courses: 4,
     title: "재테크 전문가 / 베스트셀러 작가",
     intro: "15년간 금융업계에서 활동하며 10만명 이상의 수강생을 가르쳤습니다. '돈이 되는 습관' 등 다수의 베스트셀러를 출간했습니다.",
     image: null as string | null,
@@ -38,7 +54,10 @@ const instructorsData = [
   {
     id: "3",
     name: "박민수",
-    rating: "4.7",
+    icon: "crown",
+    rating: 4.7,
+    students: 4530,
+    courses: 3,
     title: "부동산 투자 전문가",
     intro: "20년간 부동산 투자 경력, 100억 이상의 자산 운용 경험이 있습니다. 실전 투자 노하우를 전수합니다.",
     image: null as string | null,
@@ -54,7 +73,10 @@ export default function AdminInstructorsPage() {
   
   // 편집 폼 상태
   const [editName, setEditName] = useState("")
-  const [editRating, setEditRating] = useState("0")
+  const [editIcon, setEditIcon] = useState("none")
+  const [editRating, setEditRating] = useState(0)
+  const [editStudents, setEditStudents] = useState(0)
+  const [editCourses, setEditCourses] = useState(0)
   const [editTitle, setEditTitle] = useState("")
   const [editIntro, setEditIntro] = useState("")
   const [editImage, setEditImage] = useState<string | null>(null)
@@ -66,7 +88,10 @@ export default function AdminInstructorsPage() {
       const instructor = instructors.find(i => i.id === selectedInstructorId)
       if (instructor) {
         setEditName(instructor.name)
+        setEditIcon(instructor.icon)
         setEditRating(instructor.rating)
+        setEditStudents(instructor.students)
+        setEditCourses(instructor.courses)
         setEditTitle(instructor.title)
         setEditIntro(instructor.intro)
         setEditImage(instructor.image)
@@ -74,7 +99,10 @@ export default function AdminInstructorsPage() {
     } else {
       // 선택 해제 시 폼 초기화
       setEditName("")
-      setEditRating("0")
+      setEditIcon("none")
+      setEditRating(0)
+      setEditStudents(0)
+      setEditCourses(0)
       setEditTitle("")
       setEditIntro("")
       setEditImage(null)
@@ -105,7 +133,17 @@ export default function AdminInstructorsPage() {
     setInstructors(
       instructors.map((inst) =>
         inst.id === selectedInstructorId
-          ? { ...inst, name: editName, rating: editRating, title: editTitle, intro: editIntro, image: editImage }
+          ? { 
+              ...inst, 
+              name: editName, 
+              icon: editIcon,
+              rating: editRating,
+              students: editStudents,
+              courses: editCourses,
+              title: editTitle, 
+              intro: editIntro, 
+              image: editImage 
+            }
           : inst
       )
     )
@@ -141,7 +179,7 @@ export default function AdminInstructorsPage() {
         {/* 강사 정보 편집 (강사 선택 시에만 표시) */}
         {selectedInstructorId && (
           <>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* 프로필 카드 */}
               <Card>
                 <CardHeader>
@@ -150,7 +188,7 @@ export default function AdminInstructorsPage() {
                 </CardHeader>
                 <CardContent className="flex flex-col items-center gap-4">
                   <div 
-                    className="relative w-32 h-32 rounded-full overflow-hidden bg-muted cursor-pointer group"
+                    className="relative w-24 h-24 rounded-full overflow-hidden bg-muted cursor-pointer group"
                     onClick={handleImageClick}
                   >
                     {editImage ? (
@@ -162,11 +200,11 @@ export default function AdminInstructorsPage() {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-700 to-gray-900">
-                        <span className="text-4xl font-bold text-white">{editName.charAt(0) || "?"}</span>
+                        <span className="text-3xl font-bold text-white">{editName.charAt(0) || "?"}</span>
                       </div>
                     )}
                     <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Camera className="h-8 w-8 text-white" />
+                      <Camera className="h-6 w-6 text-white" />
                     </div>
                   </div>
                   <input
@@ -196,29 +234,38 @@ export default function AdminInstructorsPage() {
                   </div>
 
                   <div className="w-full space-y-2">
-                    <Label htmlFor="rating">{"별점 (이름 옆 표시)"}</Label>
-                    <div className="flex items-center gap-2">
-                      <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                      <Input
-                        id="rating"
-                        type="number"
-                        step="0.1"
-                        min="0"
-                        max="5"
-                        value={editRating}
-                        onChange={(e) => setEditRating(e.target.value)}
-                        placeholder="4.9"
-                        className="w-24"
-                      />
-                      <span className="text-xs text-muted-foreground">{"(0.0 ~ 5.0)"}</span>
+                    <Label>{"이름 옆 아이콘"}</Label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {iconOptions.map((option) => {
+                        const IconComponent = option.icon
+                        const isSelected = editIcon === option.id
+                        return (
+                          <button
+                            key={option.id}
+                            type="button"
+                            onClick={() => setEditIcon(option.id)}
+                            className={`flex flex-col items-center justify-center p-2 rounded-lg border transition-colors ${
+                              isSelected ? "border-primary bg-primary/10" : "border-border hover:border-primary/50"
+                            }`}
+                          >
+                            {IconComponent ? (
+                              <IconComponent className={`h-4 w-4 ${isSelected ? "text-primary" : "text-muted-foreground"}`} />
+                            ) : (
+                              <span className={`text-xs ${isSelected ? "text-primary" : "text-muted-foreground"}`}>{"X"}</span>
+                            )}
+                            <span className={`text-[10px] mt-1 ${isSelected ? "text-primary" : "text-muted-foreground"}`}>
+                              {option.label}
+                            </span>
+                          </button>
+                        )
+                      })}
                     </div>
-                    <p className="text-xs text-muted-foreground">{"0으로 설정하면 별점이 표시되지 않습니다."}</p>
                   </div>
                 </CardContent>
               </Card>
 
               {/* 강사 정보 카드 */}
-              <Card>
+              <Card className="lg:col-span-2">
                 <CardHeader>
                   <CardTitle className="text-base">{"강사 정보"}</CardTitle>
                   <CardDescription>{"수강생에게 표시되는 강사 소개 정보입니다."}</CardDescription>
@@ -241,7 +288,7 @@ export default function AdminInstructorsPage() {
                       value={editIntro}
                       onChange={(e) => setEditIntro(e.target.value)}
                       placeholder="강사 소개를 입력하세요"
-                      rows={6}
+                      rows={4}
                       className="resize-none"
                     />
                   </div>
@@ -250,81 +297,85 @@ export default function AdminInstructorsPage() {
                   <div className="space-y-4 pt-4 border-t">
                     <Label>{"미리보기"}</Label>
                     
-                    {/* 미리보기 1: 카드 형태 */}
-                    <div className="rounded-lg border bg-card p-4">
-                      <div className="flex gap-4">
-                        <div className="w-16 h-16 rounded-full overflow-hidden bg-muted shrink-0">
-                          {editImage ? (
-                            <Image
-                              src={editImage}
-                              alt="프로필 이미지"
-                              width={64}
-                              height={64}
-                              className="object-cover w-full h-full"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-700 to-gray-900">
-                              <span className="text-xl font-bold text-white">{editName.charAt(0) || "?"}</span>
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex-1">
-                          <h4 className="font-semibold">{editName || "이름"}</h4>
-                          <p className="text-sm text-muted-foreground">{editTitle?.split("/")[0]?.trim() || "직함"}</p>
-                          <p className="text-sm text-foreground mt-2 line-clamp-2">
-                            {editIntro || "강사 소개가 여기에 표시됩니다."}
-                          </p>
-                          <div className="flex items-center gap-4 mt-3 text-sm text-muted-foreground">
-                            {editRating && parseFloat(editRating) > 0 && (
-                              <div className="flex items-center gap-1">
-                                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                                <span>{editRating}</span>
+                    {/* 미리보기 1: 강사진 영역 (/#instructors) */}
+                    <div>
+                      <p className="text-xs text-muted-foreground mb-2">{"강사진 영역"}</p>
+                      <div className="rounded-2xl border border-border/50 bg-card p-6">
+                        <div className="mb-5 flex items-center gap-4">
+                          <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl">
+                            {editImage ? (
+                              <Image
+                                src={editImage}
+                                alt="프로필 이미지"
+                                width={64}
+                                height={64}
+                                className="object-cover w-full h-full"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-700 to-gray-900">
+                                <span className="text-xl font-bold text-white">{editName.charAt(0) || "?"}</span>
                               </div>
                             )}
-                            <div className="flex items-center gap-1">
-                              <span>{"8,340명"}</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <span>{"5개 강의"}</span>
-                            </div>
                           </div>
+                          <div>
+                            <h3 className="text-lg font-bold text-foreground">{editName || "이름"}</h3>
+                            <p className="text-sm text-primary">{editTitle || "직함"}</p>
+                          </div>
+                        </div>
+                        <p className="mb-5 text-sm leading-relaxed text-muted-foreground">
+                          {editIntro || "강사 소개가 여기에 표시됩니다."}
+                        </p>
+                        <div className="flex items-center gap-4 border-t border-border/50 pt-4 text-xs text-muted-foreground">
+                          <span className="flex items-center gap-1">
+                            <Star className="h-3.5 w-3.5 fill-primary text-primary" />
+                            <span className="font-semibold text-foreground">{editRating || 0}</span>
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Users className="h-3.5 w-3.5" />
+                            {editStudents?.toLocaleString() || 0}{"명"}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <BookOpen className="h-3.5 w-3.5" />
+                            {editCourses || 0}{"개 강의"}
+                          </span>
                         </div>
                       </div>
                     </div>
 
-                    {/* 미리보기 2: 강사 소개 형태 */}
-                    <div className="rounded-lg border bg-muted/30 p-4">
-                      <h4 className="text-sm font-semibold mb-3">{"강사 소개"}</h4>
-                      <div className="flex gap-4">
-                        <div className="w-14 h-14 rounded-full overflow-hidden bg-muted shrink-0">
-                          {editImage ? (
-                            <Image
-                              src={editImage}
-                              alt="프로필 이미지"
-                              width={56}
-                              height={56}
-                              className="object-cover w-full h-full"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-700 to-gray-900">
-                              <span className="text-lg font-bold text-white">{editName.charAt(0) || "?"}</span>
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="font-semibold">{editName || "이름"}</span>
-                            {editRating && parseFloat(editRating) > 0 && (
-                              <div className="flex items-center gap-1">
-                                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                                <span className="text-sm">{editRating}</span>
+                    {/* 미리보기 2: 강사 소개 영역 (/courses/[slug]) */}
+                    <div>
+                      <p className="text-xs text-muted-foreground mb-2">{"강사 소개 영역"}</p>
+                      <div className="rounded-xl border border-border bg-card p-6">
+                        <h4 className="mb-5 text-lg font-bold text-foreground">{"강사 소개"}</h4>
+                        <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
+                          <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full">
+                            {editImage ? (
+                              <Image
+                                src={editImage}
+                                alt="프로필 이미지"
+                                width={80}
+                                height={80}
+                                className="object-cover w-full h-full"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-700 to-gray-900">
+                                <span className="text-2xl font-bold text-white">{editName.charAt(0) || "?"}</span>
                               </div>
                             )}
                           </div>
-                          <p className="text-sm text-muted-foreground mb-2">{editTitle || "직함"}</p>
-                          <p className="text-sm text-primary">
-                            {editIntro || "강사 소개가 여기에 표시됩니다."}
-                          </p>
+                          <div className="flex-1">
+                            <div className="mb-1 flex items-center gap-2">
+                              <h3 className="text-lg font-bold text-foreground">{editName || "이름"}</h3>
+                              {editIcon !== "none" && (() => {
+                                const IconComponent = iconOptions.find(o => o.id === editIcon)?.icon
+                                return IconComponent ? <IconComponent className="h-4 w-4 text-accent" /> : null
+                              })()}
+                            </div>
+                            <p className="mb-3 text-sm font-medium text-accent">{editTitle || "직함"}</p>
+                            <p className="text-[15px] leading-relaxed text-muted-foreground">
+                              {editIntro || "강사 소개가 여기에 표시됩니다."}
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>
