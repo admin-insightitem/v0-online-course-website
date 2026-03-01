@@ -59,7 +59,23 @@ export function Header({ variant = "default" }: HeaderProps) {
   const [notificationOpen, setNotificationOpen] = useState(false)
   const [notifications, setNotifications] = useState(notificationsData)
   const [menuOpenId, setMenuOpenId] = useState<number | null>(null)
+  const [loginModalOpen, setLoginModalOpen] = useState(false)
   const notificationRef = useRef<HTMLDivElement>(null)
+
+  // 카카오 로그인 URL
+  const kakaoLoginUrl = "https://kauth.kakao.com/oauth/authorize?client_id=0d0c2e03abc5480140321be92f43c9fa&redirect_uri=https%3A%2F%2Fwww.bootooschool.co.kr%2Fkakao%2Fcomplete&response_type=code&state=%2F"
+
+  // 로그인 모달이 열릴 때 스크롤 방지
+  useEffect(() => {
+    if (loginModalOpen) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = ""
+    }
+    return () => {
+      document.body.style.overflow = ""
+    }
+  }, [loginModalOpen])
 
   // 외부 클릭 시 팝업 닫기
   useEffect(() => {
@@ -263,16 +279,13 @@ export function Header({ variant = "default" }: HeaderProps) {
           </div>
         ) : (
           <div className="hidden items-center gap-3 lg:flex">
-            <Link href="/login">
-              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
-                로그인
-              </Button>
-            </Link>
-            <Link href="/login">
-              <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
-                가입하기
-              </Button>
-            </Link>
+            <Button 
+              size="sm" 
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
+              onClick={() => setLoginModalOpen(true)}
+            >
+              {"로그인/가입하기"}
+            </Button>
           </div>
         )}
 
@@ -324,21 +337,64 @@ export function Header({ variant = "default" }: HeaderProps) {
                   </Link>
                 </>
               ) : (
-                <>
-                  <Link href="/login" onClick={() => setMobileOpen(false)}>
-                    <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground">
-                      로그인
-                    </Button>
-                  </Link>
-                  <Link href="/login" onClick={() => setMobileOpen(false)}>
-                    <Button size="sm" className="w-full bg-primary text-primary-foreground">
-                      가입하기
-                    </Button>
-                  </Link>
-                </>
+                <Button 
+                    size="sm" 
+                    className="w-full bg-primary text-primary-foreground"
+                    onClick={() => {
+                      setMobileOpen(false)
+                      setLoginModalOpen(true)
+                    }}
+                  >
+                    {"로그인/가입하기"}
+                  </Button>
               )}
             </div>
           </nav>
+        </div>
+      )}
+
+      {/* 로그인 모달 */}
+      {loginModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center">
+          {/* 회색 배경 오버레이 */}
+          <div 
+            className="absolute inset-0 bg-gray-600/80"
+            onClick={() => setLoginModalOpen(false)}
+          />
+          
+          {/* 모달 컨텐츠 */}
+          <div className="relative z-10 w-full max-w-md mx-4 bg-white rounded-2xl shadow-xl p-8">
+            {/* 닫기 버튼 */}
+            <button
+              onClick={() => setLoginModalOpen(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+            >
+              <X className="h-6 w-6" />
+            </button>
+
+            {/* 로고 */}
+            <div className="mb-6">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-amber-500">
+                <svg className="h-7 w-7 text-white" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/>
+                </svg>
+              </div>
+            </div>
+
+            {/* 타이틀 */}
+            <h2 className="text-xl font-bold text-gray-900 mb-6">{"로그인/회원가입"}</h2>
+
+            {/* 카카오 로그인 버튼 */}
+            <a 
+              href={kakaoLoginUrl}
+              className="flex items-center justify-center gap-2 w-full h-12 bg-[#FEE500] hover:bg-[#FDD800] text-black/85 font-medium rounded-lg transition-colors"
+            >
+              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 3C6.477 3 2 6.463 2 10.692c0 2.752 1.837 5.17 4.609 6.544-.148.534-.952 3.435-.987 3.66 0 0-.02.167.088.231.108.064.235.015.235.015.31-.044 3.589-2.35 4.155-2.749.612.086 1.243.131 1.9.131 5.523 0 10-3.463 10-7.692S17.523 3 12 3z"/>
+              </svg>
+              {"카카오톡으로 3초만에 시작하기"}
+            </a>
+          </div>
         </div>
       )}
     </header>
