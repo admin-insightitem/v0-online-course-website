@@ -353,12 +353,14 @@ export function Header({ variant = "default" }: HeaderProps) {
         </div>
       )}
 
-      {/* 로그인 모달 */}
+      </header>
+
+      {/* 로그인 모달 - header 바깥에서 전체 화면 중앙에 표시 */}
       {loginModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center">
-          {/* 회색 배경 오버레이 */}
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center">
+          {/* 회색 배경 오버레이 - 전체 화면 */}
           <div 
-            className="absolute inset-0 bg-gray-600/80"
+            className="fixed inset-0 bg-gray-600/80"
             onClick={() => setLoginModalOpen(false)}
           />
           
@@ -397,6 +399,5 @@ export function Header({ variant = "default" }: HeaderProps) {
           </div>
         </div>
       )}
-    </header>
   )
 }
