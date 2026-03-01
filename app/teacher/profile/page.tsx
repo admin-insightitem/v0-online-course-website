@@ -8,18 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Camera, Check, Crown, Star, Award, Shield, Zap, BadgeCheck } from "lucide-react"
-
-// 마크 옵션
-const markOptions = [
-  { id: "none", label: "없음", icon: null },
-  { id: "verified", label: "인증", icon: BadgeCheck },
-  { id: "crown", label: "왕관", icon: Crown },
-  { id: "star", label: "별", icon: Star },
-  { id: "award", label: "상장", icon: Award },
-  { id: "shield", label: "방패", icon: Shield },
-  { id: "zap", label: "번개", icon: Zap },
-]
+import { Camera, Star } from "lucide-react"
 
 export default function TeacherProfilePage() {
   // 프로필 이미지
@@ -28,7 +17,7 @@ export default function TeacherProfilePage() {
 
   // 기본 정보
   const [name, setName] = useState("김도현")
-  const [selectedMark, setSelectedMark] = useState("verified")
+  const [rating, setRating] = useState("4.9")
   
   // 강사 정보
   const [instructorTitle, setInstructorTitle] = useState("AI 비즈니스 전문가 / 전 네이버 AI Lab")
@@ -117,34 +106,23 @@ export default function TeacherProfilePage() {
               </div>
 
               <div className="w-full space-y-2">
-                <Label>{"이름 옆 마크"}</Label>
-                <div className="grid grid-cols-4 gap-2">
-                  {markOptions.map((option) => {
-                    const IconComponent = option.icon
-                    const isSelected = selectedMark === option.id
-                    return (
-                      <button
-                        key={option.id}
-                        type="button"
-                        onClick={() => setSelectedMark(option.id)}
-                        className={`flex flex-col items-center justify-center p-2 rounded-lg border transition-colors ${
-                          isSelected
-                            ? "border-primary bg-primary/10"
-                            : "border-border hover:border-primary/50"
-                        }`}
-                      >
-                        {IconComponent ? (
-                          <IconComponent className={`h-5 w-5 ${isSelected ? "text-primary" : "text-muted-foreground"}`} />
-                        ) : (
-                          <span className={`text-xs ${isSelected ? "text-primary" : "text-muted-foreground"}`}>{"X"}</span>
-                        )}
-                        <span className={`text-xs mt-1 ${isSelected ? "text-primary" : "text-muted-foreground"}`}>
-                          {option.label}
-                        </span>
-                      </button>
-                    )
-                  })}
+                <Label htmlFor="rating">{"별점 (이름 옆 표시)"}</Label>
+                <div className="flex items-center gap-2">
+                  <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                  <Input
+                    id="rating"
+                    type="number"
+                    step="0.1"
+                    min="0"
+                    max="5"
+                    value={rating}
+                    onChange={(e) => setRating(e.target.value)}
+                    placeholder="4.9"
+                    className="w-24"
+                  />
+                  <span className="text-xs text-muted-foreground">{"(0.0 ~ 5.0)"}</span>
                 </div>
+                <p className="text-xs text-muted-foreground">{"0으로 설정하면 별점이 표시되지 않습니다."}</p>
               </div>
             </CardContent>
           </Card>
@@ -200,10 +178,12 @@ export default function TeacherProfilePage() {
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <span className="font-semibold">{name || "이름"}</span>
-                        {selectedMark !== "none" && (() => {
-                          const MarkIcon = markOptions.find(m => m.id === selectedMark)?.icon
-                          return MarkIcon ? <MarkIcon className="w-4 h-4 text-primary" /> : null
-                        })()}
+                        {rating && parseFloat(rating) > 0 && (
+                          <div className="flex items-center gap-1">
+                            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                            <span className="text-sm font-medium">{rating}</span>
+                          </div>
+                        )}
                       </div>
                       <p className="text-sm text-muted-foreground mb-2">
                         {instructorTitle || "강사 직함을 입력하세요"}

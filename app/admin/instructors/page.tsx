@@ -10,17 +10,11 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { 
   Camera, 
-  Crown, 
   Star, 
-  Award, 
-  Shield, 
-  Zap, 
-  BadgeCheck,
   Search,
   Plus,
   Edit,
   Trash2,
-  ChevronLeft
 } from "lucide-react"
 import {
   Dialog,
@@ -38,23 +32,12 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-// 마크 옵션
-const markOptions = [
-  { id: "none", label: "없음", icon: null },
-  { id: "verified", label: "인증", icon: BadgeCheck },
-  { id: "crown", label: "왕관", icon: Crown },
-  { id: "star", label: "별", icon: Star },
-  { id: "award", label: "상장", icon: Award },
-  { id: "shield", label: "방패", icon: Shield },
-  { id: "zap", label: "번개", icon: Zap },
-]
-
 // 강사 더미 데이터
 const instructorsData = [
   {
     id: 1,
     name: "김도현",
-    mark: "verified",
+    rating: "4.9",
     title: "AI 비즈니스 전문가 / 전 네이버 AI Lab",
     intro: "10년간 AI 분야에서 활동하며 200개 이상의 AI 자동화 프로젝트를 성공적으로 이끌었습니다.",
     image: null,
@@ -64,7 +47,7 @@ const instructorsData = [
   {
     id: 2,
     name: "이수진",
-    mark: "crown",
+    rating: "4.8",
     title: "재테크 전문가 / 베스트셀러 작가",
     intro: "15년간 금융업계에서 활동하며 10만명 이상의 수강생을 가르쳤습니다.",
     image: null,
@@ -74,7 +57,7 @@ const instructorsData = [
   {
     id: 3,
     name: "박민수",
-    mark: "star",
+    rating: "4.7",
     title: "부동산 투자 전문가",
     intro: "20년간 부동산 투자 경력, 100억 이상의 자산 운용 경험이 있습니다.",
     image: null,
@@ -91,7 +74,7 @@ export default function AdminInstructorsPage() {
 
   // 편집 폼 상태
   const [editName, setEditName] = useState("")
-  const [editMark, setEditMark] = useState("none")
+  const [editRating, setEditRating] = useState("0")
   const [editTitle, setEditTitle] = useState("")
   const [editIntro, setEditIntro] = useState("")
   const [editImage, setEditImage] = useState<string | null>(null)
@@ -106,7 +89,7 @@ export default function AdminInstructorsPage() {
   const handleEditClick = (instructor: typeof instructorsData[0]) => {
     setSelectedInstructor(instructor)
     setEditName(instructor.name)
-    setEditMark(instructor.mark)
+    setEditRating(instructor.rating)
     setEditTitle(instructor.title)
     setEditIntro(instructor.intro)
     setEditImage(instructor.image)
@@ -116,7 +99,7 @@ export default function AdminInstructorsPage() {
   const handleNewInstructor = () => {
     setSelectedInstructor(null)
     setEditName("")
-    setEditMark("none")
+    setEditRating("0")
     setEditTitle("")
     setEditIntro("")
     setEditImage(null)
@@ -144,7 +127,7 @@ export default function AdminInstructorsPage() {
       setInstructors(
         instructors.map((inst) =>
           inst.id === selectedInstructor.id
-            ? { ...inst, name: editName, mark: editMark, title: editTitle, intro: editIntro, image: editImage }
+            ? { ...inst, name: editName, rating: editRating, title: editTitle, intro: editIntro, image: editImage }
             : inst
         )
       )
@@ -153,7 +136,7 @@ export default function AdminInstructorsPage() {
       const newInstructor = {
         id: Math.max(...instructors.map((i) => i.id)) + 1,
         name: editName,
-        mark: editMark,
+        rating: editRating,
         title: editTitle,
         intro: editIntro,
         image: editImage,
@@ -214,7 +197,7 @@ export default function AdminInstructorsPage() {
                 <TableRow>
                   <TableHead className="w-[250px]">{"강사"}</TableHead>
                   <TableHead>{"직함"}</TableHead>
-                  <TableHead className="text-center">{"마크"}</TableHead>
+                  <TableHead className="text-center">{"별점"}</TableHead>
                   <TableHead className="text-center">{"강의 수"}</TableHead>
                   <TableHead className="text-center">{"수강생"}</TableHead>
                   <TableHead className="text-right">{"관리"}</TableHead>
@@ -222,7 +205,6 @@ export default function AdminInstructorsPage() {
               </TableHeader>
               <TableBody>
                 {filteredInstructors.map((instructor) => {
-                  const MarkIcon = markOptions.find((m) => m.id === instructor.mark)?.icon
                   return (
                     <TableRow key={instructor.id}>
                       <TableCell>
@@ -244,13 +226,23 @@ export default function AdminInstructorsPage() {
                           </div>
                           <div className="flex items-center gap-1.5">
                             <span className="font-medium">{instructor.name}</span>
-                            {MarkIcon && <MarkIcon className="h-4 w-4 text-primary" />}
+                            {parseFloat(instructor.rating) > 0 && (
+                              <div className="flex items-center gap-0.5">
+                                <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
+                                <span className="text-xs font-medium">{instructor.rating}</span>
+                              </div>
+                            )}
                           </div>
                         </div>
                       </TableCell>
                       <TableCell className="text-muted-foreground">{instructor.title}</TableCell>
                       <TableCell className="text-center">
-                        {instructor.mark !== "none" ? markOptions.find((m) => m.id === instructor.mark)?.label : "-"}
+                        {parseFloat(instructor.rating) > 0 ? (
+                          <div className="flex items-center justify-center gap-1">
+                            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                            <span>{instructor.rating}</span>
+                          </div>
+                        ) : "-"}
                       </TableCell>
                       <TableCell className="text-center">{instructor.classes}</TableCell>
                       <TableCell className="text-center">{instructor.students.toLocaleString()}</TableCell>
@@ -326,32 +318,23 @@ export default function AdminInstructorsPage() {
               </div>
 
               <div className="space-y-2">
-                <Label>{"이름 옆 마크"}</Label>
-                <div className="grid grid-cols-4 gap-2">
-                  {markOptions.map((option) => {
-                    const IconComponent = option.icon
-                    const isSelected = editMark === option.id
-                    return (
-                      <button
-                        key={option.id}
-                        type="button"
-                        onClick={() => setEditMark(option.id)}
-                        className={`flex flex-col items-center justify-center p-2 rounded-lg border transition-colors ${
-                          isSelected ? "border-primary bg-primary/10" : "border-border hover:border-primary/50"
-                        }`}
-                      >
-                        {IconComponent ? (
-                          <IconComponent className={`h-5 w-5 ${isSelected ? "text-primary" : "text-muted-foreground"}`} />
-                        ) : (
-                          <span className={`text-xs ${isSelected ? "text-primary" : "text-muted-foreground"}`}>{"X"}</span>
-                        )}
-                        <span className={`text-xs mt-1 ${isSelected ? "text-primary" : "text-muted-foreground"}`}>
-                          {option.label}
-                        </span>
-                      </button>
-                    )
-                  })}
+                <Label htmlFor="editRating">{"별점 (이름 옆 표시)"}</Label>
+                <div className="flex items-center gap-2">
+                  <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                  <Input
+                    id="editRating"
+                    type="number"
+                    step="0.1"
+                    min="0"
+                    max="5"
+                    value={editRating}
+                    onChange={(e) => setEditRating(e.target.value)}
+                    placeholder="4.9"
+                    className="w-24"
+                  />
+                  <span className="text-xs text-muted-foreground">{"(0.0 ~ 5.0)"}</span>
                 </div>
+                <p className="text-xs text-muted-foreground">{"0으로 설정하면 별점이 표시되지 않습니다."}</p>
               </div>
             </div>
 
@@ -395,11 +378,12 @@ export default function AdminInstructorsPage() {
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <span className="font-semibold">{editName || "이름"}</span>
-                        {editMark !== "none" &&
-                          (() => {
-                            const MarkIcon = markOptions.find((m) => m.id === editMark)?.icon
-                            return MarkIcon ? <MarkIcon className="w-4 h-4 text-primary" /> : null
-                          })()}
+                        {editRating && parseFloat(editRating) > 0 && (
+                          <div className="flex items-center gap-1">
+                            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                            <span className="text-sm font-medium">{editRating}</span>
+                          </div>
+                        )}
                       </div>
                       <p className="text-sm text-muted-foreground mb-2">{editTitle || "강사 직함을 입력하세요"}</p>
                       <p className="text-sm">{editIntro || "강사 소개를 입력하세요"}</p>
