@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { ChevronDown, PlayCircle, Lock, CheckCircle } from "lucide-react"
+import { ChevronDown, PlayCircle, Lock, CheckCircle, BookOpen, Clock } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import type { Course } from "@/lib/courses"
 
@@ -47,17 +47,38 @@ export function CourseCurriculum({ course }: { course: Course }) {
   }
 
   return (
-    <section className="mt-10">
-      <div className="mb-5 flex items-end justify-between">
-        <h2 className="text-xl font-bold text-foreground lg:text-2xl">
-          커리큘럼
-        </h2>
-        <span className="text-sm text-muted-foreground">
-          {course.curriculum.length}개 섹션 &middot; {totalLessons}개 강의 &middot; 총 {course.duration}
-        </span>
+    <section id="detail-curriculum" className="scroll-mt-32 py-12">
+      <div className="mb-6 flex items-center gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary">
+          <BookOpen className="h-5 w-5 text-primary-foreground" />
+        </div>
+        <div>
+          <h2 className="text-xl font-bold text-foreground lg:text-2xl">
+            커리큘럼
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {course.curriculum.length}개 섹션 · {totalLessons}개 강의 · 총 {course.duration}
+          </p>
+        </div>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-border">
+      {/* Summary Stats */}
+      <div className="mb-6 flex flex-wrap gap-4">
+        <div className="flex items-center gap-2 rounded-full bg-secondary px-4 py-2">
+          <BookOpen className="h-4 w-4 text-primary" />
+          <span className="text-sm font-medium text-foreground">{totalLessons}개 강의</span>
+        </div>
+        <div className="flex items-center gap-2 rounded-full bg-secondary px-4 py-2">
+          <Clock className="h-4 w-4 text-primary" />
+          <span className="text-sm font-medium text-foreground">{course.duration}</span>
+        </div>
+        <div className="flex items-center gap-2 rounded-full bg-accent/10 px-4 py-2">
+          <PlayCircle className="h-4 w-4 text-accent" />
+          <span className="text-sm font-medium text-accent">미리보기 가능</span>
+        </div>
+      </div>
+
+      <div className="overflow-hidden rounded-2xl border border-border">
         {course.curriculum.map((section, sIdx) => {
           const isOpen = openSections.includes(sIdx)
           const sectionLectureNum = getSectionLectureNum(sIdx)
@@ -67,19 +88,23 @@ export function CourseCurriculum({ course }: { course: Course }) {
               {/* Section header */}
               <button
                 onClick={() => toggleSection(sIdx)}
-                className="flex w-full items-center justify-between bg-secondary/30 px-5 py-4 text-left transition-colors hover:bg-secondary/50"
+                className="flex w-full items-center justify-between bg-gradient-to-r from-secondary/50 to-secondary/30 px-6 py-5 text-left transition-colors hover:from-secondary/70 hover:to-secondary/50"
                 aria-expanded={isOpen}
               >
-                <div className="flex items-center gap-3">
-                  <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${isOpen ? "rotate-0" : "-rotate-90"}`} />
-                  <span className="text-[15px] font-semibold text-foreground">{section.title}</span>
+                <div className="flex items-center gap-4">
+                  <div className={`flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${isOpen ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
+                    <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? "rotate-0" : "-rotate-90"}`} />
+                  </div>
+                  <div>
+                    <span className="text-base font-semibold text-foreground">{section.title}</span>
+                    <p className="mt-0.5 text-xs text-muted-foreground">{section.lessons.length}개 강의 · {getSectionDuration(sIdx)}</p>
+                  </div>
                 </div>
-                <span className="text-xs text-muted-foreground">{section.lessons.length}강 ({getSectionDuration(sIdx)})</span>
               </button>
 
               {/* Lessons */}
               {isOpen && (
-                <ul>
+                <ul className="divide-y divide-border/50">
                   {section.lessons.map((lesson, lIdx) => {
                     const lectureId = `lecture-${sectionLectureNum + lIdx + 1}`
                     
@@ -101,44 +126,45 @@ export function CourseCurriculum({ course }: { course: Course }) {
                     const isClickable = isPreview || isCompleted || isNotWatched
 
                     return (
-                      <li
-                        key={lesson.title}
-                        className={`${lIdx > 0 ? "border-t border-border/50" : ""} bg-card`}
-                      >
+                      <li key={lesson.title} className="bg-card">
                         {isClickable ? (
                           <Link
                             href={`/courses/${course.id}/watch/${lectureId}`}
-                            className="flex items-center gap-3 px-5 py-3.5 transition-colors hover:bg-secondary/30"
+                            className="flex items-center gap-4 px-6 py-4 transition-colors hover:bg-secondary/30"
                           >
-                            {isCompleted ? (
-                              <CheckCircle className="h-4 w-4 shrink-0 text-green-500" />
-                            ) : (
-                              <PlayCircle className="h-4 w-4 shrink-0 text-muted-foreground" />
-                            )}
+                            <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${isCompleted ? "bg-green-100 text-green-600" : "bg-accent/10 text-accent"}`}>
+                              {isCompleted ? (
+                                <CheckCircle className="h-5 w-5" />
+                              ) : (
+                                <PlayCircle className="h-5 w-5" />
+                              )}
+                            </div>
                             <div className="flex-1 min-w-0">
-                              <p className={`text-sm truncate ${isCompleted ? "text-muted-foreground" : "text-foreground"}`}>
-                                {lesson.title}
-                              </p>
-                              <div className="flex items-center gap-2 mt-0.5">
-                                <span className="text-xs text-muted-foreground">
-                                  {lesson.duration}
-                                </span>
-                                {isCompleted && (
-                                  <span className="text-xs text-green-500">수강완료</span>
-                                )}
+                              <div className="flex items-center gap-2">
+                                <p className={`text-sm font-medium ${isCompleted ? "text-muted-foreground" : "text-foreground"}`}>
+                                  {lesson.title}
+                                </p>
                                 {isPreview && !isCompleted && (
-                                  <Badge variant="secondary" className="text-[10px] text-accent">
+                                  <Badge className="border-0 bg-accent/10 text-[10px] font-semibold text-accent">
                                     미리보기
                                   </Badge>
+                                )}
+                              </div>
+                              <div className="mt-1 flex items-center gap-2">
+                                <span className="text-xs text-muted-foreground">{lesson.duration}</span>
+                                {isCompleted && (
+                                  <span className="text-xs font-medium text-green-600">수강완료</span>
                                 )}
                               </div>
                             </div>
                           </Link>
                         ) : (
-                          <div className="flex items-center gap-3 px-5 py-3.5 opacity-60">
-                            <Lock className="h-4 w-4 shrink-0 text-muted-foreground/50" />
+                          <div className="flex items-center gap-4 px-6 py-4 opacity-50">
+                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                              <Lock className="h-4 w-4" />
+                            </div>
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm truncate text-muted-foreground">{lesson.title}</p>
+                              <p className="text-sm font-medium text-muted-foreground">{lesson.title}</p>
                               <span className="text-xs text-muted-foreground">{lesson.duration}</span>
                             </div>
                           </div>
