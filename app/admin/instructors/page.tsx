@@ -68,8 +68,8 @@ export default function AdminInstructorsPage() {
   // 강사 목록
   const [instructors, setInstructors] = useState(instructorsData)
   
-  // 선택된 강사 ID
-  const [selectedInstructorId, setSelectedInstructorId] = useState<string>("")
+  // 선택된 강사 ID (첫 번째 강사 기본 선택)
+  const [selectedInstructorId, setSelectedInstructorId] = useState<string>(instructorsData[0]?.id || "")
   
   // 편집 폼 상태
   const [editName, setEditName] = useState("")
@@ -160,7 +160,7 @@ export default function AdminInstructorsPage() {
         </div>
 
         {/* 강사 선택 */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 rounded-lg border border-border bg-card p-4">
           <Label className="shrink-0">{"강사 선택"}</Label>
           <Select value={selectedInstructorId} onValueChange={setSelectedInstructorId}>
             <SelectTrigger className="w-full md:w-80">
