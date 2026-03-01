@@ -1,190 +1,306 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
-import Link from "next/link"
 import { AdminLayout } from "@/components/admin-layout"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { 
-  Star, 
-  Search,
-  Plus,
-  Edit,
-  Trash2,
-} from "lucide-react"
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Camera, Star } from "lucide-react"
 
 // 강사 더미 데이터
 const instructorsData = [
   {
-    id: 1,
+    id: "1",
     name: "김도현",
     rating: "4.9",
     title: "AI 비즈니스 전문가 / 전 네이버 AI Lab",
-    intro: "10년간 AI 분야에서 활동하며 200개 이상의 AI 자동화 프로젝트를 성공적으로 이끌었습니다.",
-    image: null,
-    classes: 5,
-    students: 1250,
+    intro: "10년간 AI 분야에서 활동하며 200개 이상의 AI 자동화 프로젝트를 성공적으로 이끌었습니다. 현재 AI 기반 수익화 컨설팅 대표로 활동 중이며, 3,000명 이상의 수강생이 실제 수익을 창출하고 있습니다.",
+    image: null as string | null,
   },
   {
-    id: 2,
+    id: "2",
     name: "이수진",
     rating: "4.8",
     title: "재테크 전문가 / 베스트셀러 작가",
-    intro: "15년간 금융업계에서 활동하며 10만명 이상의 수강생을 가르쳤습니다.",
-    image: null,
-    classes: 8,
-    students: 3420,
+    intro: "15년간 금융업계에서 활동하며 10만명 이상의 수강생을 가르쳤습니다. '돈이 되는 습관' 등 다수의 베스트셀러를 출간했습니다.",
+    image: null as string | null,
   },
   {
-    id: 3,
+    id: "3",
     name: "박민수",
     rating: "4.7",
     title: "부동산 투자 전문가",
-    intro: "20년간 부동산 투자 경력, 100억 이상의 자산 운용 경험이 있습니다.",
-    image: null,
-    classes: 3,
-    students: 890,
+    intro: "20년간 부동산 투자 경력, 100억 이상의 자산 운용 경험이 있습니다. 실전 투자 노하우를 전수합니다.",
+    image: null as string | null,
   },
 ]
 
 export default function AdminInstructorsPage() {
+  // 강사 목록
   const [instructors, setInstructors] = useState(instructorsData)
-  const [searchTerm, setSearchTerm] = useState("")
+  
+  // 선택된 강사 ID
+  const [selectedInstructorId, setSelectedInstructorId] = useState<string>("")
+  
+  // 편집 폼 상태
+  const [editName, setEditName] = useState("")
+  const [editRating, setEditRating] = useState("0")
+  const [editTitle, setEditTitle] = useState("")
+  const [editIntro, setEditIntro] = useState("")
+  const [editImage, setEditImage] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const filteredInstructors = instructors.filter(
-    (instructor) =>
-      instructor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      instructor.title.toLowerCase().includes(searchTerm.toLowerCase())
-  )
-
-  const handleDelete = (id: number) => {
-    if (confirm("정말로 이 강사를 삭제하시겠습니까?")) {
-      setInstructors(instructors.filter((inst) => inst.id !== id))
+  // 강사 선택 시 폼에 데이터 로드
+  useEffect(() => {
+    if (selectedInstructorId) {
+      const instructor = instructors.find(i => i.id === selectedInstructorId)
+      if (instructor) {
+        setEditName(instructor.name)
+        setEditRating(instructor.rating)
+        setEditTitle(instructor.title)
+        setEditIntro(instructor.intro)
+        setEditImage(instructor.image)
+      }
+    } else {
+      // 선택 해제 시 폼 초기화
+      setEditName("")
+      setEditRating("0")
+      setEditTitle("")
+      setEditIntro("")
+      setEditImage(null)
     }
+  }, [selectedInstructorId, instructors])
+
+  const handleImageClick = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setEditImage(reader.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const handleSave = () => {
+    if (!selectedInstructorId) {
+      alert("강사를 선택해주세요.")
+      return
+    }
+    
+    setInstructors(
+      instructors.map((inst) =>
+        inst.id === selectedInstructorId
+          ? { ...inst, name: editName, rating: editRating, title: editTitle, intro: editIntro, image: editImage }
+          : inst
+      )
+    )
+    alert("강사 정보가 저장되었습니다.")
   }
 
   return (
     <AdminLayout>
       <div className="space-y-6">
-        {/* Page Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight">{"강사 관리"}</h2>
-            <p className="text-muted-foreground">{"모든 강사의 프로필 정보를 관리합니다."}</p>
-          </div>
-          <Link href="/admin/instructors/new">
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              {"새 강사 등록"}
-            </Button>
-          </Link>
+        {/* 헤더 */}
+        <div>
+          <h1 className="text-2xl font-bold">{"강사정보관리"}</h1>
+          <p className="text-muted-foreground">{"강사 프로필 정보를 관리합니다."}</p>
         </div>
 
-        {/* Search */}
+        {/* 강사 선택 */}
         <Card>
-          <CardContent className="pt-6">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="강사 이름 또는 직함으로 검색..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
-              />
-            </div>
+          <CardHeader>
+            <CardTitle className="text-base">{"강사 선택"}</CardTitle>
+            <CardDescription>{"수정할 강사를 선택하세요."}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Select value={selectedInstructorId} onValueChange={setSelectedInstructorId}>
+              <SelectTrigger className="w-full md:w-80">
+                <SelectValue placeholder="강사를 선택하세요" />
+              </SelectTrigger>
+              <SelectContent>
+                {instructors.map((instructor) => (
+                  <SelectItem key={instructor.id} value={instructor.id}>
+                    {instructor.name} - {instructor.title.split("/")[0].trim()}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </CardContent>
         </Card>
 
-        {/* Instructors Table */}
-        <Card>
-          <CardHeader>
-            <CardTitle>{"강사 목록"}</CardTitle>
-            <CardDescription>{"총 "}{instructors.length}{"명의 강사가 등록되어 있습니다."}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[250px]">{"강사"}</TableHead>
-                  <TableHead>{"직함"}</TableHead>
-                  <TableHead className="text-center">{"별점"}</TableHead>
-                  <TableHead className="text-center">{"강의 수"}</TableHead>
-                  <TableHead className="text-center">{"수강생"}</TableHead>
-                  <TableHead className="text-right">{"관리"}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredInstructors.map((instructor) => {
-                  return (
-                    <TableRow key={instructor.id}>
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full overflow-hidden bg-muted shrink-0">
-                            {instructor.image ? (
-                              <Image
-                                src={instructor.image}
-                                alt={instructor.name}
-                                width={40}
-                                height={40}
-                                className="object-cover w-full h-full"
-                              />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-700 to-gray-900">
-                                <span className="text-sm font-bold text-white">{instructor.name.charAt(0)}</span>
+        {/* 강사 정보 편집 (강사 선택 시에만 표시) */}
+        {selectedInstructorId && (
+          <>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* 프로필 카드 */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">{"프로필"}</CardTitle>
+                  <CardDescription>{"강의 페이지에 표시되는 프로필입니다."}</CardDescription>
+                </CardHeader>
+                <CardContent className="flex flex-col items-center gap-4">
+                  <div 
+                    className="relative w-32 h-32 rounded-full overflow-hidden bg-muted cursor-pointer group"
+                    onClick={handleImageClick}
+                  >
+                    {editImage ? (
+                      <Image
+                        src={editImage}
+                        alt="프로필 이미지"
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-700 to-gray-900">
+                        <span className="text-4xl font-bold text-white">{editName.charAt(0) || "?"}</span>
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Camera className="h-8 w-8 text-white" />
+                    </div>
+                  </div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="hidden"
+                  />
+                  <div className="text-center space-y-1">
+                    <p className="text-xs text-muted-foreground">
+                      {"클릭하여 프로필 사진을 변경하세요"}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {"권장: 1200×1200px 이상, 최대 2MB, 1:1 비율"}
+                    </p>
+                  </div>
+                  
+                  <div className="w-full space-y-2">
+                    <Label htmlFor="name">{"이름"}</Label>
+                    <Input
+                      id="name"
+                      value={editName}
+                      onChange={(e) => setEditName(e.target.value)}
+                      placeholder="이름을 입력하세요"
+                    />
+                  </div>
+
+                  <div className="w-full space-y-2">
+                    <Label htmlFor="rating">{"별점 (이름 옆 표시)"}</Label>
+                    <div className="flex items-center gap-2">
+                      <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+                      <Input
+                        id="rating"
+                        type="number"
+                        step="0.1"
+                        min="0"
+                        max="5"
+                        value={editRating}
+                        onChange={(e) => setEditRating(e.target.value)}
+                        placeholder="4.9"
+                        className="w-24"
+                      />
+                      <span className="text-xs text-muted-foreground">{"(0.0 ~ 5.0)"}</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground">{"0으로 설정하면 별점이 표시되지 않습니다."}</p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* 강사 정보 카드 */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">{"강사 정보"}</CardTitle>
+                  <CardDescription>{"수강생에게 표시되는 강사 소개 정보입니다."}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="title">{"강사 직함"}</Label>
+                    <Input
+                      id="title"
+                      value={editTitle}
+                      onChange={(e) => setEditTitle(e.target.value)}
+                      placeholder="예: AI 비즈니스 전문가 / 전 네이버 AI Lab"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="intro">{"강사 소개"}</Label>
+                    <Textarea
+                      id="intro"
+                      value={editIntro}
+                      onChange={(e) => setEditIntro(e.target.value)}
+                      placeholder="강사 소개를 입력하세요"
+                      rows={6}
+                      className="resize-none"
+                    />
+                  </div>
+
+                  {/* 미리보기 */}
+                  <div className="space-y-2 pt-4 border-t">
+                    <Label>{"미리보기"}</Label>
+                    <div className="rounded-lg border bg-card p-4">
+                      <div className="flex gap-4">
+                        <div className="w-16 h-16 rounded-full overflow-hidden bg-muted shrink-0">
+                          {editImage ? (
+                            <Image
+                              src={editImage}
+                              alt="프로필 이미지"
+                              width={64}
+                              height={64}
+                              className="object-cover w-full h-full"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-700 to-gray-900">
+                              <span className="text-xl font-bold text-white">{editName.charAt(0) || "?"}</span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="font-semibold">{editName || "이름"}</span>
+                            {editRating && parseFloat(editRating) > 0 && (
+                              <div className="flex items-center gap-1">
+                                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                                <span className="text-sm font-medium">{editRating}</span>
                               </div>
                             )}
                           </div>
-                          <div className="flex items-center gap-1.5">
-                            <span className="font-medium">{instructor.name}</span>
-                            {parseFloat(instructor.rating) > 0 && (
-                              <div className="flex items-center gap-0.5">
-                                <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
-                                <span className="text-xs font-medium">{instructor.rating}</span>
-                              </div>
-                            )}
-                          </div>
+                          <p className="text-sm text-muted-foreground mb-2">{editTitle || "직함"}</p>
+                          <p className="text-sm text-primary line-clamp-2">
+                            {editIntro || "강사 소개가 여기에 표시됩니다."}
+                          </p>
                         </div>
-                      </TableCell>
-                      <TableCell className="text-muted-foreground">{instructor.title}</TableCell>
-                      <TableCell className="text-center">
-                        {parseFloat(instructor.rating) > 0 ? (
-                          <div className="flex items-center justify-center gap-1">
-                            <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                            <span>{instructor.rating}</span>
-                          </div>
-                        ) : "-"}
-                      </TableCell>
-                      <TableCell className="text-center">{instructor.classes}</TableCell>
-                      <TableCell className="text-center">{instructor.students.toLocaleString()}</TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <Link href={`/admin/instructors/${instructor.id}`}>
-                            <Button variant="ghost" size="icon">
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                          </Link>
-                          <Button variant="ghost" size="icon" onClick={() => handleDelete(instructor.id)}>
-                            <Trash2 className="h-4 w-4 text-destructive" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  )
-                })}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* 저장 버튼 */}
+            <div className="flex justify-end">
+              <Button onClick={handleSave} className="bg-foreground text-background hover:bg-foreground/90">
+                {"저장하기"}
+              </Button>
+            </div>
+          </>
+        )}
       </div>
     </AdminLayout>
   )
