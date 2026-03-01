@@ -33,15 +33,16 @@ export function HeroSection() {
 
         <h1 className="max-w-4xl text-4xl font-extrabold leading-tight tracking-tight text-foreground md:text-5xl lg:text-7xl">
           <span className="text-balance">
-            당신의 수익을{" "}
-            <span className="text-primary">10배</span>
-            {" "}만드는 온라인 클래스
+            {"당신의 수익을 10배 만드는"}
+            <br />
+            {"온라인 클래스"}
           </span>
         </h1>
 
         <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
-          AI, 유튜브, 마케팅, 디자인, 커머스 분야 최고 전문가들의 실전 노하우를
-          지금 바로 시작하세요. 이미 50,000명이 선택한 프리미엄 온라인 강의.
+          {"AI, 유튜브, 마케팅, 디자인, 커머스 분야 최고 전문가들의 실전 노하우를 지금 바로 시작하세요."}
+          <br />
+          {"이미 50,000명이 선택한 프리미엄 온라인 강의."}
         </p>
 
         <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
