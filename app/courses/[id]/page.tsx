@@ -10,6 +10,7 @@ import { CourseInstructor } from "@/components/course-detail/course-instructor"
 import { CourseReviews } from "@/components/course-detail/course-reviews"
 import { CourseRefund } from "@/components/course-detail/course-refund"
 import { CourseMobileCTA } from "@/components/course-detail/course-mobile-cta"
+import { CoursePurchaseSidebar } from "@/components/course-detail/course-purchase-sidebar"
 import { BackToTop } from "@/components/course-detail/back-to-top"
 
 export function generateStaticParams() {
@@ -37,19 +38,33 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ i
       <main>
         <CourseDetailHero course={course} />
         <CourseTabsNav />
+        
+        {/* Two Column Layout */}
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
-          <CourseIntro course={course} />
-          <div className="border-t border-border" />
-          <CourseCurriculum course={course} />
-          <div className="border-t border-border" />
-          <CourseInstructor course={course} />
-          <div className="border-t border-border" />
-          <CourseReviews course={course} />
-          <div className="border-t border-border" />
-          <CourseRefund />
+          <div className="flex flex-col gap-8 py-8 lg:flex-row lg:gap-12">
+            {/* Left: Content */}
+            <div className="min-w-0 flex-1">
+              <CourseIntro course={course} />
+              <div className="border-t border-border" />
+              <CourseCurriculum course={course} />
+              <div className="border-t border-border" />
+              <CourseInstructor course={course} />
+              <div className="border-t border-border" />
+              <CourseReviews course={course} />
+              <div className="border-t border-border" />
+              <CourseRefund />
+            </div>
+            
+            {/* Right: Sticky Sidebar (desktop only) */}
+            <div className="hidden w-[360px] shrink-0 lg:block">
+              <CoursePurchaseSidebar course={course} />
+            </div>
+          </div>
+          
           {/* Spacer for mobile CTA */}
           <div className="h-24 lg:hidden" />
         </div>
+        
         <CourseMobileCTA course={course} />
         <BackToTop />
       </main>
