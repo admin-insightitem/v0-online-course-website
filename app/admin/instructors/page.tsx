@@ -122,26 +122,21 @@ export default function AdminInstructorsPage() {
         </div>
 
         {/* 강사 선택 */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">{"강사 선택"}</CardTitle>
-            <CardDescription>{"수정할 강사를 선택하세요."}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Select value={selectedInstructorId} onValueChange={setSelectedInstructorId}>
-              <SelectTrigger className="w-full md:w-80">
-                <SelectValue placeholder="강사를 선택하세요" />
-              </SelectTrigger>
-              <SelectContent>
-                {instructors.map((instructor) => (
-                  <SelectItem key={instructor.id} value={instructor.id}>
-                    {instructor.name} - {instructor.title.split("/")[0].trim()}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </CardContent>
-        </Card>
+        <div className="flex items-center gap-4">
+          <Label className="shrink-0">{"강사 선택"}</Label>
+          <Select value={selectedInstructorId} onValueChange={setSelectedInstructorId}>
+            <SelectTrigger className="w-full md:w-80">
+              <SelectValue placeholder="강사를 선택하세요" />
+            </SelectTrigger>
+            <SelectContent>
+              {instructors.map((instructor) => (
+                <SelectItem key={instructor.id} value={instructor.id}>
+                  {instructor.name} - {instructor.title.split("/")[0].trim()}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
         {/* 강사 정보 편집 (강사 선택 시에만 표시) */}
         {selectedInstructorId && (
