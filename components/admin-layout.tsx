@@ -14,6 +14,7 @@ import {
   X,
   LogOut,
   Bell,
+  UserCog,
 } from "lucide-react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
@@ -30,6 +31,7 @@ import {
 const adminMenu = [
   { icon: LayoutDashboard, label: "대시보드", href: "/admin" },
   { icon: BookOpen, label: "클래스 관리", href: "/admin/classes" },
+  { icon: UserCog, label: "강사 관리", href: "/admin/instructors" },
   { icon: Users, label: "회원 관리", href: "/admin/students" },
   { icon: CreditCard, label: "결제/환불", href: "/admin/payments" },
   { icon: MessageSquare, label: "게시판/문의", href: "/admin/inquiries" },
