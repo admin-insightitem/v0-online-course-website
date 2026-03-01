@@ -247,8 +247,10 @@ export default function AdminInstructorsPage() {
                   </div>
 
                   {/* 미리보기 */}
-                  <div className="space-y-2 pt-4 border-t">
+                  <div className="space-y-4 pt-4 border-t">
                     <Label>{"미리보기"}</Label>
+                    
+                    {/* 미리보기 1: 카드 형태 */}
                     <div className="rounded-lg border bg-card p-4">
                       <div className="flex gap-4">
                         <div className="w-16 h-16 rounded-full overflow-hidden bg-muted shrink-0">
@@ -267,17 +269,60 @@ export default function AdminInstructorsPage() {
                           )}
                         </div>
                         <div className="flex-1">
+                          <h4 className="font-semibold">{editName || "이름"}</h4>
+                          <p className="text-sm text-muted-foreground">{editTitle?.split("/")[0]?.trim() || "직함"}</p>
+                          <p className="text-sm text-foreground mt-2 line-clamp-2">
+                            {editIntro || "강사 소개가 여기에 표시됩니다."}
+                          </p>
+                          <div className="flex items-center gap-4 mt-3 text-sm text-muted-foreground">
+                            {editRating && parseFloat(editRating) > 0 && (
+                              <div className="flex items-center gap-1">
+                                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                                <span>{editRating}</span>
+                              </div>
+                            )}
+                            <div className="flex items-center gap-1">
+                              <span>{"8,340명"}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <span>{"5개 강의"}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 미리보기 2: 강사 소개 형태 */}
+                    <div className="rounded-lg border bg-muted/30 p-4">
+                      <h4 className="text-sm font-semibold mb-3">{"강사 소개"}</h4>
+                      <div className="flex gap-4">
+                        <div className="w-14 h-14 rounded-full overflow-hidden bg-muted shrink-0">
+                          {editImage ? (
+                            <Image
+                              src={editImage}
+                              alt="프로필 이미지"
+                              width={56}
+                              height={56}
+                              className="object-cover w-full h-full"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-700 to-gray-900">
+                              <span className="text-lg font-bold text-white">{editName.charAt(0) || "?"}</span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
                             <span className="font-semibold">{editName || "이름"}</span>
                             {editRating && parseFloat(editRating) > 0 && (
                               <div className="flex items-center gap-1">
                                 <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                                <span className="text-sm font-medium">{editRating}</span>
+                                <span className="text-sm">{editRating}</span>
                               </div>
                             )}
                           </div>
                           <p className="text-sm text-muted-foreground mb-2">{editTitle || "직함"}</p>
-                          <p className="text-sm text-primary line-clamp-2">
+                          <p className="text-sm text-primary">
                             {editIntro || "강사 소개가 여기에 표시됩니다."}
                           </p>
                         </div>
