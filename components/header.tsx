@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
+import { createPortal } from "react-dom"
 import Link from "next/link"
 import Image from "next/image"
 import { Menu, X, ShoppingCart, User, Bell, MoreVertical, Check, Trash2 } from "lucide-react"
@@ -104,8 +105,9 @@ export function Header({ variant = "default" }: HeaderProps) {
     setMenuOpenId(null)
   }
 
-  return (
-    <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
+return (
+    <>
+      <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 lg:px-8">
         <Link href="/" className="flex items-center gap-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
@@ -353,50 +355,53 @@ export function Header({ variant = "default" }: HeaderProps) {
         </div>
       )}
 
-      {/* 로그인 모달 - 전체 화면 중앙에 표시 */}
-        {loginModalOpen && (
-          <div className="fixed inset-0 z-[9999] flex items-center justify-center">
-            {/* 회색 배경 오버레이 - 전체 화면 */}
-            <div 
-              className="fixed inset-0 bg-gray-600/80"
-              onClick={() => setLoginModalOpen(false)}
-            />
-            
-            {/* 모달 컨텐츠 */}
-            <div className="relative z-10 w-full max-w-md mx-4 bg-white rounded-2xl shadow-xl p-8">
-              {/* 닫기 버튼 */}
-              <button
-                onClick={() => setLoginModalOpen(false)}
-                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
-              >
-                <X className="h-6 w-6" />
-              </button>
-
-              {/* 로고 */}
-              <div className="mb-6">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-amber-500">
-                  <svg className="h-7 w-7 text-white" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/>
-                  </svg>
-                </div>
-              </div>
-
-              {/* 타이틀 */}
-              <h2 className="text-xl font-bold text-gray-900 mb-6">{"로그인/회원가입"}</h2>
-
-              {/* 카카오 로그인 버튼 */}
-              <a 
-                href={kakaoLoginUrl}
-                className="flex items-center justify-center gap-2 w-full h-12 bg-[#FEE500] hover:bg-[#FDD800] text-black/85 font-medium rounded-lg transition-colors"
-              >
-                <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 3C6.477 3 2 6.463 2 10.692c0 2.752 1.837 5.17 4.609 6.544-.148.534-.952 3.435-.987 3.66 0 0-.02.167.088.231.108.064.235.015.235.015.31-.044 3.589-2.35 4.155-2.749.612.086 1.243.131 1.9.131 5.523 0 10-3.463 10-7.692S17.523 3 12 3z"/>
-                </svg>
-                {"카카오톡으로 3초만에 시작하기"}
-              </a>
-            </div>
-          </div>
-        )}
       </header>
+
+      {/* 로그인 모달 - React Portal로 body에 직접 렌더링 */}
+      {loginModalOpen && typeof document !== "undefined" && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center">
+          {/* 회색 배경 오버레이 - 전체 화면 */}
+          <div 
+            className="fixed inset-0 bg-gray-600/80"
+            onClick={() => setLoginModalOpen(false)}
+          />
+          
+          {/* 모달 컨텐츠 */}
+          <div className="relative z-10 w-full max-w-md mx-4 bg-white rounded-2xl shadow-xl p-8">
+            {/* 닫기 버튼 */}
+            <button
+              onClick={() => setLoginModalOpen(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+            >
+              <X className="h-6 w-6" />
+            </button>
+
+            {/* 로고 */}
+            <div className="mb-6">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-amber-500">
+                <svg className="h-7 w-7 text-white" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/>
+                </svg>
+              </div>
+            </div>
+
+            {/* 타이틀 */}
+            <h2 className="text-xl font-bold text-gray-900 mb-6">{"로그인/회원가입"}</h2>
+
+            {/* 카카오 로그인 버튼 */}
+            <a 
+              href={kakaoLoginUrl}
+              className="flex items-center justify-center gap-2 w-full h-12 bg-[#FEE500] hover:bg-[#FDD800] text-black/85 font-medium rounded-lg transition-colors"
+            >
+              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 3C6.477 3 2 6.463 2 10.692c0 2.752 1.837 5.17 4.609 6.544-.148.534-.952 3.435-.987 3.66 0 0-.02.167.088.231.108.064.235.015.235.015.31-.044 3.589-2.35 4.155-2.749.612.086 1.243.131 1.9.131 5.523 0 10-3.463 10-7.692S17.523 3 12 3z"/>
+              </svg>
+              {"카카오톡으로 3초만에 시작하기"}
+            </a>
+          </div>
+        </div>,
+        document.body
+      )}
+    </>
   )
 }
