@@ -8,7 +8,18 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Camera } from "lucide-react"
+import { Camera, Check, Crown, Star, Award, Shield, Zap, BadgeCheck } from "lucide-react"
+
+// 마크 옵션
+const markOptions = [
+  { id: "none", label: "없음", icon: null },
+  { id: "verified", label: "인증", icon: BadgeCheck },
+  { id: "crown", label: "왕관", icon: Crown },
+  { id: "star", label: "별", icon: Star },
+  { id: "award", label: "상장", icon: Award },
+  { id: "shield", label: "방패", icon: Shield },
+  { id: "zap", label: "번개", icon: Zap },
+]
 
 export default function TeacherProfilePage() {
   // 프로필 이미지
@@ -16,7 +27,8 @@ export default function TeacherProfilePage() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // 기본 정보
-  const [nickname, setNickname] = useState("김도현")
+  const [name, setName] = useState("김도현")
+  const [selectedMark, setSelectedMark] = useState("verified")
   
   // 강사 정보
   const [instructorTitle, setInstructorTitle] = useState("AI 비즈니스 전문가 / 전 네이버 AI Lab")
@@ -71,7 +83,7 @@ export default function TeacherProfilePage() {
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-700 to-gray-900">
-                    <span className="text-4xl font-bold text-white">{nickname.charAt(0)}</span>
+                    <span className="text-4xl font-bold text-white">{name.charAt(0)}</span>
                   </div>
                 )}
                 <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
@@ -85,18 +97,54 @@ export default function TeacherProfilePage() {
                 onChange={handleImageChange}
                 className="hidden"
               />
-              <p className="text-xs text-muted-foreground text-center">
-                {"클릭하여 프로필 사진을 변경하세요"}
-              </p>
+              <div className="text-center space-y-1">
+                <p className="text-xs text-muted-foreground">
+                  {"클릭하여 프로필 사진을 변경하세요"}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {"권장: 1200×1200px 이상, 최대 2MB, 1:1 비율"}
+                </p>
+              </div>
               
               <div className="w-full space-y-2">
-                <Label htmlFor="nickname">{"닉네임"}</Label>
+                <Label htmlFor="name">{"이름"}</Label>
                 <Input
-                  id="nickname"
-                  value={nickname}
-                  onChange={(e) => setNickname(e.target.value)}
-                  placeholder="닉네임을 입력하세요"
+                  id="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="이름을 입력하세요"
                 />
+              </div>
+
+              <div className="w-full space-y-2">
+                <Label>{"이름 옆 마크"}</Label>
+                <div className="grid grid-cols-4 gap-2">
+                  {markOptions.map((option) => {
+                    const IconComponent = option.icon
+                    const isSelected = selectedMark === option.id
+                    return (
+                      <button
+                        key={option.id}
+                        type="button"
+                        onClick={() => setSelectedMark(option.id)}
+                        className={`flex flex-col items-center justify-center p-2 rounded-lg border transition-colors ${
+                          isSelected
+                            ? "border-primary bg-primary/10"
+                            : "border-border hover:border-primary/50"
+                        }`}
+                      >
+                        {IconComponent ? (
+                          <IconComponent className={`h-5 w-5 ${isSelected ? "text-primary" : "text-muted-foreground"}`} />
+                        ) : (
+                          <span className={`text-xs ${isSelected ? "text-primary" : "text-muted-foreground"}`}>{"X"}</span>
+                        )}
+                        <span className={`text-xs mt-1 ${isSelected ? "text-primary" : "text-muted-foreground"}`}>
+                          {option.label}
+                        </span>
+                      </button>
+                    )
+                  })}
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -145,16 +193,17 @@ export default function TeacherProfilePage() {
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-700 to-gray-900">
-                          <span className="text-xl font-bold text-white">{nickname.charAt(0)}</span>
+                          <span className="text-xl font-bold text-white">{name.charAt(0)}</span>
                         </div>
                       )}
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="font-semibold">{nickname || "닉네임"}</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-muted-foreground">
-                          <path fillRule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
-                        </svg>
+                        <span className="font-semibold">{name || "이름"}</span>
+                        {selectedMark !== "none" && (() => {
+                          const MarkIcon = markOptions.find(m => m.id === selectedMark)?.icon
+                          return MarkIcon ? <MarkIcon className="w-4 h-4 text-primary" /> : null
+                        })()}
                       </div>
                       <p className="text-sm text-muted-foreground mb-2">
                         {instructorTitle || "강사 직함을 입력하세요"}
