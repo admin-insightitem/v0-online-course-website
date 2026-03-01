@@ -31,12 +31,8 @@ export function HeroSection() {
           </span>
         </div>
 
-        <h1 className="max-w-4xl text-4xl font-extrabold leading-tight tracking-tight text-foreground md:text-5xl lg:text-7xl">
-          <span className="text-balance">
-            {"당신의 수익을 10배 만드는"}
-            <br />
-            {"온라인 클래스"}
-          </span>
+        <h1 className="max-w-4xl text-4xl font-extrabold leading-tight tracking-tight text-foreground md:text-5xl lg:text-7xl break-keep">
+          {"당신의 수익을 10배 만드는 온라인 클래스"}
         </h1>
 
         <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg break-keep">
