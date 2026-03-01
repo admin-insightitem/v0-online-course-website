@@ -9,7 +9,7 @@ export default function ProfilePage() {
   // 기본 데이터
   const [name, setName] = useState("김경민")
   const email = "k1k1m1@naver.com" // 카카오톡 정보, 수정 불가
-  const phone = "01028153911" // 카카오톡 정보, 수정 불가
+  const phone = "010-2815-3911" // 카카오톡 정보, 수정 불가 (하이픈 형식)
   const [marketingConsent, setMarketingConsent] = useState(true)
 
   const handleSave = () => {
@@ -21,15 +21,15 @@ export default function ProfilePage() {
     <MypageLayout activeMenu="회원정보관리">
       <h2 className="text-xl font-bold text-foreground">{"회원정보"}</h2>
 
-      <div className="mt-8">
+      <div className="mt-8 rounded-lg border border-border bg-card p-6">
         {/* 이름 */}
-        <div className="flex items-center border-b border-border py-6">
+        <div className="flex items-center border-b border-border py-6 first:pt-0">
           <label className="w-32 shrink-0 text-sm font-medium text-primary">{"이름"}</label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="flex-1 h-11 rounded-md border border-border bg-card px-4 text-sm text-foreground outline-none focus:border-primary"
+            className="flex-1 h-11 rounded-md border border-border bg-background px-4 text-sm text-foreground outline-none focus:border-primary"
           />
         </div>
 
@@ -56,16 +56,16 @@ export default function ProfilePage() {
         </div>
 
         {/* 마케팅 수신 설정 */}
-        <div className="flex items-start border-b border-border py-6">
+        <div className="flex items-start py-6">
           <label className="w-32 shrink-0 text-sm font-medium text-primary pt-2">{"마케팅 수신 설정"}</label>
           <div className="flex-1">
-            <div className="rounded-lg border border-border bg-card p-4">
+            <div className="rounded-lg border border-border bg-background p-4">
               <label className="flex cursor-pointer items-start gap-3">
                 <div
                   className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border ${
                     marketingConsent
                       ? "border-accent bg-accent"
-                      : "border-border bg-card"
+                      : "border-border bg-background"
                   }`}
                   onClick={() => setMarketingConsent(!marketingConsent)}
                 >
@@ -85,7 +85,7 @@ export default function ProfilePage() {
         </div>
 
         {/* 저장하기 버튼 */}
-        <div className="mt-8 flex justify-end">
+        <div className="mt-4 flex justify-end">
           <Button
             onClick={handleSave}
             className="h-11 px-8 bg-accent text-accent-foreground hover:bg-accent/90"
