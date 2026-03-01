@@ -57,16 +57,11 @@ export default function OrderPage() {
   const [selectedInstallment, setSelectedInstallment] = useState("일시불")
   const [couponCode, setCouponCode] = useState("")
   const [agreedToTerms, setAgreedToTerms] = useState(false)
-  const [agreedToEmail, setAgreedToEmail] = useState(true)
-  const [agreedToSms, setAgreedToSms] = useState(false)
-  const [isMarketingTermsOpen, setIsMarketingTermsOpen] = useState(false)
   const [isInstallmentInfoOpen, setIsInstallmentInfoOpen] = useState(false)
-  const emailMarketingDate = "2025.09.02 00:43"
-  const smsMarketingDate = "2024.04.04 20:25"
 
   // 모달이 열릴 때 배경 스크롤 방지
   useEffect(() => {
-    if (isMarketingTermsOpen || isInstallmentInfoOpen) {
+    if (isInstallmentInfoOpen) {
       document.body.style.overflow = "hidden"
     } else {
       document.body.style.overflow = ""
@@ -74,7 +69,7 @@ export default function OrderPage() {
     return () => {
       document.body.style.overflow = ""
     }
-  }, [isMarketingTermsOpen, isInstallmentInfoOpen])
+  }, [isInstallmentInfoOpen])
 
   const totalOriginalPrice = orderItems.reduce((sum, item) => sum + parsePrice(item.originalPrice), 0)
   const totalPrice = orderItems.reduce((sum, item) => sum + parsePrice(item.price), 0)
@@ -256,55 +251,7 @@ export default function OrderPage() {
                   </div>
                 )}
 
-                {/* 마케팅 수신 동의 섹션 */}
-                <div className="mt-6 pt-6 border-t border-border">
-                  <h4 className="text-base font-semibold text-foreground mb-4">{"마케팅 수신 동의"}</h4>
-                  
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-foreground">{"마케팅 정보 수신에 동의합니다."}</span>
-                    <button 
-                      onClick={() => setIsMarketingTermsOpen(true)}
-                      className="text-sm text-muted-foreground border border-border rounded px-3 py-1 hover:bg-muted/50"
-                    >
-                      {"약관보기"}
-                    </button>
-                  </div>
-                  <p className="mt-2 text-xs text-muted-foreground">
-                    {"할인 이벤트와 쿠폰 발급 등의 알림을 받으시고 혜택을 놓치지 마세요."}
-                  </p>
-                  
-                  <div className="mt-4 space-y-3">
-                    {/* 이메일 수신 */}
-                    <div className="flex items-center justify-between">
-                      <label className="flex cursor-pointer items-center gap-2">
-                        <Checkbox
-                          checked={agreedToEmail}
-                          onCheckedChange={(checked) => setAgreedToEmail(checked === true)}
-                          className="h-4 w-4 border-border data-[state=checked]:border-accent data-[state=checked]:bg-accent"
-                        />
-                        <span className="text-sm text-foreground">{"이메일 수신"}</span>
-                      </label>
-                      <span className="text-xs text-muted-foreground">
-                        {agreedToEmail ? "동의" : "미동의"}{" 일자 : "}{emailMarketingDate}
-                      </span>
-                    </div>
-                    
-                    {/* 문자메시지 수신 */}
-                    <div className="flex items-center justify-between">
-                      <label className="flex cursor-pointer items-center gap-2">
-                        <Checkbox
-                          checked={agreedToSms}
-                          onCheckedChange={(checked) => setAgreedToSms(checked === true)}
-                          className="h-4 w-4 border-border data-[state=checked]:border-accent data-[state=checked]:bg-accent"
-                        />
-                        <span className="text-sm text-foreground">{"문자메시지 수신"}</span>
-                      </label>
-                      <span className="text-xs text-muted-foreground">
-                        {agreedToSms ? "동의" : "미동의"}{" 일자 : "}{smsMarketingDate}
-                      </span>
-                    </div>
-                  </div>
-                </div>
+                
               </section>
 
             </div>
@@ -373,71 +320,6 @@ export default function OrderPage() {
         </div>
       </main>
       <Footer />
-
-      {/* 마케팅 수신 동의 약관 모달 */}
-      {isMarketingTermsOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden">
-          {/* 어두운 배경 오버레이 */}
-          <div 
-            className="absolute inset-0 bg-black/50"
-            onClick={() => setIsMarketingTermsOpen(false)}
-          />
-          
-          {/* 모달 컨텐츠 */}
-          <div className="relative z-10 w-full max-w-3xl mx-4 bg-white rounded-lg shadow-lg text-black">
-            {/* 모달 헤더 */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">{"마케팅 수신 동의"}</h3>
-              <button
-                onClick={() => setIsMarketingTermsOpen(false)}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            
-            {/* 모달 본문 */}
-            <div className="p-6">
-              {/* 테이블 */}
-              <div className="border border-gray-200 rounded overflow-hidden">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-gray-200 bg-gray-50">
-                      <th className="px-4 py-3 text-center font-medium text-gray-900 w-24">{"서비스"}</th>
-                      <th className="px-4 py-3 text-center font-medium text-gray-900">{"목적"}</th>
-                      <th className="px-4 py-3 text-center font-medium text-gray-900 w-40">{"항목"}</th>
-                      <th className="px-4 py-3 text-center font-medium text-gray-900 w-32">{"보유기간"}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td className="px-4 py-4 text-center text-gray-700 align-top">{"회원가입"}</td>
-                      <td className="px-4 py-4 text-gray-700 align-top">
-                        {"(주) 컴퍼니가 제공하는 이용자 맞춤형 서비스 및 상품 추천, 각종 경품 행사, 이벤트 등의 광고성 정보 제공(이메일, 서신우편, SMS, 카카오톡 등)"}
-                      </td>
-                      <td className="px-4 py-4 text-center text-gray-700 align-top">
-                        {"이름, 이메일주소,"}<br />
-                        {"휴대전화번호, 마케팅 수신 동의 여부"}
-                      </td>
-                      <td className="px-4 py-4 text-center text-gray-700 align-top">
-                        {"회원 탈퇴 후 30일"}<br />
-                        {"또는 동의 철회 시까지"}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              
-              {/* 안내 문구 */}
-              <div className="mt-6 pt-6 border-t border-gray-200">
-                <p className="text-sm text-gray-600 leading-relaxed">
-                  {"본 마케팅 정보 수신에 대한 동의를 거부하실 수 있으며, 이 경우 회원가입은 가능하나 일부 서비스 이용 및 각종 광고, 할인, 이벤트 및 이용자 맞춤형 상품 추천 등의 서비스 제공이 제한될 수 있습니다."}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* 신용카드 무이자 할부 안내 모달 */}
       {isInstallmentInfoOpen && (
