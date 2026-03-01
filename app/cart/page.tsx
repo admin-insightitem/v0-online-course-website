@@ -187,7 +187,7 @@ export default function CartPage() {
                       className="mt-6 h-12 w-full bg-accent text-accent-foreground text-base font-semibold hover:bg-accent/90"
                       disabled={selectedIds.length === 0}
                     >
-                      상품 주문
+                      {"결제하기"}
                     </Button>
                   </Link>
                 </div>
