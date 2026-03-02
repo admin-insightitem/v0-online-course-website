@@ -74,7 +74,7 @@ export async function middleware(request: NextRequest) {
       return redirectWithCookies(new URL('/access-denied', request.url), supabaseResponse)
     }
 
-    if (pathname.startsWith('/teacher') && profile?.role !== 'instructor') {
+    if (pathname.startsWith('/teacher') && profile?.role !== 'instructor' && profile?.role !== 'admin') {
       return redirectWithCookies(new URL('/access-denied', request.url), supabaseResponse)
     }
   }

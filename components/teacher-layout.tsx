@@ -172,9 +172,9 @@ export function TeacherLayout({ children }: TeacherLayoutProps) {
             {/* Profile & Logout */}
             <div className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-sm font-medium">
-                강
+                {user?.role === 'admin' ? '관' : '강'}
               </div>
-              <span className="hidden text-sm font-medium md:inline-block">{user?.nickname || user?.name || "강사"}</span>
+              <span className="hidden text-sm font-medium md:inline-block">{user?.nickname || user?.name || (user?.role === 'admin' ? '관리자' : '강사')}</span>
               <Button variant="ghost" size="icon" onClick={handleSignOut} title="로그아웃">
                 <LogOut className="h-4 w-4" />
               </Button>
