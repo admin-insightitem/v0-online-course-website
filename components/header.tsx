@@ -11,7 +11,7 @@ import { useAuthStore } from "@/store/auth-store"
 import { signOut } from "@/lib/actions/auth"
 
 const navItems = [
-  { label: "전체 클래스", href: "/#courses" },
+  { label: "전체 클래스", href: "/courses" },
   { label: "카테고리", href: "/#categories" },
   { label: "강사진", href: "/#instructors" },
   { label: "후기", href: "/#testimonials" },
@@ -102,6 +102,7 @@ export function Header() {
   // 유저 링크 (Role 기반)
   const dashboardLink = user?.role === 'admin' ? '/admin' : user?.role === 'instructor' ? '/teacher' : '/mypage'
   const displayName = user?.nickname || user?.name || (user?.role === 'admin' ? '관리자' : user?.role === 'instructor' ? '강사' : '내 정보')
+  const avatarFallbackText = user?.role === 'admin' ? '관' : user?.role === 'instructor' ? '강' : displayName.charAt(0)
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
@@ -133,7 +134,7 @@ export function Header() {
               <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground hover:text-foreground">
                 <Avatar className="h-5 w-5">
                   <AvatarImage src={user?.avatar_url || ""} alt={displayName} />
-                  <AvatarFallback className="text-[10px]">{displayName.charAt(0)}</AvatarFallback>
+                  <AvatarFallback className="text-[10px]">{avatarFallbackText}</AvatarFallback>
                 </Avatar>
                 {displayName}
               </Button>
@@ -279,11 +280,18 @@ export function Header() {
               )}
             </div>
             {user?.role === 'admin' && (
-              <Link href="/admin" title="관리자 홈">
-                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
-                  <Shield className="h-4 w-4" />
-                </Button>
-              </Link>
+              <>
+                <Link href="/admin" title="관리자 홈">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
+                    <Shield className="h-4 w-4" />
+                  </Button>
+                </Link>
+                <Link href="/teacher" title="강사 홈">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
+                    <GraduationCap className="h-4 w-4" />
+                  </Button>
+                </Link>
+              </>
             )}
             {user?.role === 'instructor' && (
               <Link href="/teacher" title="강사 홈">
@@ -349,18 +357,26 @@ export function Header() {
                     <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground">
                       <Avatar className="h-5 w-5">
                         <AvatarImage src={user?.avatar_url || ""} alt={displayName} />
-                        <AvatarFallback className="text-[10px]">{displayName.charAt(0)}</AvatarFallback>
+                        <AvatarFallback className="text-[10px]">{avatarFallbackText}</AvatarFallback>
                       </Avatar>
                       {displayName}
                     </Button>
                   </Link>
                   {user?.role === 'admin' && (
-                    <Link href="/admin" onClick={() => setMobileOpen(false)}>
-                      <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground">
-                        <Shield className="h-4 w-4" />
-                        관리자 홈
-                      </Button>
-                    </Link>
+                    <>
+                      <Link href="/admin" onClick={() => setMobileOpen(false)}>
+                        <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground">
+                          <Shield className="h-4 w-4" />
+                          관리자 홈
+                        </Button>
+                      </Link>
+                      <Link href="/teacher" onClick={() => setMobileOpen(false)}>
+                        <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground">
+                          <GraduationCap className="h-4 w-4" />
+                          강사 홈
+                        </Button>
+                      </Link>
+                    </>
                   )}
                   {user?.role === 'instructor' && (
                     <Link href="/teacher" onClick={() => setMobileOpen(false)}>
