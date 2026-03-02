@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation"
-import { getCourseById, courses } from "@/lib/courses"
+import { getCourseById } from "@/lib/actions/courses"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { CourseDetailHero } from "@/components/course-detail/course-hero"
@@ -9,24 +9,22 @@ import { CourseInstructor } from "@/components/course-detail/course-instructor"
 import { CourseReviews } from "@/components/course-detail/course-reviews"
 import { CourseSidebar } from "@/components/course-detail/course-sidebar"
 
-export function generateStaticParams() {
-  return courses.map((course) => ({ id: course.id }))
-}
-
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const course = getCourseById(id)
-  if (!course) return { title: "강의를 찾을 수 없습니다" }
+  const result = await getCourseById(id)
+  if (!result.success) return { title: "강의를 찾을 수 없습니다" }
   return {
-    title: `${course.title} | RichClass`,
-    description: course.description,
+    title: `${result.data.title} | RichClass`,
+    description: result.data.description,
   }
 }
 
 export default async function CourseDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const course = getCourseById(id)
-  if (!course) notFound()
+  const result = await getCourseById(id)
+  if (!result.success) notFound()
+
+  const course = result.data
 
   return (
     <>

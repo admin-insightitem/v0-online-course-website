@@ -405,6 +405,10 @@ CREATE POLICY "강사 수강생 프로필 조회"
     )
   );
 
+CREATE POLICY "강사 프로필 공개 조회"
+  ON profiles FOR SELECT
+  USING (role IN ('instructor', 'admin'));
+
 -- 카테고리
 ALTER TABLE categories ENABLE ROW LEVEL SECURITY;
 

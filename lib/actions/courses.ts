@@ -78,6 +78,7 @@ export async function getCourseById(courseId: string): Promise<ActionResult<Cour
       instructor:profiles!courses_instructor_id_fkey(id, name, nickname, avatar_url, instructor_title, instructor_bio)
     `)
     .eq('id', courseId)
+    .eq('is_published', true)
     .single()
 
   if (error || !course) {

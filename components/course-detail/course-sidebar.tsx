@@ -3,12 +3,15 @@
 import { Clock, BookOpen, BarChart3, Globe, Award, Infinity, ShieldCheck } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import type { Course } from "@/lib/courses"
+import type { CourseWithInstructor, CourseSectionWithLectures } from "@/types"
 
-export function CourseSidebar({ course }: { course: Course }) {
-  const discount = Math.round(
-    (1 - parseInt(course.price.replace(/,/g, "")) / parseInt(course.originalPrice.replace(/,/g, ""))) * 100
-  )
+type CourseDetail = CourseWithInstructor & { sections: CourseSectionWithLectures[] }
+
+export function CourseSidebar({ course }: { course: CourseDetail }) {
+  const price = course.price
+  const originalPrice = course.original_price ?? price
+  const discount = originalPrice > 0 ? Math.round((1 - price / originalPrice) * 100) : 0
+  const totalLectures = course.sections.reduce((acc, s) => acc + s.lectures.length, 0)
 
   return (
     <div className="sticky top-20">
@@ -17,15 +20,19 @@ export function CourseSidebar({ course }: { course: Course }) {
         <div className="border-b border-border p-6">
           <div className="mb-1 flex items-center gap-3">
             <span className="text-3xl font-bold text-foreground">
-              {"\u20A9"}{course.price}
+              {"\u20A9"}{price.toLocaleString()}
             </span>
-            <Badge className="border-0 bg-red-500 text-xs font-bold text-white">
-              {discount}% OFF
-            </Badge>
+            {discount > 0 && (
+              <Badge className="border-0 bg-red-500 text-xs font-bold text-white">
+                {discount}% OFF
+              </Badge>
+            )}
           </div>
-          <p className="mb-5 text-sm text-muted-foreground line-through">
-            {"\u20A9"}{course.originalPrice}
-          </p>
+          {originalPrice > price && (
+            <p className="mb-5 text-sm text-muted-foreground line-through">
+              {"\u20A9"}{originalPrice.toLocaleString()}
+            </p>
+          )}
 
           <Button className="mb-3 h-12 w-full bg-accent text-base font-bold text-accent-foreground hover:bg-accent/90">
             수강 신청하기
@@ -47,13 +54,13 @@ export function CourseSidebar({ course }: { course: Course }) {
               <span className="flex items-center gap-2 text-muted-foreground">
                 <Clock className="h-4 w-4" /> 총 강의 시간
               </span>
-              <span className="font-medium text-foreground">{course.duration}</span>
+              <span className="font-medium text-foreground">{course.total_duration || "-"}</span>
             </li>
             <li className="flex items-center justify-between text-sm">
               <span className="flex items-center gap-2 text-muted-foreground">
                 <BookOpen className="h-4 w-4" /> 강의 수
               </span>
-              <span className="font-medium text-foreground">{course.lectures}개</span>
+              <span className="font-medium text-foreground">{totalLectures}개</span>
             </li>
             <li className="flex items-center justify-between text-sm">
               <span className="flex items-center gap-2 text-muted-foreground">
