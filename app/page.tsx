@@ -1,4 +1,3 @@
-import { WebinarTopBanner } from "@/components/webinar-top-banner"
 import { Header } from "@/components/header"
 
 import { CoursesSection } from "@/components/courses-section"
@@ -10,7 +9,6 @@ import { Footer } from "@/components/footer"
 export default function HomePage() {
   return (
     <main>
-      <WebinarTopBanner />
       <Header />
       <CoursesSection />
       <InstructorsSection />

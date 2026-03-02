@@ -254,34 +254,7 @@ CREATE TABLE notifications (
 );
 COMMENT ON TABLE notifications IS '알림 - 사용자별 알림 메시지';
 
--- 17. Webinars
-CREATE TABLE webinars (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  title TEXT NOT NULL,
-  speaker TEXT NOT NULL,
-  event_date DATE NOT NULL,
-  event_time TEXT NOT NULL,
-  spots INT NOT NULL DEFAULT 100,
-  spots_left INT NOT NULL DEFAULT 100,
-  tag TEXT,
-  tag_color TEXT,
-  is_active BOOLEAN NOT NULL DEFAULT TRUE,
-  link TEXT,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-COMMENT ON TABLE webinars IS '웨비나 - 온라인 세미나 일정 및 정보';
-
--- 18. Webinar Registrations
-CREATE TABLE webinar_registrations (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  webinar_id UUID NOT NULL REFERENCES webinars(id) ON DELETE CASCADE,
-  user_id UUID NOT NULL REFERENCES profiles(id),
-  registered_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  UNIQUE(webinar_id, user_id)
-);
-COMMENT ON TABLE webinar_registrations IS '웨비나 신청 - 사용자의 웨비나 참가 신청';
-
--- 19. Webhook Logs
+-- 17. Webhook Logs
 CREATE TABLE webhook_logs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   source TEXT NOT NULL,
@@ -314,8 +287,6 @@ CREATE INDEX idx_inquiries_user ON inquiries(user_id);
 CREATE INDEX idx_inquiries_status ON inquiries(status);
 CREATE INDEX idx_notifications_user ON notifications(user_id, is_read);
 CREATE INDEX idx_lecture_progress_user ON lecture_progress(user_id);
-CREATE INDEX idx_webinars_active ON webinars(is_active, event_date);
-CREATE INDEX idx_webinar_registrations_user ON webinar_registrations(user_id);
 CREATE INDEX idx_webhook_logs_source ON webhook_logs(source, created_at);
 
 -- =============================================
@@ -671,26 +642,6 @@ CREATE POLICY "본인 알림 조회"
 
 CREATE POLICY "본인 알림 수정"
   ON notifications FOR UPDATE
-  USING (auth.uid() = user_id);
-
--- 웨비나
-ALTER TABLE webinars ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "활성 웨비나 누구나 조회"
-  ON webinars FOR SELECT
-  USING (is_active = TRUE);
-
-CREATE POLICY "관리자 웨비나 관리"
-  ON webinars FOR ALL
-  USING (
-    public.get_my_role() = 'admin'
-  );
-
--- 웨비나 신청
-ALTER TABLE webinar_registrations ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "본인 웨비나 신청 관리"
-  ON webinar_registrations FOR ALL
   USING (auth.uid() = user_id);
 
 -- 웹훅 로그

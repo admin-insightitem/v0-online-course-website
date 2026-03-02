@@ -231,21 +231,6 @@ export interface Notification {
   created_at: string
 }
 
-// === Webinar ===
-export interface Webinar {
-  id: string
-  title: string
-  speaker: string
-  event_date: string
-  event_time: string
-  spots: number
-  spots_left: number
-  tag: string | null
-  tag_color: string | null
-  is_active: boolean
-  link: string | null
-}
-
 // === Server Action Result ===
 export type ActionResult<T = void> =
   | { success: true; data: T }

@@ -16,15 +16,16 @@ Supabase 프로젝트를 생성하고, 환경변수를 설정하고, DB 마이�
 
 ## 2. 현재 상태
 
-| 항목 | 상태 | 비고 |
-|------|------|------|
-| 프론트엔드 UI | ✅ 완료 | Vercel에서 UI 작업 완료 |
-| Server Actions (58개) | ✅ 완료 | Supabase 클라이언트 사용 |
-| DB 스키마 (19 테이블) | ✅ 준비됨 | 마이그레이션 3개 파일 |
-| `.env.local` | ⚠️ 플레이스홀더 | 모두 `your_xxx` 상태 |
-| Supabase 프로젝트 | ❌ 미생성 | 생성 필요 |
-| Auth 설정 (Kakao OAuth만) | ❌ 미설정 | 이메일 가입 제거, Kakao만 사용 |
-| Storage 버킷 | ❌ 미생성 | `profiles` 버킷 필요 |
+
+| 항목                      | 상태              | 비고                           |
+| --------------------------- | ------------------- | -------------------------------- |
+| 프론트엔드 UI             | ✅ 완료           | Vercel에서 UI 작업 완료        |
+| Server Actions (58개)     | ✅ 완료           | Supabase 클라이언트 사용       |
+| DB 스키마 (19 테이블)     | ✅ 준비됨         | 마이그레이션 3개 파일          |
+| `.env.local`              | ⚠️ 플레이스홀더 | 모두`your_xxx` 상태            |
+| Supabase 프로젝트         | ❌ 미생성         | 생성 필요                      |
+| Auth 설정 (Kakao OAuth만) | ❌ 미설정         | 이메일 가입 제거, Kakao만 사용 |
+| Storage 버킷              | ❌ 미생성         | `profiles` 버킷 필요           |
 
 ## 3. 작업 단계 (Step-by-Step)
 
@@ -68,6 +69,7 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
 **키 위치 안내:**
+
 - `Project URL` → `NEXT_PUBLIC_SUPABASE_URL`
 - `anon` `public` → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `service_role` `secret` → `SUPABASE_SERVICE_ROLE_KEY`
@@ -76,12 +78,14 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 
 Supabase Dashboard → **SQL Editor** 에서 아래 2개 파일을 **순서대로** 실행:
 
-| 순서 | 파일 | 내용 |
-|------|------|------|
-| 1 | `supabase/migrations/00000_reset_all.sql` | 전체 초기화 (트리거, 함수, 테이블, ENUM 삭제 + auth.users 삭제) |
-| 2 | `supabase/migrations/00001_initial_schema.sql` | 19 테이블 + RLS + `get_my_role()` 헬퍼 함수 + 트리거 + 인덱스 + 카테고리 시드 |
+
+| 순서 | 파일                                           | 내용                                                                         |
+| ------ | ------------------------------------------------ | ------------------------------------------------------------------------------ |
+| 1    | `supabase/migrations/00000_reset_all.sql`      | 전체 초기화 (트리거, 함수, 테이블, ENUM 삭제 + auth.users 삭제)              |
+| 2    | `supabase/migrations/00001_initial_schema.sql` | 19 테이블 + RLS +`get_my_role()` 헬퍼 함수 + 트리거 + 인덱스 + 카테고리 시드 |
 
 > **참고**: 기존 00002~00004 마이그레이션은 00001에 통합되어 삭제됨
+>
 > - mux_upload_id (lectures), progress_percent/last_watched_at/completed_at (lecture_progress)
 > - 카카오 프로필 필드 (birthyear, birthday, birthday_type, gender)
 > - email nullable 처리, handle_new_user 트리거 카카오 매핑
@@ -90,6 +94,7 @@ Supabase Dashboard → **SQL Editor** 에서 아래 2개 파일을 **순서대�
 > `get_my_role()` SECURITY DEFINER 함수를 통해 RLS를 우회하여 역할을 조회합니다.
 
 **실행 방법:**
+
 1. Supabase Dashboard → 좌측 메뉴 **SQL Editor** 클릭
 2. **New query** 클릭
 3. **먼저** `00000_reset_all.sql` 내용을 복사 → 붙여넣기 → **Run** → `Success` 확인
@@ -101,6 +106,7 @@ Supabase Dashboard → **SQL Editor** 에서 아래 2개 파일을 **순서대�
 > (DevTools → Application → Cookies → Clear all)
 
 **검증:**
+
 - 좌측 **Table Editor** 클릭 → 19개 테이블이 보이는지 확인
 - `profiles`, `courses`, `enrollments`, `orders` 등이 목록에 있어야 함
 - **Database → Functions** → `get_my_role`, `handle_new_user` 함수 2개 존재 확인
@@ -108,16 +114,19 @@ Supabase Dashboard → **SQL Editor** 에서 아래 2개 파일을 **순서대�
 ### Step 4: Supabase Auth 설정 (30분)
 
 #### 4-1. 이메일 인증 비활성화
+
 1. **Authentication → Providers → Email**
    - `Enable Email provider` → **❌ OFF (비활성화)**
    - 이메일/비밀번호 가입을 사용하지 않으므로 비활성화
 
 #### 4-2. Kakao OAuth 설정 (필수)
+
 1. [Kakao Developers](https://developers.kakao.com) 접속
 2. **애플리케이션 추가** → 앱 이름: `RichClass`
 3. **카카오 로그인 → 일반** → 사용 설정 **ON**
 4. **카카오 로그인 → 일반** → OpenID Connect **ON**
 5. **앱 → 플랫폼 키 → REST API 키 수정** → 카카오 로그인 리다이렉트 URI 등록:
+
    ```
    https://aakhlrdcraixnxeddjri.supabase.co/auth/v1/callback
    ```
@@ -125,10 +134,12 @@ Supabase Dashboard → **SQL Editor** 에서 아래 2개 파일을 **순서대�
 7. **카카오 로그인 → 동의항목** 설정:
 
    **개발 단계 (개인앱):**
+
    - ✅ 닉네임 → **필수 동의**
    - ✅ 프로필 사진 → **필수 동의**
 
    **비즈앱 전환 후 추가 설정:**
+
    - ✅ 카카오계정(이메일) → **필수 동의** (`account_email`)
    - ✅ 이름 → **필수 동의** (`name`)
    - ✅ 전화번호 → **선택 동의** (`phone_number`, 형식: `+82 10-1234-5678`)
@@ -139,7 +150,9 @@ Supabase Dashboard → **SQL Editor** 에서 아래 2개 파일을 **순서대�
    - ✅ 카카오톡 채널 추가 상태 → **선택 동의** (`plusfriends`, 비즈앱+채널 연결 필요)
 
    > **참고**: 이메일 외 항목은 비즈앱 전환 후 설정 가능. 개발 중에는 닉네임+프로필 사진만으로 테스트
+   >
 8. Supabase Dashboard → **Authentication → Providers → Kakao**:
+
    - `Kakao enabled` → **ON** (토글 활성화)
    - `REST API Key` = 카카오 앱의 REST API 키 (Kakao Developers → 앱 키)
    - `Client Secret Code` = 카카오 로그인 클라이언트 시크릿 코드 (Kakao Developers → 앱 → 플랫폼 키 → 클라이언트 시크릿 → 코드)
@@ -147,6 +160,7 @@ Supabase Dashboard → **SQL Editor** 에서 아래 2개 파일을 **순서대�
    - `Callback URL (for OAuth)` → 자동 생성됨 (카카오 리다이렉트 URI에 등록한 값과 동일한지 확인)
 
 #### 4-3. Auth Redirect URL 설정
+
 1. **Authentication → URL Configuration**:
    - **Site URL**: `http://localhost:3000`
    - **Redirect URLs**: `http://localhost:3000/**`
@@ -166,6 +180,7 @@ Supabase Dashboard → **SQL Editor** 에서 아래 2개 파일을 **순서대�
 > **파일 저장 구조**: `{user_id}/filename.jpg` (사용자별 폴더 분리)
 
 **진입 경로:**
+
 ```
 Storage → Files → Policies 탭 → Buckets 섹션 → PROFILES 옆 "New policy"
 ```
@@ -175,31 +190,35 @@ Storage → Files → Policies 탭 → Buckets 섹션 → PROFILES 옆 "New poli
 > Schema 섹션(STORAGE.OBJECTS / STORAGE.BUCKETS)은 모든 버킷에 적용되는 전역 정책임.
 
 **정책 생성 방식:**
+
 - "New policy" 클릭 → **"For full customization"** 선택
 - 설정 항목: Policy name, Allowed operation, Target roles, Policy definition
 
 **추가할 정책 4개:**
 
-| # | Policy name | Operation | Target roles | Policy definition |
-|---|-------------|-----------|--------------|-------------------|
-| 1 | `Allow public read` | **SELECT** | `Defaults to all (public)` | `bucket_id = 'profiles'` |
-| 2 | `Allow authenticated upload` | **INSERT** | `authenticated` | `bucket_id = 'profiles' AND auth.uid()::text = (storage.foldername(name))[1]` |
-| 3 | `Allow individual update` | **UPDATE** | `authenticated` | `bucket_id = 'profiles' AND auth.uid()::text = (storage.foldername(name))[1]` |
-| 4 | `Allow individual delete` | **DELETE** | `authenticated` | `bucket_id = 'profiles' AND auth.uid()::text = (storage.foldername(name))[1]` |
+
+| # | Policy name                  | Operation  | Target roles               | Policy definition                                                             |
+| --- | ------------------------------ | ------------ | ---------------------------- | ------------------------------------------------------------------------------- |
+| 1 | `Allow public read`          | **SELECT** | `Defaults to all (public)` | `bucket_id = 'profiles'`                                                      |
+| 2 | `Allow authenticated upload` | **INSERT** | `authenticated`            | `bucket_id = 'profiles' AND auth.uid()::text = (storage.foldername(name))[1]` |
+| 3 | `Allow individual update`    | **UPDATE** | `authenticated`            | `bucket_id = 'profiles' AND auth.uid()::text = (storage.foldername(name))[1]` |
+| 4 | `Allow individual delete`    | **DELETE** | `authenticated`            | `bucket_id = 'profiles' AND auth.uid()::text = (storage.foldername(name))[1]` |
 
 **INSERT / UPDATE / DELETE Policy definition:**
+
 ```sql
 bucket_id = 'profiles' AND auth.uid()::text = (storage.foldername(name))[1]
 ```
 
 **SQL 함수 설명:**
 
-| 함수 | 역할 |
-|------|------|
-| `auth.uid()` | 현재 로그인한 사용자의 UUID 반환 |
-| `auth.uid()::text` | UUID를 문자열로 캐스팅 |
-| `storage.foldername(name)` | 파일 경로에서 폴더명 배열 반환 |
-| `(storage.foldername(name))[1]` | 첫 번째 폴더명 (= user_id) |
+
+| 함수                            | 역할                             |
+| --------------------------------- | ---------------------------------- |
+| `auth.uid()`                    | 현재 로그인한 사용자의 UUID 반환 |
+| `auth.uid()::text`              | UUID를 문자열로 캐스팅           |
+| `storage.foldername(name)`      | 파일 경로에서 폴더명 배열 반환   |
+| `(storage.foldername(name))[1]` | 첫 번째 폴더명 (= user_id)       |
 
 **생성 결과:**
 
@@ -218,12 +237,13 @@ Allow individual delete _0     - DELETE  - authenticated   (직접 생성)
 
 **접근 권한 요약:**
 
-| 작업 | 비로그인 | 로그인 (본인 폴더) | 로그인 (타인 폴더) |
-|------|---------|-------------------|-------------------|
-| 읽기 (SELECT) | O | O | O |
-| 업로드 (INSERT) | X | O | X |
-| 수정 (UPDATE) | X | O | X |
-| 삭제 (DELETE) | X | O | X |
+
+| 작업            | 비로그인 | 로그인 (본인 폴더) | 로그인 (타인 폴더) |
+| ----------------- | ---------- | -------------------- | -------------------- |
+| 읽기 (SELECT)   | O        | O                  | O                  |
+| 업로드 (INSERT) | X        | O                  | X                  |
+| 수정 (UPDATE)   | X        | O                  | X                  |
+| 삭제 (DELETE)   | X        | O                  | X                  |
 
 ### Step 6: 로컬 서버 실행 및 테스트 (10분)
 
@@ -239,23 +259,26 @@ pnpm dev
 > `npm install`을 사용하면 lockfile 호환 문제로 오류가 발생합니다.
 
 **테스트 체크리스트:**
-- [ ] `http://localhost:3000` 접속 → 메인 페이지 표시
-- [ ] `/login` → 카카오 로그인 버튼 클릭 → Kakao OAuth → `/` 홈 리다이렉트 (admin→`/admin`, instructor→`/teacher`)
+
+- [X] `http://localhost:3000` 접속 → 메인 페이지 표시
+- [X] `/login` → 카카오 로그인 버튼 클릭 → Kakao OAuth → `/` 홈 리다이렉트 (admin→`/admin`, instructor→`/teacher`)
   - **하나의 계정으로 역할별 리다이렉트 테스트하기:**
   - Supabase Dashboard → SQL Editor에서 role 변경 후 로그아웃 → 재로그인으로 확인
   - ① `UPDATE profiles SET role = 'admin' WHERE email = '본인이메일';` → 재로그인 → `/admin` 리다이렉트 확인
   - ② `UPDATE profiles SET role = 'instructor' WHERE email = '본인이메일';` → 재로그인 → `/teacher` 리다이렉트 확인
   - ③ `UPDATE profiles SET role = 'customer' WHERE email = '본인이메일';` → 재로그인 → `/` 홈 리다이렉트 확인
   - ④ 테스트 완료 후 원하는 role로 복원
-- [ ] `/courses` → 강의 목록 페이지 (비어있음 - 정상)
-- [ ] `/admin` → 권한 없으면 `/access-denied` 리다이렉트
+- [X] `/courses` → 강의 목록 페이지 (비어있음 - 정상)
+- [X] `/admin` → 권한 없으면 `/access-denied` 리다이렉트
+  로그아웃 상태에서 /admin 가면 로그인 페이지 이동 후 페이지 접근 권한이 없다로 나옴.
 
 ## 4. 필요 리소스
 
-| 리소스 | 용도 | 비용 |
-|--------|------|------|
+
+| 리소스             | 용도                | 비용 |
+| -------------------- | --------------------- | ------ |
 | Supabase Free tier | DB + Auth + Storage | 무료 |
-| Kakao Developers | OAuth 소셜 로그인 | 무료 |
+| Kakao Developers   | OAuth 소셜 로그인   | 무료 |
 
 ## 5. 주의사항
 
@@ -286,11 +309,11 @@ pnpm dev
 
 ## 6. 예상 완료 기준
 
-- [x] Supabase 프로젝트 생성됨
-- [x] `.env.local`에 실제 키 설정됨
-- [x] 19개 테이블 마이그레이션 완료
-- [x] Auth 이메일 Provider 비활성화
-- [x] Kakao OAuth Provider 설정 완료
-- [x] Storage `profiles` 버킷 생성됨
-- [x] `pnpm dev` → 로컬 서버 정상 실행
-- [x] Kakao OAuth 로그인 동작 확인
+- [X] Supabase 프로젝트 생성됨
+- [X] `.env.local`에 실제 키 설정됨
+- [X] 19개 테이블 마이그레이션 완료
+- [X] Auth 이메일 Provider 비활성화
+- [X] Kakao OAuth Provider 설정 완료
+- [X] Storage `profiles` 버킷 생성됨
+- [X] `pnpm dev` → 로컬 서버 정상 실행
+- [X] Kakao OAuth 로그인 동작 확인
