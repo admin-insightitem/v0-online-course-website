@@ -37,6 +37,11 @@ export async function middleware(request: NextRequest) {
   // Supabase 세션 갱신
   const { user, supabaseResponse, supabase } = await updateSession(request)
 
+  // 로그인 상태에서 /login, /signup 접근 시 홈으로 리다이렉트
+  if (user && (pathname === '/login' || pathname === '/signup')) {
+    return NextResponse.redirect(new URL('/', request.url))
+  }
+
   // 공개 경로는 통과
   if (isPublicPath(pathname)) {
     return supabaseResponse

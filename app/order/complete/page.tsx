@@ -24,7 +24,7 @@ export default function OrderCompletePage() {
 
   return (
     <>
-      <Header variant="logged-in" />
+      <Header />
       <main className="min-h-[70vh] bg-background">
         <div className="mx-auto max-w-2xl px-4 py-16 lg:py-24">
           {/* Success icon and message */}

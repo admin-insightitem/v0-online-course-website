@@ -7,7 +7,7 @@ export type UserRole = 'customer' | 'instructor' | 'admin'
 
 export interface Profile {
   id: string
-  email: string
+  email: string | null
   name: string | null
   nickname: string | null
   phone: string | null
@@ -15,6 +15,11 @@ export interface Profile {
   role: UserRole
   marketing_agreed: boolean
   join_method: 'email' | 'kakao'
+  birthyear: string | null
+  birthday: string | null
+  birthday_type: 'SOLAR' | 'LUNAR' | null
+  gender: 'male' | 'female' | null
+  kakao_channel_connected: boolean
   instructor_title: string | null
   instructor_bio: string | null
   created_at: string

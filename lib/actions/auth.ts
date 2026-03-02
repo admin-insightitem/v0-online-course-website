@@ -103,6 +103,9 @@ export async function signInWithKakao(redirectTo?: string): Promise<ActionResult
     provider: 'kakao',
     options: {
       redirectTo: callbackUrl.toString(),
+      scopes: process.env.NODE_ENV === 'production'
+        ? 'profile_nickname profile_image account_email name phone_number birthyear birthday gender plusfriends'
+        : 'profile_nickname profile_image account_email ',
     },
   })
 
@@ -241,4 +244,26 @@ export async function getCurrentProfile(): Promise<ActionResult<Profile | null>>
   }
 
   return { success: true, data: profile as Profile }
+}
+
+// ─── Update Kakao Channel Status (카카오톡 채널 추가 상태 업데이트) ───
+export async function updateKakaoChannelStatus(connected: boolean): Promise<ActionResult> {
+  const supabase = await createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    return { success: false, error: { code: 'UNAUTHORIZED', message: '로그인이 필요합니다.' } }
+  }
+
+  const { error } = await supabase
+    .from('profiles')
+    .update({ kakao_channel_connected: connected })
+    .eq('id', user.id)
+
+  if (error) {
+    return { success: false, error: { code: 'UPDATE_FAILED', message: '채널 상태 업데이트에 실패했습니다.' } }
+  }
+
+  revalidatePath('/mypage', 'layout')
+  return { success: true, data: undefined }
 }

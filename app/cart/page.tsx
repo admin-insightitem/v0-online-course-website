@@ -60,7 +60,7 @@ export default function CartPage() {
 
   return (
     <>
-      <Header variant="logged-in" />
+      <Header />
       <main className="min-h-[70vh] bg-background">
         <div className="mx-auto max-w-7xl px-4 py-10 lg:px-8 lg:py-16">
           <h1 className="mb-10 text-3xl font-bold text-foreground lg:text-4xl">장바구니</h1>

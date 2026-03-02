@@ -53,11 +53,7 @@ const notificationsData = [
   },
 ]
 
-interface HeaderProps {
-  variant?: "default" | "logged-in"
-}
-
-export function Header({ variant }: HeaderProps) {
+export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [notificationOpen, setNotificationOpen] = useState(false)
   const [notifications, setNotifications] = useState(notificationsData)
@@ -67,8 +63,7 @@ export function Header({ variant }: HeaderProps) {
 
   const { user, isLoading } = useAuthStore()
 
-  // variant prop이 있으면 우선 사용, 없으면 auth store 기반
-  const isLoggedIn = variant ? variant === "logged-in" : !!user
+  const isLoggedIn = !!user
 
   // 외부 클릭 시 팝업 닫기
   useEffect(() => {
@@ -101,9 +96,9 @@ export function Header({ variant }: HeaderProps) {
     await signOut()
   }
 
-  // 마이페이지 링크 (Role 기반)
+  // 유저 링크 (Role 기반)
   const dashboardLink = user?.role === 'admin' ? '/admin' : user?.role === 'instructor' ? '/teacher' : '/mypage'
-  const dashboardLabel = user?.role === 'admin' ? '관리자' : user?.role === 'instructor' ? '강사 대시보드' : '마이페이지'
+  const displayName = user?.nickname || user?.name || (user?.role === 'admin' ? '관리자' : user?.role === 'instructor' ? '강사' : '내 정보')
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
@@ -274,7 +269,7 @@ export function Header({ variant }: HeaderProps) {
             <Link href={dashboardLink}>
               <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground hover:text-foreground">
                 <User className="h-4 w-4" />
-                {user?.name || dashboardLabel}
+                {displayName}
               </Button>
             </Link>
             <Button
@@ -340,7 +335,7 @@ export function Header({ variant }: HeaderProps) {
                   <Link href={dashboardLink} onClick={() => setMobileOpen(false)}>
                     <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground">
                       <User className="h-4 w-4" />
-                      {dashboardLabel}
+                      {displayName}
                     </Button>
                   </Link>
                   <Link href="/mypage/notifications" onClick={() => setMobileOpen(false)}>

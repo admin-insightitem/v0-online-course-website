@@ -489,32 +489,33 @@ const ErrorCodes = {
 
 ### 5.1 Auth Flow
 
+> **인증 방식**: Kakao OAuth만 사용 (이메일 가입 비활성화)
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                     Authentication Flows                     │
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
-│  [이메일 회원가입]                                            │
-│  1. 이메일/비밀번호 입력                                       │
-│  2. supabase.auth.signUp()                                  │
-│  3. Auth trigger → profiles 자동 생성 (role: 'customer')      │
-│  4. 이메일 인증 (optional, 설정에 따라)                         │
-│  5. 로그인 완료 → /mypage 리다이렉트                            │
-│                                                             │
-│  [카카오 OAuth]                                              │
+│  [카카오 OAuth 로그인/가입]                                    │
 │  1. '카카오로 시작하기' 클릭                                    │
 │  2. supabase.auth.signInWithOAuth({ provider: 'kakao' })    │
 │  3. 카카오 인증 → /api/auth/callback 리다이렉트                 │
-│  4. 콜백에서 세션 교환 + profiles 생성/갱신                      │
-│  5. 로그인 완료 → /mypage 리다이렉트                            │
-│                                                             │
-│  [로그인]                                                    │
-│  1. 이메일/비밀번호 입력                                       │
-│  2. supabase.auth.signInWithPassword()                      │
-│  3. 세션 쿠키 설정 → Role 기반 리다이렉트                        │
-│     - customer → /mypage                                    │
+│  4. 콜백에서 세션 교환 + profiles 체크                          │
+│     → 프로필 없으면 INSERT (role: 'customer', join_method: 'kakao') │
+│     → 프로필 있으면 UPDATE (카카오 메타데이터만 갱신, role 보존)    │
+│  5. Role 기반 리다이렉트:                                     │
+│     - customer → / (홈)                                     │
 │     - instructor → /teacher                                 │
 │     - admin → /admin                                        │
+│                                                             │
+│  [로그인 상태 접근 제어]                                       │
+│  - 로그인 상태에서 /login, /signup 접근 → / 홈으로 리다이렉트     │
+│  - Middleware에서 세션 감지 후 자동 리다이렉트                    │
+│                                                             │
+│  [Header 로그인 상태 표시]                                     │
+│  - Zustand auth store 기반 (variant prop 없이 모든 페이지 동일)  │
+│  - 로그인 시: 닉네임 표시 (nickname > name > role 기본값)        │
+│  - 비로그인 시: 로그인/가입하기 버튼 표시                         │
 │                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -522,31 +523,101 @@ const ErrorCodes = {
 ### 5.2 Supabase Auth Trigger (profiles 자동 생성)
 
 ```sql
--- 회원가입 시 profiles 자동 생성
+-- 회원가입 시 profiles 자동 생성 (카카오 메타데이터 전체 매핑)
 CREATE OR REPLACE FUNCTION public.handle_new_user()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER SET search_path = public
+AS $$
 BEGIN
-  INSERT INTO public.profiles (id, email, name, role, join_method)
+  INSERT INTO public.profiles (
+    id, email, name, nickname, avatar_url, role, join_method,
+    birthyear, birthday, birthday_type, gender
+  )
   VALUES (
     NEW.id,
     NEW.email,
     COALESCE(NEW.raw_user_meta_data->>'name', NEW.raw_user_meta_data->>'full_name'),
-    COALESCE(
-      (NEW.raw_user_meta_data->>'role')::user_role,
-      'customer'
-    ),
-    CASE
-      WHEN NEW.raw_app_meta_data->>'provider' = 'kakao' THEN 'kakao'
-      ELSE 'email'
-    END
-  );
+    COALESCE(NEW.raw_user_meta_data->>'preferred_username',
+             NEW.raw_user_meta_data->>'user_name',
+             NEW.raw_user_meta_data->>'nickname'),
+    COALESCE(NEW.raw_user_meta_data->>'avatar_url',
+             NEW.raw_user_meta_data->>'picture'),
+    'customer'::public.user_role,
+    CASE WHEN NEW.raw_app_meta_data->>'provider' = 'kakao' THEN 'kakao' ELSE 'email' END,
+    NEW.raw_user_meta_data->>'birthyear',
+    NEW.raw_user_meta_data->>'birthday',
+    NEW.raw_user_meta_data->>'birthday_type',
+    NEW.raw_user_meta_data->>'gender'
+  )
+  ON CONFLICT (id) DO NOTHING;
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$;
 
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+```
+
+> **주요 변경사항**:
+> - `SET search_path = public` 추가 (스키마 검색 경로 명시)
+> - `'customer'::public.user_role` 안전한 타입 캐스팅
+> - 카카오 메타데이터 전체 매핑 (nickname, avatar_url, birthyear 등)
+> - `ON CONFLICT (id) DO NOTHING` 중복 방지
+
+### 5.2.1 OAuth Callback 프로필 동기화
+
+트리거는 `INSERT ON auth.users` 시에만 발동합니다. 기존 유저가 재로그인할 때는 콜백에서 직접 프로필을 동기화합니다:
+
+```typescript
+// app/api/auth/callback/route.ts
+// 카카오 OAuth 프로필 동기화 (프로필 없으면 생성, 있으면 메타데이터만 갱신)
+if (user && user.app_metadata?.provider === 'kakao') {
+  const meta = user.user_metadata
+  const profileData = { email, name, nickname, avatar_url, birthyear, ... }
+
+  const { data: existingProfile } = await supabase
+    .from('profiles').select('id').eq('id', user.id).single()
+
+  if (!existingProfile) {
+    // 프로필 없으면 INSERT (role: 'customer')
+    await supabase.from('profiles').insert({ id: user.id, ...profileData, role: 'customer' })
+  } else {
+    // 프로필 있으면 UPDATE (role 보존, 메타데이터만 갱신)
+    await supabase.from('profiles').update(profileData).eq('id', user.id)
+  }
+}
+```
+
+> **INSERT가 아닌 check-then-update 패턴 사용 이유**: `upsert`를 사용하면 관리자/강사 role이 'customer'로 초기화될 수 있으므로, 기존 프로필이 있으면 role을 건드리지 않고 메타데이터만 갱신합니다.
+
+### 5.2.2 RLS 헬퍼 함수: `get_my_role()`
+
+관리자 RLS 정책에서 `profiles` 테이블을 직접 조회하면 **무한재귀**가 발생합니다 (profiles SELECT 정책 평가 → 관리자 체크 → profiles SELECT → ...).
+
+이를 방지하기 위해 `SECURITY DEFINER` 함수로 RLS를 우회하여 역할을 조회합니다:
+
+```sql
+CREATE OR REPLACE FUNCTION public.get_my_role()
+RETURNS public.user_role
+LANGUAGE sql
+SECURITY DEFINER SET search_path = public
+STABLE
+AS $$
+  SELECT role FROM profiles WHERE id = auth.uid();
+$$;
+```
+
+**사용 예시** (모든 관리자 정책에 적용됨):
+```sql
+-- ❌ 잘못된 방식 (무한재귀 발생)
+CREATE POLICY "관리자 전체 프로필 조회" ON profiles FOR SELECT
+  USING (EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'));
+
+-- ✅ 올바른 방식 (get_my_role() 사용)
+CREATE POLICY "관리자 전체 프로필 조회" ON profiles FOR SELECT
+  USING (public.get_my_role() = 'admin');
 ```
 
 ### 5.3 Middleware (Role 기반 접근 제어)
@@ -565,8 +636,14 @@ export async function middleware(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
 
   // 공개 경로는 통과
-  const publicPaths = ['/', '/courses', '/login', '/forgot-password', '/api/webhooks']
-  if (publicPaths.some(p => pathname.startsWith(p))) return NextResponse.next()
+  const publicPaths = ['/', '/courses', '/login', '/signup', '/forgot-password', '/api/webhooks']
+  if (publicPaths.some(p => pathname.startsWith(p))) {
+    // 로그인 상태에서 /login, /signup 접근 시 홈으로 리다이렉트
+    if (user && (pathname === '/login' || pathname === '/signup')) {
+      return NextResponse.redirect(new URL('/', request.url))
+    }
+    return NextResponse.next()
+  }
 
   // 미인증 → 로그인 페이지
   if (!user) return NextResponse.redirect(new URL('/login', request.url))
@@ -795,7 +872,7 @@ interface CartState {
 
 ### 9.1 Security Checklist
 
-- [x] **RLS 정책**: 모든 테이블에 RLS 활성화 (Plan 문서 참조)
+- [x] **RLS 정책**: 모든 테이블에 RLS 활성화, 관리자 정책은 `get_my_role()` SECURITY DEFINER 함수 사용 (자기참조 무한재귀 방지)
 - [ ] **XSS 방지**: React 기본 이스케이프 + DOMPurify (사용자 입력 HTML 없음)
 - [ ] **CSRF**: Next.js Server Actions 기본 보호 (origin 체크)
 - [ ] **SQL Injection**: Supabase 클라이언트 파라미터 바인딩 사용
@@ -819,6 +896,7 @@ Layer 2: Server Action (함수 수준)
 
 Layer 3: Supabase RLS (DB 수준)
   → auth.uid() 기반 행 수준 접근 제어
+  → 관리자 정책은 get_my_role() SECURITY DEFINER 함수 사용 (자기참조 방지)
   → 설령 API 우회해도 DB에서 차단
 ```
 
@@ -932,7 +1010,7 @@ Sprint 2: Authentication
 ├── 2.3 login 페이지 연동
 ├── 2.4 forgot-password 연동
 ├── 2.5 store/auth-store.ts (Zustand)
-└── 2.6 header.tsx 로그인 상태 반영
+└── 2.6 header.tsx 로그인 상태 반영 (auth store 기반, variant 제거, 닉네임 표시)
 
 Sprint 3: Course & Content
 ├── 3.1 lib/actions/courses.ts (getCourses, getCourseById)

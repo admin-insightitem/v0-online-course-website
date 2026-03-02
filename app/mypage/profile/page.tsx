@@ -1,11 +1,13 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useCallback } from "react"
 import Link from "next/link"
 import Image from "next/image"
+import Script from "next/script"
 import { MypageLayout } from "@/components/mypage-layout"
 import { Button } from "@/components/ui/button"
-import { Eye, EyeOff, Pencil, X } from "lucide-react"
+import { Eye, EyeOff, Pencil, X, Check } from "lucide-react"
+import { updateKakaoChannelStatus } from "@/lib/actions/auth"
 
 export default function ProfilePage() {
   // 기본 데이터
@@ -17,6 +19,36 @@ export default function ProfilePage() {
   const [emailMarketingDate] = useState("2025.09.02 00:43")
   const [smsMarketingDate] = useState("2024.04.04 20:25")
   const [isMarketingTermsOpen, setIsMarketingTermsOpen] = useState(false)
+
+  // 카카오톡 채널 상태
+  const [isKakaoChannelConnected, setIsKakaoChannelConnected] = useState(false)
+  const [isKakaoSdkReady, setIsKakaoSdkReady] = useState(false)
+
+  const initKakaoSdk = useCallback(() => {
+    const kakaoJsKey = process.env.NEXT_PUBLIC_KAKAO_JS_KEY
+    if (!kakaoJsKey) return
+    if (typeof window !== 'undefined' && window.Kakao && !window.Kakao.isInitialized()) {
+      window.Kakao.init(kakaoJsKey)
+    }
+    setIsKakaoSdkReady(true)
+  }, [])
+
+  const handleAddKakaoChannel = async () => {
+    const channelId = process.env.NEXT_PUBLIC_KAKAO_CHANNEL_ID
+    if (!isKakaoSdkReady || !channelId || !window.Kakao) return
+
+    try {
+      const response = await window.Kakao.Channel.followChannel({
+        channelPublicId: channelId,
+      })
+      if (response) {
+        setIsKakaoChannelConnected(true)
+        await updateKakaoChannelStatus(true)
+      }
+    } catch {
+      // 사용자가 취소하거나 에러 발생 시 무시
+    }
+  }
 
   // 모달 열릴 때 배경 스크롤 방지
   useEffect(() => {
@@ -130,6 +162,13 @@ export default function ProfilePage() {
 
   return (
     <MypageLayout activeMenu="회원정보관리">
+      {/* Kakao JS SDK */}
+      <Script
+        src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.4/kakao.min.js"
+        integrity="sha384-DKYJZ8NLiK8MN4/C5P2ezmFnkrWGXhkFP0N6CVgfr3p8xVYBMBUTGKTF68N/g91"
+        crossOrigin="anonymous"
+        onLoad={initKakaoSdk}
+      />
       <h2 className="text-xl font-bold text-foreground">회원 정보 수정</h2>
 
       <div className="mt-8 rounded-lg border border-border bg-card p-6">
@@ -518,25 +557,30 @@ export default function ProfilePage() {
           {/* 카카오톡 채널 */}
           <div className="mt-4 pt-4 border-t border-border">
             <h4 className="text-sm font-semibold text-foreground">카카오톡 채널</h4>
-            <p className="mt-1 text-xs text-muted-foreground">
-              채널을 추가하면 유익하고 맞춤화된 정보를 받아볼 수 있습니다.
-            </p>
-            <div className="mt-3 flex flex-col gap-2 items-start">
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-10 px-4 gap-2"
-              >
-                <span className="flex h-5 w-5 items-center justify-center rounded bg-yellow-400 text-[10px] font-bold text-black">Ch</span>
-                채널 추가
-              </Button>
-              <button className="inline-flex items-center gap-2 h-10 px-6 rounded-md bg-yellow-400 text-black text-sm font-medium hover:bg-yellow-500 transition-colors">
-                <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current">
-                  <path d="M12 3C6.48 3 2 6.58 2 11c0 2.83 1.89 5.29 4.68 6.68-.21.78-.77 2.64-.88 3.06-.14.54.2.53.42.39.17-.11 2.73-1.85 3.84-2.6.62.09 1.26.14 1.94.14 5.52 0 10-3.58 10-8S17.52 3 12 3z"/>
-                </svg>
-                카카오 연결
-              </button>
-            </div>
+            {isKakaoChannelConnected ? (
+              <div className="mt-2 flex items-center gap-2 text-sm text-green-600">
+                <Check className="h-4 w-4" />
+                <span>채널이 추가되었습니다.</span>
+              </div>
+            ) : (
+              <>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  채널을 추가하면 유익하고 맞춤화된 정보를 받아볼 수 있습니다.
+                </p>
+                <div className="mt-3">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-10 px-4 gap-2"
+                    onClick={handleAddKakaoChannel}
+                    disabled={!isKakaoSdkReady}
+                  >
+                    <span className="flex h-5 w-5 items-center justify-center rounded bg-yellow-400 text-[10px] font-bold text-black">Ch</span>
+                    채널 추가
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
 
           {/* 마케팅 수신 동의 */}
