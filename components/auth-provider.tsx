@@ -5,17 +5,17 @@ import { createClient } from "@/lib/supabase/client"
 import { useAuthStore } from "@/store/auth-store"
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const { fetchUser, setUser, clear } = useAuthStore()
+  const { fetchUser, clear } = useAuthStore()
 
   useEffect(() => {
-    // 초기 유저 상태 로드
+    // 마운트 시 직접 세션 확인 (쿠키 기반, 네트워크 요청 없음)
     fetchUser()
 
-    // Auth 상태 변경 리스너
+    // 이후 Auth 상태 변경 리스너
     const supabase = createClient()
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event) => {
-        if (event === 'SIGNED_IN') {
+        if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
           fetchUser()
         } else if (event === 'SIGNED_OUT') {
           clear()
@@ -26,7 +26,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => {
       subscription.unsubscribe()
     }
-  }, [fetchUser, setUser, clear])
+  }, [fetchUser, clear])
 
   return <>{children}</>
 }

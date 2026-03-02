@@ -3,8 +3,7 @@
 import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { Star, Clock, Users, ArrowRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Star, Clock, Users } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { courses } from "@/lib/courses"
 
@@ -19,11 +18,10 @@ export function CoursesSection() {
       : courses.filter((c) => c.category === activeTab)
 
   return (
-    <section id="courses" className="bg-secondary/30 py-20 lg:py-28">
+    <section id="courses" className="bg-secondary/30 pt-8 pb-20 lg:pt-12 lg:pb-28">
       <div className="mx-auto max-w-7xl px-4 lg:px-8">
         <div className="mb-10 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
           <div>
-            <span className="mb-3 inline-block text-sm font-semibold text-primary">COURSES</span>
             <h2 className="text-3xl font-bold text-foreground md:text-4xl text-balance">
               인기 프리미엄 클래스
             </h2>
@@ -31,10 +29,6 @@ export function CoursesSection() {
               검증된 전문가들의 실전 노하우를 담은 프리미엄 강의
             </p>
           </div>
-          <Button variant="outline" className="border-border text-foreground hover:bg-secondary">
-            전체 보기
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
         </div>
 
         <div className="mb-8 flex gap-2 overflow-x-auto scrollbar-hide pb-2">

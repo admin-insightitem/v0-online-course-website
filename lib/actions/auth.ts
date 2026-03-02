@@ -5,91 +5,6 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import type { ActionResult, Profile } from '@/types'
 
-// ─── Sign Up (이메일 회원가입) ───
-export async function signUp(formData: FormData): Promise<ActionResult<{ userId: string }>> {
-  const supabase = await createClient()
-
-  const email = formData.get('email') as string
-  const password = formData.get('password') as string
-  const name = formData.get('name') as string | null
-  const marketingAgreed = formData.get('marketing_agreed') === 'true'
-
-  if (!email || !password) {
-    return { success: false, error: { code: 'INVALID_INPUT', message: '이메일과 비밀번호를 입력해 주세요.' } }
-  }
-
-  if (password.length < 6) {
-    return { success: false, error: { code: 'WEAK_PASSWORD', message: '비밀번호는 6자 이상이어야 합니다.' } }
-  }
-
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      data: {
-        name: name || undefined,
-        marketing_agreed: marketingAgreed,
-      },
-    },
-  })
-
-  if (error) {
-    if (error.message.includes('already registered')) {
-      return { success: false, error: { code: 'ALREADY_EXISTS', message: '이미 가입된 이메일입니다.' } }
-    }
-    return { success: false, error: { code: 'SIGNUP_FAILED', message: error.message } }
-  }
-
-  // 마케팅 동의 업데이트 (trigger에서 처리 안 되는 부분)
-  if (data.user && marketingAgreed) {
-    await supabase
-      .from('profiles')
-      .update({ marketing_agreed: true })
-      .eq('id', data.user.id)
-  }
-
-  revalidatePath('/', 'layout')
-  return { success: true, data: { userId: data.user!.id } }
-}
-
-// ─── Sign In (이메일 로그인) ───
-export async function signIn(formData: FormData): Promise<ActionResult<{ role: string; redirectTo: string }>> {
-  const supabase = await createClient()
-
-  const email = formData.get('email') as string
-  const password = formData.get('password') as string
-  const redirectTo = (formData.get('redirect') as string) || null
-
-  if (!email || !password) {
-    return { success: false, error: { code: 'INVALID_INPUT', message: '이메일과 비밀번호를 입력해 주세요.' } }
-  }
-
-  const { error } = await supabase.auth.signInWithPassword({ email, password })
-
-  if (error) {
-    return { success: false, error: { code: 'INVALID_CREDENTIALS', message: '이메일 또는 비밀번호가 올바르지 않습니다.' } }
-  }
-
-  // Role 기반 리다이렉트 결정
-  const { data: { user } } = await supabase.auth.getUser()
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user!.id)
-    .single()
-
-  const role = profile?.role || 'customer'
-  let defaultRedirect = '/mypage'
-  if (role === 'admin') defaultRedirect = '/admin'
-  else if (role === 'instructor') defaultRedirect = '/teacher'
-
-  revalidatePath('/', 'layout')
-  return {
-    success: true,
-    data: { role, redirectTo: redirectTo || defaultRedirect },
-  }
-}
-
 // ─── Sign In with Kakao OAuth ───
 export async function signInWithKakao(redirectTo?: string): Promise<ActionResult<{ url: string }>> {
   const supabase = await createClient()
@@ -121,28 +36,6 @@ export async function signOut(): Promise<void> {
   const supabase = await createClient()
   await supabase.auth.signOut()
   revalidatePath('/', 'layout')
-  redirect('/login')
-}
-
-// ─── Reset Password (비밀번호 재설정 이메일 발송) ───
-export async function resetPassword(formData: FormData): Promise<ActionResult> {
-  const supabase = await createClient()
-
-  const email = formData.get('email') as string
-
-  if (!email) {
-    return { success: false, error: { code: 'INVALID_INPUT', message: '이메일을 입력해 주세요.' } }
-  }
-
-  const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/mypage/settings?type=password-reset`,
-  })
-
-  if (error) {
-    return { success: false, error: { code: 'RESET_FAILED', message: '비밀번호 재설정 이메일 발송에 실패했습니다.' } }
-  }
-
-  return { success: true, data: undefined }
 }
 
 // ─── Update Password (비밀번호 변경) ───

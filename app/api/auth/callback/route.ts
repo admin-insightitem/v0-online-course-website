@@ -87,11 +87,17 @@ export async function GET(request: NextRequest) {
       .eq('id', user.id)
       .single()
 
-    if (profile?.role === 'admin') {
-      return NextResponse.redirect(new URL('/admin', origin))
-    }
-    if (profile?.role === 'instructor') {
-      return NextResponse.redirect(new URL('/teacher', origin))
+    let roleRedirectUrl: string | null = null
+    if (profile?.role === 'admin') roleRedirectUrl = '/admin'
+    else if (profile?.role === 'instructor') roleRedirectUrl = '/teacher'
+
+    if (roleRedirectUrl) {
+      const roleRedirect = NextResponse.redirect(new URL(roleRedirectUrl, origin))
+      // response 객체에 설정된 세션 쿠키를 role 리다이렉트에도 복사
+      response.cookies.getAll().forEach((cookie) => {
+        roleRedirect.cookies.set(cookie.name, cookie.value)
+      })
+      return roleRedirect
     }
   }
 

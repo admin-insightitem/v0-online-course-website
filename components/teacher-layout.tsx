@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import {
   LayoutDashboard,
   BookOpen,
@@ -17,15 +17,15 @@ import {
 } from "lucide-react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { signOut } from "@/lib/actions/auth"
+import { useAuthStore } from "@/store/auth-store"
 
 const teacherMenu = [
   { icon: LayoutDashboard, label: "대시보드", href: "/teacher" },
@@ -42,7 +42,15 @@ interface TeacherLayoutProps {
 
 export function TeacherLayout({ children }: TeacherLayoutProps) {
   const pathname = usePathname()
+  const router = useRouter()
+  const { user, clear } = useAuthStore()
   const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  const handleSignOut = async () => {
+    await signOut()
+    clear()
+    router.push("/")
+  }
 
   return (
     <div className="flex min-h-screen bg-muted/30">
@@ -66,7 +74,7 @@ export function TeacherLayout({ children }: TeacherLayoutProps) {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
               <span className="font-heading text-sm font-bold text-primary-foreground">R</span>
             </div>
-            <span className="font-heading text-lg font-bold text-foreground">RichClass</span>
+            <span className="font-heading text-lg font-bold text-foreground">RichClass 강사</span>
           </Link>
           <Button
             variant="ghost"
@@ -82,7 +90,7 @@ export function TeacherLayout({ children }: TeacherLayoutProps) {
         <nav className="flex-1 overflow-y-auto p-4">
           <ul className="space-y-1">
             {teacherMenu.map((item) => {
-              const isActive = pathname === item.href || 
+              const isActive = pathname === item.href ||
                 (item.href !== "/teacher" && pathname.startsWith(item.href)) ||
                 (item.href === "/teacher/classes" && pathname.startsWith("/teacher/lectures"))
               return (
@@ -102,16 +110,6 @@ export function TeacherLayout({ children }: TeacherLayoutProps) {
                 </li>
               )
             })}
-            <li>
-              <Link
-                href="/login"
-                className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                onClick={() => setSidebarOpen(false)}
-              >
-                <LogOut className="h-5 w-5" />
-                {"로그아웃"}
-              </Link>
-            </li>
           </ul>
         </nav>
 
@@ -122,7 +120,7 @@ export function TeacherLayout({ children }: TeacherLayoutProps) {
             className="flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           >
             <ChevronLeft className="h-4 w-4" />
-            {"사이트로 돌아가기"}
+            사이트로 돌아가기
           </Link>
         </div>
       </aside>
@@ -171,28 +169,16 @@ export function TeacherLayout({ children }: TeacherLayoutProps) {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Profile */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center gap-2 px-2">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src="/images/avatar-instructor.jpg" alt="강사" />
-                    <AvatarFallback>강</AvatarFallback>
-                  </Avatar>
-                  <span className="hidden text-sm font-medium md:inline-block">김도현 강사</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>
-                  <span>프로필 설정</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-destructive">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>로그아웃</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {/* Profile & Logout */}
+            <div className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-sm font-medium">
+                강
+              </div>
+              <span className="hidden text-sm font-medium md:inline-block">{user?.nickname || user?.name || "강사"}</span>
+              <Button variant="ghost" size="icon" onClick={handleSignOut} title="로그아웃">
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </header>
 

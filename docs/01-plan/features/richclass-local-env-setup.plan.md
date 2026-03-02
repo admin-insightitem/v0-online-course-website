@@ -241,6 +241,12 @@ pnpm dev
 **테스트 체크리스트:**
 - [ ] `http://localhost:3000` 접속 → 메인 페이지 표시
 - [ ] `/login` → 카카오 로그인 버튼 클릭 → Kakao OAuth → `/` 홈 리다이렉트 (admin→`/admin`, instructor→`/teacher`)
+  - **하나의 계정으로 역할별 리다이렉트 테스트하기:**
+  - Supabase Dashboard → SQL Editor에서 role 변경 후 로그아웃 → 재로그인으로 확인
+  - ① `UPDATE profiles SET role = 'admin' WHERE email = '본인이메일';` → 재로그인 → `/admin` 리다이렉트 확인
+  - ② `UPDATE profiles SET role = 'instructor' WHERE email = '본인이메일';` → 재로그인 → `/teacher` 리다이렉트 확인
+  - ③ `UPDATE profiles SET role = 'customer' WHERE email = '본인이메일';` → 재로그인 → `/` 홈 리다이렉트 확인
+  - ④ 테스트 완료 후 원하는 role로 복원
 - [ ] `/courses` → 강의 목록 페이지 (비어있음 - 정상)
 - [ ] `/admin` → 권한 없으면 `/access-denied` 리다이렉트
 

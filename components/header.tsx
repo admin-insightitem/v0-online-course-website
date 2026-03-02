@@ -4,8 +4,9 @@ import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { Menu, X, ShoppingCart, User, Bell, MoreVertical, Check, Trash2, LogOut } from "lucide-react"
+import { Menu, X, ShoppingCart, Bell, MoreVertical, Check, Trash2, LogOut, Shield, GraduationCap } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useAuthStore } from "@/store/auth-store"
 import { signOut } from "@/lib/actions/auth"
 
@@ -61,7 +62,7 @@ export function Header() {
   const notificationRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
 
-  const { user, isLoading } = useAuthStore()
+  const { user, isLoading, clear } = useAuthStore()
 
   const isLoggedIn = !!user
 
@@ -94,6 +95,8 @@ export function Header() {
 
   const handleSignOut = async () => {
     await signOut()
+    clear()
+    router.push('/')
   }
 
   // 유저 링크 (Role 기반)
@@ -126,6 +129,15 @@ export function Header() {
 
         {isLoggedIn ? (
           <div className="hidden items-center gap-2 lg:flex">
+            <Link href={dashboardLink}>
+              <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground hover:text-foreground">
+                <Avatar className="h-5 w-5">
+                  <AvatarImage src={user?.avatar_url || ""} alt={displayName} />
+                  <AvatarFallback className="text-[10px]">{displayName.charAt(0)}</AvatarFallback>
+                </Avatar>
+                {displayName}
+              </Button>
+            </Link>
             <Link href="/cart">
               <Button variant="ghost" size="icon" className="relative text-muted-foreground hover:text-foreground">
                 <ShoppingCart className="h-5 w-5" />
@@ -266,12 +278,20 @@ export function Header() {
                 </div>
               )}
             </div>
-            <Link href={dashboardLink}>
-              <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground hover:text-foreground">
-                <User className="h-4 w-4" />
-                {displayName}
-              </Button>
-            </Link>
+            {user?.role === 'admin' && (
+              <Link href="/admin" title="관리자 홈">
+                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
+                  <Shield className="h-4 w-4" />
+                </Button>
+              </Link>
+            )}
+            {user?.role === 'instructor' && (
+              <Link href="/teacher" title="강사 홈">
+                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
+                  <GraduationCap className="h-4 w-4" />
+                </Button>
+              </Link>
+            )}
             <Button
               variant="ghost"
               size="icon"
@@ -285,18 +305,11 @@ export function Header() {
         ) : (
           <div className="hidden items-center gap-3 lg:flex">
             {!isLoading && (
-              <>
-                <Link href="/login">
-                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
-                    로그인
-                  </Button>
-                </Link>
-                <Link href="/signup">
-                  <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
-                    가입하기
-                  </Button>
-                </Link>
-              </>
+              <Link href="/login">
+                <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                  로그인/가입하기
+                </Button>
+              </Link>
             )}
           </div>
         )}
@@ -334,10 +347,29 @@ export function Header() {
                   </Link>
                   <Link href={dashboardLink} onClick={() => setMobileOpen(false)}>
                     <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground">
-                      <User className="h-4 w-4" />
+                      <Avatar className="h-5 w-5">
+                        <AvatarImage src={user?.avatar_url || ""} alt={displayName} />
+                        <AvatarFallback className="text-[10px]">{displayName.charAt(0)}</AvatarFallback>
+                      </Avatar>
                       {displayName}
                     </Button>
                   </Link>
+                  {user?.role === 'admin' && (
+                    <Link href="/admin" onClick={() => setMobileOpen(false)}>
+                      <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground">
+                        <Shield className="h-4 w-4" />
+                        관리자 홈
+                      </Button>
+                    </Link>
+                  )}
+                  {user?.role === 'instructor' && (
+                    <Link href="/teacher" onClick={() => setMobileOpen(false)}>
+                      <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground">
+                        <GraduationCap className="h-4 w-4" />
+                        강사 홈
+                      </Button>
+                    </Link>
+                  )}
                   <Link href="/mypage/notifications" onClick={() => setMobileOpen(false)}>
                     <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground">
                       <Bell className="h-4 w-4" />
@@ -360,18 +392,11 @@ export function Header() {
                   </Button>
                 </>
               ) : (
-                <>
-                  <Link href="/login" onClick={() => setMobileOpen(false)}>
-                    <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground">
-                      로그인
-                    </Button>
-                  </Link>
-                  <Link href="/signup" onClick={() => setMobileOpen(false)}>
-                    <Button size="sm" className="w-full bg-primary text-primary-foreground">
-                      가입하기
-                    </Button>
-                  </Link>
-                </>
+                <Link href="/login" onClick={() => setMobileOpen(false)}>
+                  <Button size="sm" className="w-full bg-primary text-primary-foreground">
+                    로그인/가입하기
+                  </Button>
+                </Link>
               )}
             </div>
           </nav>

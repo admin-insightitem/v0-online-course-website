@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import {
   BookOpen,
   Ticket,
@@ -15,6 +15,8 @@ import {
 } from "lucide-react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import { signOut } from "@/lib/actions/auth"
+import { useAuthStore } from "@/store/auth-store"
 
 const sideMenu = [
   { icon: BookOpen, label: "내 강의실", href: "/mypage" },
@@ -24,7 +26,6 @@ const sideMenu = [
   { icon: MessageCircle, label: "강의별 Q&A", href: "/mypage/qna" },
   { icon: Star, label: "수강평 목록", href: "/mypage/reviews" },
   { icon: HelpCircle, label: "고객센터", href: "/mypage/support" },
-  { icon: LogOut, label: "로그아웃", href: "/" },
 ]
 
 interface MypageLayoutProps {
@@ -34,6 +35,8 @@ interface MypageLayoutProps {
 
 export function MypageLayout({ children, activeMenu }: MypageLayoutProps) {
   const pathname = usePathname()
+  const router = useRouter()
+  const { clear } = useAuthStore()
 
   const resolvedActive = activeMenu ?? sideMenu.find((m) => m.href === pathname)?.label ?? "내 강의실"
 
@@ -95,6 +98,17 @@ export function MypageLayout({ children, activeMenu }: MypageLayoutProps) {
                   </Link>
                 )
               })}
+              <button
+                onClick={async () => {
+                  await signOut()
+                  clear()
+                  router.push("/")
+                }}
+                className="flex items-center gap-2.5 border-l-2 border-transparent px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              >
+                <LogOut className="h-4 w-4" />
+                로그아웃
+              </button>
             </nav>
           </aside>
 

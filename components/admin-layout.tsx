@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import {
   LayoutDashboard,
   BookOpen,
@@ -17,15 +17,15 @@ import {
 } from "lucide-react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { signOut } from "@/lib/actions/auth"
+import { useAuthStore } from "@/store/auth-store"
 
 const adminMenu = [
   { icon: LayoutDashboard, label: "대시보드", href: "/admin" },
@@ -42,7 +42,15 @@ interface AdminLayoutProps {
 
 export function AdminLayout({ children }: AdminLayoutProps) {
   const pathname = usePathname()
+  const router = useRouter()
+  const { user, clear } = useAuthStore()
   const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  const handleSignOut = async () => {
+    await signOut()
+    clear()
+    router.push("/")
+  }
 
   return (
     <div className="flex min-h-screen bg-muted/30">
@@ -66,7 +74,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
               <span className="font-heading text-sm font-bold text-primary-foreground">R</span>
             </div>
-            <span className="font-heading text-lg font-bold text-foreground">RichClass</span>
+            <span className="font-heading text-lg font-bold text-foreground">RichClass 관리자</span>
           </Link>
           <Button
             variant="ghost"
@@ -165,28 +173,16 @@ export function AdminLayout({ children }: AdminLayoutProps) {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* Profile */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center gap-2 px-2">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src="/images/avatar-admin.jpg" alt="관리자" />
-                    <AvatarFallback>관</AvatarFallback>
-                  </Avatar>
-                  <span className="hidden text-sm font-medium md:inline-block">관리자</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>
-                  <span>프로필 설정</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-destructive">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>로그아웃</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {/* Profile & Logout */}
+            <div className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-sm font-medium">
+                관
+              </div>
+              <span className="hidden text-sm font-medium md:inline-block">{user?.nickname || user?.name || "관리자"}</span>
+              <Button variant="ghost" size="icon" onClick={handleSignOut} title="로그아웃">
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </header>
 

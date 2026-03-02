@@ -5,8 +5,6 @@ import { updateSession } from '@/lib/supabase/middleware'
 const PUBLIC_PATHS = [
   '/',
   '/login',
-  '/signup',
-  '/forgot-password',
   '/courses',
   '/access-denied',
   '/api/webhooks',
@@ -19,6 +17,15 @@ function isPublicPath(pathname: string): boolean {
     if (path === '/') return pathname === '/'
     return pathname === path || pathname.startsWith(path + '/')
   })
+}
+
+// supabaseResponse의 쿠키를 리다이렉트 응답에 복사
+function redirectWithCookies(url: URL, supabaseResponse: NextResponse): NextResponse {
+  const redirect = NextResponse.redirect(url)
+  supabaseResponse.cookies.getAll().forEach((cookie) => {
+    redirect.cookies.set(cookie.name, cookie.value)
+  })
+  return redirect
 }
 
 export async function middleware(request: NextRequest) {
@@ -37,9 +44,9 @@ export async function middleware(request: NextRequest) {
   // Supabase 세션 갱신
   const { user, supabaseResponse, supabase } = await updateSession(request)
 
-  // 로그인 상태에서 /login, /signup 접근 시 홈으로 리다이렉트
-  if (user && (pathname === '/login' || pathname === '/signup')) {
-    return NextResponse.redirect(new URL('/', request.url))
+  // 로그인 상태에서 /login 접근 시 홈으로 리다이렉트
+  if (user && pathname === '/login') {
+    return redirectWithCookies(new URL('/', request.url), supabaseResponse)
   }
 
   // 공개 경로는 통과
@@ -52,7 +59,7 @@ export async function middleware(request: NextRequest) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     url.searchParams.set('redirect', pathname)
-    return NextResponse.redirect(url)
+    return redirectWithCookies(url, supabaseResponse)
   }
 
   // Role 기반 접근 제어
@@ -64,11 +71,11 @@ export async function middleware(request: NextRequest) {
       .single()
 
     if (pathname.startsWith('/admin') && profile?.role !== 'admin') {
-      return NextResponse.redirect(new URL('/access-denied', request.url))
+      return redirectWithCookies(new URL('/access-denied', request.url), supabaseResponse)
     }
 
     if (pathname.startsWith('/teacher') && profile?.role !== 'instructor') {
-      return NextResponse.redirect(new URL('/access-denied', request.url))
+      return redirectWithCookies(new URL('/access-denied', request.url), supabaseResponse)
     }
   }
 
