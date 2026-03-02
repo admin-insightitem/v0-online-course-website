@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-02-28T14:19:00.864Z",
+  "lastUpdated": "2026-03-02T04:56:48.198Z",
   "activeFeatures": [
     "richclass-fullstack-platform",
     "actions",
@@ -17,7 +17,12 @@
     "material",
     "richclass-fullstack-platform Gap Analysis",
     "richclass-fullstack-platform post-merge analysis",
-    "support"
+    "support",
+    "profile",
+    "order",
+    "cart",
+    "complete",
+    "[id]"
   ],
   "primaryFeature": "richclass-fullstack-platform",
   "features": {
@@ -43,9 +48,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-28T12:32:34.772Z",
-        "lastUpdated": "2026-02-28T13:14:20.171Z"
+        "lastUpdated": "2026-03-02T03:36:54.743Z"
       },
-      "lastFile": "C:\\Users\\user\\00_DEV\\v0-online-course-website\\lib\\actions\\admin.ts"
+      "lastFile": "c:\\Users\\user\\00_DEV\\v0-online-course-website\\lib\\actions\\auth.ts"
     },
     "callback": {
       "phase": "do",
@@ -56,9 +61,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-28T12:32:40.486Z",
-        "lastUpdated": "2026-02-28T12:32:40.486Z"
+        "lastUpdated": "2026-03-02T04:56:48.198Z"
       },
-      "lastFile": "C:\\Users\\user\\00_DEV\\v0-online-course-website\\app\\api\\auth\\callback\\route.ts"
+      "lastFile": "c:\\Users\\user\\00_DEV\\v0-online-course-website\\app\\api\\auth\\callback\\route.ts"
     },
     "store": {
       "phase": "do",
@@ -121,9 +126,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-28T12:34:02.308Z",
-        "lastUpdated": "2026-02-28T14:19:00.864Z"
+        "lastUpdated": "2026-03-02T04:49:42.689Z"
       },
-      "lastFile": "C:\\Users\\user\\00_DEV\\v0-online-course-website\\components\\footer.tsx"
+      "lastFile": "c:\\Users\\user\\00_DEV\\v0-online-course-website\\components\\header.tsx"
     },
     "mux": {
       "phase": "do",
@@ -230,6 +235,71 @@
         "lastUpdated": "2026-02-28T14:18:53.529Z"
       },
       "lastFile": "C:\\Users\\user\\00_DEV\\v0-online-course-website\\app\\mypage\\support\\page.tsx"
+    },
+    "profile": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-01T06:04:23.296Z",
+        "lastUpdated": "2026-03-01T06:05:07.616Z"
+      },
+      "lastFile": "c:\\Users\\user\\00_DEV\\v0-online-course-website\\app\\mypage\\profile\\page.tsx"
+    },
+    "order": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-02T04:49:58.156Z",
+        "lastUpdated": "2026-03-02T04:49:58.156Z"
+      },
+      "lastFile": "c:\\Users\\user\\00_DEV\\v0-online-course-website\\app\\order\\page.tsx"
+    },
+    "cart": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-02T04:49:59.467Z",
+        "lastUpdated": "2026-03-02T04:49:59.467Z"
+      },
+      "lastFile": "c:\\Users\\user\\00_DEV\\v0-online-course-website\\app\\cart\\page.tsx"
+    },
+    "complete": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-02T04:50:00.774Z",
+        "lastUpdated": "2026-03-02T04:50:00.774Z"
+      },
+      "lastFile": "c:\\Users\\user\\00_DEV\\v0-online-course-website\\app\\order\\complete\\page.tsx"
+    },
+    "[id]": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-02T04:50:02.110Z",
+        "lastUpdated": "2026-03-02T04:50:02.111Z"
+      },
+      "lastFile": "c:\\Users\\user\\00_DEV\\v0-online-course-website\\app\\courses\\[id]\\page.tsx"
     }
   },
   "pipeline": {
@@ -261,7 +331,7 @@
   "session": {
     "startedAt": "2026-02-27T13:01:51.202Z",
     "onboardingCompleted": true,
-    "lastActivity": "2026-02-28T14:19:00.864Z"
+    "lastActivity": "2026-03-02T04:56:48.198Z"
   },
   "history": [
     {
@@ -507,6 +577,174 @@
     {
       "timestamp": "2026-02-28T14:19:00.864Z",
       "feature": "v0-online-course-website",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-01T05:18:46.397Z",
+      "feature": "callback",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-01T05:19:07.620Z",
+      "feature": "actions",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-01T05:19:20.170Z",
+      "feature": "v0-online-course-website",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-01T06:03:41.425Z",
+      "feature": "v0-online-course-website",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-01T06:03:51.996Z",
+      "feature": "actions",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-01T06:04:04.334Z",
+      "feature": "callback",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-01T06:04:23.296Z",
+      "feature": "profile",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-01T06:04:33.552Z",
+      "feature": "profile",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-01T06:04:50.458Z",
+      "feature": "profile",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-01T06:05:07.616Z",
+      "feature": "profile",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-01T06:05:23.114Z",
+      "feature": "v0-online-course-website",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-01T06:19:09.328Z",
+      "feature": "actions",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-02T03:31:24.178Z",
+      "feature": "actions",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-02T03:33:42.780Z",
+      "feature": "actions",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-02T03:36:54.743Z",
+      "feature": "actions",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-02T04:25:40.113Z",
+      "feature": "v0-online-course-website",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-02T04:40:11.518Z",
+      "feature": "callback",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-02T04:49:16.422Z",
+      "feature": "v0-online-course-website",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-02T04:49:22.858Z",
+      "feature": "v0-online-course-website",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-02T04:49:30.747Z",
+      "feature": "v0-online-course-website",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-02T04:49:36.780Z",
+      "feature": "v0-online-course-website",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-02T04:49:42.689Z",
+      "feature": "v0-online-course-website",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-02T04:49:58.156Z",
+      "feature": "order",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-02T04:49:59.467Z",
+      "feature": "cart",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-02T04:50:00.774Z",
+      "feature": "complete",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-02T04:50:02.111Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-02T04:56:04.898Z",
+      "feature": "callback",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-02T04:56:48.198Z",
+      "feature": "callback",
       "phase": "do",
       "action": "updated"
     }
